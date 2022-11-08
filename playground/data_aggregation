@@ -1,0 +1,7 @@
+from semanticscholar import SemanticScholar
+sch = SemanticScholar()
+paper = sch.get_paper('10.1093/mind/lix.236.433')
+print(paper.references)
+print(paper.paperId)
+menna_paper = sch.search_paper("Beware the Rationalization Trap!")
+print(f'{menna_paper.total} results.', f'First occurrence: {menna_paper[0].title}.')
