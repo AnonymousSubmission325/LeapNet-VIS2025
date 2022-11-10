@@ -44,7 +44,7 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
                 rid = r['paperId']
 
                 #add own hierarchy if not present already
-                if r not in paper_hierarchies.keys:
+                if r not in list(paper_hierarchies.keys()):
                     paper_hierarchies[r] = []
 
                 paper_hierarchies[r].append(id)
