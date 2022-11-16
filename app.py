@@ -1,5 +1,7 @@
 # import main Flask class and request object
 import os
+import json
+
 from flask import Flask, render_template, request, jsonify
 # create the Flask app
 app = Flask(__name__)
@@ -15,6 +17,9 @@ def query_example():
 @app.route("/data")
 def data():
   # define some data
+  with open('static/network.json') as f:
+    data = json.load(f)
+
   d = {
     "name": "foo",
     "rank": "bar"
@@ -23,11 +28,14 @@ def data():
 
 @app.route('/network', methods=["POST", "GET"])
 def returnOne():
-        a = {
-        "test": "abcd",
-        "test1": "efg"
-        }
-        return render_template("report.html", a=a)
+    # define some data
+    with open('static/network.json') as f:
+        data = json.load(f)
+    a = {
+    "test": "abcd",
+    "test1": "efg"
+    }
+    return render_template("report.html", a=data)
 
 @app.route('/userQuery', methods=["POST", "GET"])
 def example():
