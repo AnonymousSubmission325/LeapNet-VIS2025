@@ -1,0 +1,149 @@
+from semanticscholar import SemanticScholar
+import json
+sch = SemanticScholar(timeout=30)
+
+# retrieve all papers connected with the seed papers
+# paper_limit for development, R: add iteration approach to remain unbiased
+# returns: dictionary of all paper objects, dictionary of paper citations 
+#  
+def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached):
+
+#R: for n in range(iterations):
+    for p in list(paper_objects.values()):
+
+        print(p)
+
+        id = p.paperId
+        #list seed paper in objects
+        if id not in paper_lookup:
+            paper_lookup.append(id)
+            paper_objects[id] = p
+
+        
+        #skip if zero
+        if len(p.citations) > 0:
+
+                # if paper not already retrieved
+                if cid not in paper_lookup:
+                    #...store in lookup...
+                    paper_lookup.append(cid)
+                    #...search for paper and store in objects
+                    paper_objects[cid] = sch.get_paper(cid)
+                    
+                    if len(paper_lookup) >= paper_limit:
+                        limit_reached = True
+                        break
+                #skip if zero
+
+        if len(p.references) > 0:
+            for r in p.references:
+                rid = r['paperId']
+
+                # if paper not already retrieved
+                if rid not in paper_lookup:
+                    #...store in lookup...
+                    paper_lookup.append(rid)
+                    #...search for paper and store in objects
+                    paper_objects[rid] = sch.get_paper(rid)
+
+                    if len(paper_lookup) >= paper_limit:
+                        limit_reached = True
+                        break
+
+    #create hierarchies 
+    for k in list(paper_objects.keys()):
+        if paper_objects[k].references:
+            for r in paper_objects[k].references:
+                if r in paper_objects.keys():
+                    if k in paper_hierarchies.keys():
+                            paper_hierarchies[k].append(r["paperId"])
+                    else: 
+                        paper_hierarchies[k] = [r["paperId"]]
+        if paper_objects[k].citations:
+            for c in paper_objects[k].citations:
+                cid = c.paperId
+                if cid in paper_objects.keys():
+                    if cid in paper_hierarchies.keys():
+                        paper_hierarchies[cid].append(k)
+                    else:
+                        paper_hierarchies[cid] = [k]
+    
+    paper_hierarchies_fin = {}
+
+    for k in paper_hierarchies.keys():
+        paper_hierarchies_fin[k] = list(dict.fromkeys(paper_hierarchies[k]))
+
+
+    return paper_objects, paper_hierarchies_fin, paper_lookup, paper_limit, limit_reached
+
+# param:
+# seeds are used to collect references and start the network
+# number of iterations to collect references
+def aggregate_network(paper_objects, paper_limit):
+    seed_first_results = [sch.search_paper(x)[0] for x in paper_objects ]
+
+    paper_objects = {}
+    for x in seed_first_results: paper_objects[x.paperId] = sch.get_paper(x.paperId)
+
+    paper_hierarchies = {}
+    paper_lookup = []
+    limit_reached = False
+
+    while not limit_reached: 
+        paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached = append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached)
+
+    return paper_objects, paper_hierarchies
+
+
+def convert_network_to_json_formats(paper_hierarchies, paper_objects):
+    network = { "nodes": [], "links": [] }
+
+    for o in list(paper_objects.values()):
+        network["nodes"].append(o["paperId"])
+
+    for k in list(paper_hierarchies.keys()):
+        for v in paper_hierarchies[k]:
+            network["links"].append({"source":k, "target":v})
+
+    return network
+
+def convert_papers_to_json_formats(paper_objects):
+    papers = {"papers" : []}
+    for p in paper_objects.values():
+        papers["papers"].append(json.dumps(p.raw_data))
+    return papers
+
+def dump(paper_objects, paper_hierarchies):
+    network_json = convert_network_to_json_formats(paper_hierarchies,paper_objects)
+    papers_json = convert_papers_to_json_formats(paper_objects)
+
+    # the json file where the output must be stored
+    network_file = open("network.json", "w")
+    json.dump(network_json, network_file, indent = 6)
+    network_file.close()
+
+    # the json file where the output must be stored
+    json_file = open("papers.json", "w")
+    json.dump(papers_json, json_file, indent = 6)
+    json_file.close()
+
+    return True
+
+
+def main():
+
+    # paper = sch.get_paper('10.1093/mind/lix.236.433')
+    # kempe_paper = sch.search_paper("Maximizing the Spread of Influence through a Social Network")
+    # alessio_paper = sch.search_paper("Influence Maximization With Visual Analytics")
+    # saito_paper = sch.search_paper("Effective Visualization of Information Diffusion Process over Complex Networks")
+    # paper = sch.get_paper(saito_paper[0].paperId)
+
+    #TESTING
+    #seedset = ["Maximizing the Spread of Influence through a Social Network", "Influence Maximization With Visual Analytics", "Effective Visualization of Information Diffusion Process over Complex Networks"] 
+    seedset = ["Influence Maximization With Visual Analytics"] 
+    
+    paper_objects, paper_hierarchies = aggregate_network(seedset,30)
+
+    dump(paper_objects, paper_hierarchies)
+
+main()
