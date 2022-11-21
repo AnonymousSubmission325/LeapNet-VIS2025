@@ -1,19 +1,66 @@
 from semanticscholar import SemanticScholar
 import json
+import re
 sch = SemanticScholar(timeout=30)
 
+def clean_text(text,t):
+    cleaned_text = ""
+    if t == "journal": 
+        if text is dict:
+            if(text['name']):
+                cleaned_text = text['name']
+    elif t == "tldr": cleaned_text = text['text']
+    else: cleaned_text = text
+
+    cleaned_text = cleaned_text.replace('"', '')
+    cleaned_text = cleaned_text.replace("'", "")
+    cleaned_text = cleaned_text.replace('\\', '')
+    #cleaned_text = cleaned_text.replace('/', '')
+    cleaned_text = cleaned_text.replace('$', '')
+    cleaned_text = re.sub('<[^>]*>', '', cleaned_text)
+    return cleaned_text
+
+def handle_other_field(field,t):
+    cleaned_field = "not found"
+    if t == "authors": 
+        cleaned_field = ""
+        for a in field: 
+            if a["authorId"]:
+                cleaned_field = cleaned_field + "_" + a["authorId"]
+    if t == "publicationDate": 
+        if type(field) is dict:
+            if field['year']: cleaned_field = str(field['year'])
+            if field['month']: cleaned_field = cleaned_field + "_" + str(field['month'])
+            if field['day']: cleaned_field = cleaned_field + "_" + str(field['day'])
+            cleaned_field = str(field['year'] + "-" + field['month'] + "-" + field['day'])
+        if type(field) is str:
+            cleaned_field = field
+    if t == "publicationTypes": cleaned_field = field[0]
+    return cleaned_field
 
 def clean_paper_to_json(paper_objects):
-    cleaned_paper_objects = {}
+    cleaned_paper_objects = {"papers":[]}
     
     # just for dev
     # unneeded_fields = ["citations", "embedding", "externalIds", "fieldsofStudy", "isOpenAccess"]
     remaining_fields = ["paperId", "citationCount", "publicationTypes", "referenceCount", "year"]
     text_fields = ["abstract", "journal", "title", "tldr", "url", "venue"]
-    other_fields = ["authors", "publicationDate"]
+    other_fields = ["authors", "publicationDate", "publicationTypes"]
     
 
-    #for p in paper_objects.keys():
+    for p in paper_objects.keys():
+        np = {}
+        for r in remaining_fields:
+            if paper_objects[p][r]:
+                np[r] = paper_objects[p][r]
+        for t in text_fields:
+            if paper_objects[p][t]:
+                np[t] = clean_text(paper_objects[p][t], t)
+        for o in other_fields:
+            if paper_objects[p][o]:
+                np[o] = handle_other_field(paper_objects[p][o], o)
+        cleaned_paper_objects["papers"].append(np)
+
     return cleaned_paper_objects
         
 
@@ -66,13 +113,13 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
                         break
 
 
-    #sanitize paper objects
-    clean_paper_objects = {}
+    #filter paper objects
+    filter_paper_objects = {}
     for po in paper_objects.keys():
         if paper_objects[po].paperId:
-            clean_paper_objects[po] = paper_objects[po]
+            filter_paper_objects[po] = paper_objects[po]
 
-    paper_objects = clean_paper_objects
+    paper_objects = filter_paper_objects
 
 
     #create hierarchies 
@@ -133,10 +180,7 @@ def convert_network_to_json_formats(paper_hierarchies, paper_objects):
     return network
 
 def convert_papers_to_json_formats(paper_objects):
-    papers = {"papers" : []}
-    for p in paper_objects.values():
-        papers["papers"].append(json.dumps(p.raw_data))
-    return papers
+    return clean_paper_to_json(paper_objects)
 
 def dump(paper_objects, paper_hierarchies):
     network_json = convert_network_to_json_formats(paper_hierarchies,paper_objects)
@@ -152,6 +196,7 @@ def dump(paper_objects, paper_hierarchies):
     json.dump(papers_json, json_file, indent = 6)
     json_file.close()
 
+    # add author data
     return True
 
 
@@ -167,8 +212,8 @@ def main():
     #seedset = ["Maximizing the Spread of Influence through a Social Network", "Influence Maximization With Visual Analytics", "Effective Visualization of Information Diffusion Process over Complex Networks"] 
     seedset = ["Influence Maximization With Visual Analytics"] 
     
-    paper_objects, paper_hierarchies = aggregate_network(seedset,4)
+    paper_objects, paper_hierarchies = aggregate_network(seedset,100)
 
     dump(paper_objects, paper_hierarchies)
-
+    print("aggregation finished")
 main()
