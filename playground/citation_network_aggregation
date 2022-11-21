@@ -2,6 +2,23 @@ from semanticscholar import SemanticScholar
 import json
 sch = SemanticScholar(timeout=30)
 
+
+def clean_paper_to_json(paper_objects):
+    cleaned_paper_objects = {}
+    
+    # just for dev
+    # unneeded_fields = ["citations", "embedding", "externalIds", "fieldsofStudy", "isOpenAccess"]
+    remaining_fields = ["paperId", "citationCount", "publicationTypes", "referenceCount", "year"]
+    text_fields = ["abstract", "journal", "title", "tldr", "url", "venue"]
+    other_fields = ["authors", "publicationDate"]
+    
+
+    #for p in paper_objects.keys():
+    return cleaned_paper_objects
+        
+
+
+
 # retrieve all papers connected with the seed papers
 # paper_limit for development, R: add iteration approach to remain unbiased
 # returns: dictionary of all paper objects, dictionary of paper citations 
@@ -11,8 +28,6 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
 #R: for n in range(iterations):
     for p in list(paper_objects.values()):
 
-        print(p)
-
         id = p.paperId
         #list seed paper in objects
         if id not in paper_lookup:
@@ -21,8 +36,8 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
 
         
         #skip if zero
-        if len(p.citations) > 0:
-
+        if p.citations:
+            for cid in p.citations:
                 # if paper not already retrieved
                 if cid not in paper_lookup:
                     #...store in lookup...
@@ -35,7 +50,7 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
                         break
                 #skip if zero
 
-        if len(p.references) > 0:
+        if p.references:
             for r in p.references:
                 rid = r['paperId']
 
@@ -49,6 +64,16 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
                     if len(paper_lookup) >= paper_limit:
                         limit_reached = True
                         break
+
+
+    #sanitize paper objects
+    clean_paper_objects = {}
+    for po in paper_objects.keys():
+        if paper_objects[po].paperId:
+            clean_paper_objects[po] = paper_objects[po]
+
+    paper_objects = clean_paper_objects
+
 
     #create hierarchies 
     for k in list(paper_objects.keys()):
@@ -99,7 +124,7 @@ def convert_network_to_json_formats(paper_hierarchies, paper_objects):
     network = { "nodes": [], "links": [] }
 
     for o in list(paper_objects.values()):
-        network["nodes"].append(o["paperId"])
+        network["nodes"].append({"id":o["paperId"]})
 
     for k in list(paper_hierarchies.keys()):
         for v in paper_hierarchies[k]:
@@ -142,7 +167,7 @@ def main():
     #seedset = ["Maximizing the Spread of Influence through a Social Network", "Influence Maximization With Visual Analytics", "Effective Visualization of Information Diffusion Process over Complex Networks"] 
     seedset = ["Influence Maximization With Visual Analytics"] 
     
-    paper_objects, paper_hierarchies = aggregate_network(seedset,30)
+    paper_objects, paper_hierarchies = aggregate_network(seedset,4)
 
     dump(paper_objects, paper_hierarchies)
 

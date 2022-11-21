@@ -5,45 +5,18 @@ import json
 from flask import Flask, render_template, request, jsonify
 # create the Flask app
 app = Flask(__name__)
-
-@app.route('/query-example')
-def query_example():
-    # if key doesn't exist, returns None
-    language = request.args.get('language')
-
-    return '''<h1>The language value is: {}</h1>'''.format(language)
-
 # This route serves the dictionary d at the route /date
-@app.route("/data")
-def data():
-  # define some data
-  with open('static/network.json') as f:
-    data = json.load(f)
 
-  d = {
-    "name": "foo",
-    "rank": "bar"
-  }
-  return render_template("networkvis.html", chart_data=jsonify(d))
-
-@app.route('/network', methods=["POST", "GET"])
+@app.route('/', methods=["POST", "GET"])
 def returnOne():
     # define some data
-    with open('static/network.json') as f:
+    with open('static/miserables.json') as f:
         data = json.load(f)
-    a = {
-    "test": "abcd",
-    "test1": "efg"
-    }
-    return render_template("report.html", a=data)
-
-@app.route('/userQuery', methods=["POST", "GET"])
-def example():
-        a = {
-        "test": "abcd",
-        "test1": "efg"
-        }
-        return render_template("response.html", a=a)
+    with open('static/network.json') as f:
+        network = json.load(f)
+    with open('static/papers.json') as f:
+        papers = json.load(f)
+    return render_template("report.html", network = network, papers=papers)
 
 
 if __name__ == '__main__':
