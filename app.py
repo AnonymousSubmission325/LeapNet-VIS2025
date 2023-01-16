@@ -7,16 +7,15 @@ from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 # This route serves the dictionary d at the route /date
 
+
 @app.route('/', methods=["POST", "GET"])
 def returnOne():
     # define some data
-    with open('static/miserables.json') as f:
-        data = json.load(f)
     with open('static/network.json') as f:
         network = json.load(f)
     with open('static/papers.json') as f:
         papers = json.load(f)
-    return render_template("report.html", network = network, papers=papers)
+    return render_template("templ.html", network = network, papers = papers)
 
 
 if __name__ == '__main__':

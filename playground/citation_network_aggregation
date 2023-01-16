@@ -1,6 +1,8 @@
 from semanticscholar import SemanticScholar
 import json
 import re
+import codecs
+
 sch = SemanticScholar(timeout=30)
 
 def clean_text(text,t):
@@ -9,12 +11,26 @@ def clean_text(text,t):
         if text is dict:
             if(text['name']):
                 cleaned_text = text['name']
-    elif t == "tldr": cleaned_text = text['text']
+    elif t == "tldr" and type(text) is dict: 
+        cleaned_text = text['text']
     else: cleaned_text = text
 
+    cleaned_text = cleaned_text.replace("/\\n/g", "\\n")
+    cleaned_text = cleaned_text.replace("/\\'/g", "\\'")
+    cleaned_text = cleaned_text.replace('/\\"/g', '\\"')
+    cleaned_text = cleaned_text.replace('/\\&/g', "\\&")
+    cleaned_text = cleaned_text.replace('/\\r/g', "\\r")
+    cleaned_text = cleaned_text.replace('/\\t/g', "\\t")
+    cleaned_text = cleaned_text.replace('/\\b/g', "\\b")
+    cleaned_text = cleaned_text.replace('/\\f/g', "\\f")
+    cleaned_text = cleaned_text.replace('\n', "")
+    cleaned_text = cleaned_text.replace('\\n', "")
     cleaned_text = cleaned_text.replace('"', '')
     cleaned_text = cleaned_text.replace("'", "")
     cleaned_text = cleaned_text.replace('\\', '')
+    cleaned_text = codecs.escape_decode(bytes(cleaned_text, "utf-8"))[0].decode("utf-8")
+    cleaned_text = cleaned_text.encode("ascii", "ignore")
+    cleaned_text = cleaned_text.decode()
     #cleaned_text = cleaned_text.replace('/', '')
     cleaned_text = cleaned_text.replace('$', '')
     cleaned_text = re.sub('<[^>]*>', '', cleaned_text)
@@ -38,7 +54,7 @@ def handle_other_field(field,t):
     if t == "publicationTypes": cleaned_field = field[0]
     return cleaned_field
 
-def clean_paper_to_json(paper_objects):
+def clean_paper_to_json(paper_objects, layers):
     cleaned_paper_objects = {"papers":[]}
     
     # just for dev
@@ -50,6 +66,8 @@ def clean_paper_to_json(paper_objects):
 
     for p in paper_objects.keys():
         np = {}
+        if p in layers.keys():
+            np["layer"] = layers[p]
         for r in remaining_fields:
             if paper_objects[p][r]:
                 np[r] = paper_objects[p][r]
@@ -70,7 +88,7 @@ def clean_paper_to_json(paper_objects):
 # paper_limit for development, R: add iteration approach to remain unbiased
 # returns: dictionary of all paper objects, dictionary of paper citations 
 #  
-def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached):
+def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached, layer, layers):
 
 #R: for n in range(iterations):
     for p in list(paper_objects.values()):
@@ -90,8 +108,13 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
                     #...store in lookup...
                     paper_lookup.append(cid)
                     #...search for paper and store in objects
-                    paper_objects[cid] = sch.get_paper(cid)
-                    
+                    try:
+                        paper_ob = sch.get_paper(cid)
+                        if paper_ob is not None:
+                            paper_objects[cid] = sch.get_paper(cid)
+                            layers[cid] = layer
+                    except Exception:
+                        pass
                     if len(paper_lookup) >= paper_limit:
                         limit_reached = True
                         break
@@ -106,7 +129,13 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
                     #...store in lookup...
                     paper_lookup.append(rid)
                     #...search for paper and store in objects
-                    paper_objects[rid] = sch.get_paper(rid)
+                    try:
+                        paper_ob = sch.get_paper(rid)
+                        if paper_ob is not None:
+                            paper_objects[rid] = sch.get_paper(rid)
+                            layers[rid] = layer
+                    except Exception:
+                        pass
 
                     if len(paper_lookup) >= paper_limit:
                         limit_reached = True
@@ -146,25 +175,40 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
         paper_hierarchies_fin[k] = list(dict.fromkeys(paper_hierarchies[k]))
 
 
-    return paper_objects, paper_hierarchies_fin, paper_lookup, paper_limit, limit_reached
+    return paper_objects, paper_hierarchies_fin, paper_lookup, paper_limit, limit_reached, layer, layers
 
 # param:
 # seeds are used to collect references and start the network
 # number of iterations to collect references
 def aggregate_network(paper_objects, paper_limit):
-    seed_first_results = [sch.search_paper(x)[0] for x in paper_objects ]
+    layers = {}
+    seed_first_results = []
+    for x in paper_objects:
+        if(len(sch.search_paper(x))>0):
+            seed_first_results.append(sch.search_paper(x)[0])
+        else:
+            print("Paper" + x + "not found" )
+
+    layer = 0
 
     paper_objects = {}
-    for x in seed_first_results: paper_objects[x.paperId] = sch.get_paper(x.paperId)
+    for x in seed_first_results: 
+        p = sch.get_paper(x.paperId)
+        paper_objects[x.paperId] = p
+        layers[x.paperId] = layer
+
+
+
 
     paper_hierarchies = {}
     paper_lookup = []
     limit_reached = False
 
     while not limit_reached: 
-        paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached = append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached)
+        layer += 1
+        paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached, layer, layers = append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached, layer, layers)
 
-    return paper_objects, paper_hierarchies
+    return paper_objects, paper_hierarchies, layers
 
 
 def convert_network_to_json_formats(paper_hierarchies, paper_objects):
@@ -179,12 +223,12 @@ def convert_network_to_json_formats(paper_hierarchies, paper_objects):
 
     return network
 
-def convert_papers_to_json_formats(paper_objects):
-    return clean_paper_to_json(paper_objects)
+def convert_papers_to_json_formats(paper_objects, layers):
+    return clean_paper_to_json(paper_objects, layers)
 
-def dump(paper_objects, paper_hierarchies):
+def dump(paper_objects, paper_hierarchies, layers):
     network_json = convert_network_to_json_formats(paper_hierarchies,paper_objects)
-    papers_json = convert_papers_to_json_formats(paper_objects)
+    papers_json = convert_papers_to_json_formats(paper_objects, layers)
 
     # the json file where the output must be stored
     network_file = open("network.json", "w")
@@ -209,11 +253,11 @@ def main():
     # paper = sch.get_paper(saito_paper[0].paperId)
 
     #TESTING
-    #seedset = ["Maximizing the Spread of Influence through a Social Network", "Influence Maximization With Visual Analytics", "Effective Visualization of Information Diffusion Process over Complex Networks"] 
-    seedset = ["Influence Maximization With Visual Analytics"] 
-    
-    paper_objects, paper_hierarchies = aggregate_network(seedset,100)
+    #seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain","Visual Exploration of Financial Data with Incremental Domain Knowledge", "Vaim: Visual analytics for influence maximization","Influence Maximization With Visual Analytics", "A distributed multilevel force-directed algorithm", "Profiling distributed graph processing systems through visual analytics"]
+    seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain","Visual Exploration of Financial Data with Incremental Domain Knowledge", "Vaim: Visual analytics for influence maximization","Influence Maximization With Visual Analytics", "A distributed multilevel force-directed algorithm", "Profiling distributed graph processing systems through visual analytics"]
+    #seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain"]
+    paper_objects, paper_hierarchies, layers = aggregate_network(seedset,10000)
 
-    dump(paper_objects, paper_hierarchies)
+    dump(paper_objects, paper_hierarchies, layers)
     print("aggregation finished")
-main()
+main() 

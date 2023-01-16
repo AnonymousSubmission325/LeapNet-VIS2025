@@ -1,0 +1,89 @@
+
+
+<html>
+<head>
+<style>
+/* Collabsible area*/
+/* Style the button that is used to open and close the collapsible content */
+
+
+/*Resize the wrap to see the search bar change!*/
+/* .wrap{
+  width: 30%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+} */
+
+
+
+/* HTML styles */
+/* html{ width: 100%; } */
+
+/* SVG styles */
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+#header {
+    height: 100px;
+    background-color: grey;
+}
+
+#vis {
+    position: absolute;
+    top: 100px;
+    bottom: 0;
+    width: 100%; 
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+.svg-content {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.links line {
+  stroke: #aaa;
+}
+.nodes circle {
+  pointer-events: all;
+}
+
+</style>
+</head>
+
+
+<body>
+<!-- 
+uncomment to add header -->
+<!-- <div id="header">
+  I have a fixed height
+</div> -->
+
+
+<div id="vis" class="svg-container">
+</div>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
+<script src="//d3js.org/topojson.v1.min.js"></script>
+<script src="{{url_for('static', filename='js/hexagon2.js')}}"></script>
+<!-- <script src="{{url_for('static', filename='influvis_update.js')}}"></script>-->
+<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'))</script>
+<!-- <div id="my_dataviz"></div> -->
+</body>
+</html>
