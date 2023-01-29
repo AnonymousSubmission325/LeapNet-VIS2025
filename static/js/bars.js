@@ -41,6 +41,23 @@ function my_Func(network, papers){
 
     d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_stacked.csv", function(data) {
 
+    console.log(data)
+    data = []
+    header = []
+    for (let step = 0; step < 20; step++) {
+      header.push(String(step))
+    }
+    data['columns'] = header
+    
+    for (let step = 0; step < 20; step++) {
+      row = {group : String(step)}
+      for (let s = 0; s < 20; s++) {
+        row[String(s)] = '1'
+      }
+      data.push(row)
+    }
+
+    console.log(data)
   // List of subgroups = header of the csv files = soil condition here
   var subgroups = data.columns.slice(1)
 
