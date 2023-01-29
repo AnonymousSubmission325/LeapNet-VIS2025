@@ -197,7 +197,14 @@ def aggregate_network(paper_objects, paper_limit):
         paper_objects[x.paperId] = p
         layers[x.paperId] = layer
 
+    seeds = { "seeds": [] }
+    for s in seed_first_results:
+        seeds['seeds'].append(s.paperId)
 
+    # the json file where the output must be stored
+    seed_file = open("static/seeds.json", "w")
+    json.dump(seeds, seed_file, indent = 6)
+    seed_file.close()
 
 
     paper_hierarchies = {}
@@ -231,12 +238,12 @@ def dump(paper_objects, paper_hierarchies, layers):
     papers_json = convert_papers_to_json_formats(paper_objects, layers)
 
     # the json file where the output must be stored
-    network_file = open("network.json", "w")
+    network_file = open("static/network.json", "w")
     json.dump(network_json, network_file, indent = 6)
     network_file.close()
 
     # the json file where the output must be stored
-    json_file = open("papers.json", "w")
+    json_file = open("static/papers.json", "w")
     json.dump(papers_json, json_file, indent = 6)
     json_file.close()
 
@@ -244,7 +251,7 @@ def dump(paper_objects, paper_hierarchies, layers):
     return True
 
 
-def main():
+def main(seedset, paper_num):
 
     # paper = sch.get_paper('10.1093/mind/lix.236.433')
     # kempe_paper = sch.search_paper("Maximizing the Spread of Influence through a Social Network")
@@ -254,10 +261,10 @@ def main():
 
     #TESTING
     #seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain","Visual Exploration of Financial Data with Incremental Domain Knowledge", "Vaim: Visual analytics for influence maximization","Influence Maximization With Visual Analytics", "A distributed multilevel force-directed algorithm", "Profiling distributed graph processing systems through visual analytics"]
-    seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain","Visual Exploration of Financial Data with Incremental Domain Knowledge", "Vaim: Visual analytics for influence maximization","Influence Maximization With Visual Analytics", "A distributed multilevel force-directed algorithm", "Profiling distributed graph processing systems through visual analytics"]
+    #seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain","Visual Exploration of Financial Data with Incremental Domain Knowledge", "Vaim: Visual analytics for influence maximization","Influence Maximization With Visual Analytics", "A distributed multilevel force-directed algorithm", "Profiling distributed graph processing systems through visual analytics"]
     #seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain"]
-    paper_objects, paper_hierarchies, layers = aggregate_network(seedset,10000)
+    paper_objects, paper_hierarchies, layers = aggregate_network(seedset,paper_num)
 
     dump(paper_objects, paper_hierarchies, layers)
     print("aggregation finished")
-main() 
+print('citation network will be aggregated')

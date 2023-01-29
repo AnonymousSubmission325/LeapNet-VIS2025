@@ -11,7 +11,7 @@ import gensim
 from gensim.utils import simple_preprocess
 from gensim import matutils
 import nltk
-nltk.download('stopwords')
+# nltk.download('stopwords')
 from nltk.corpus import stopwords
 # Import the wordcloud library
 from wordcloud import WordCloud
@@ -36,15 +36,17 @@ def prepare_text(cleaned_text):
         return ''
 
 
-def topic_modeling(papers):
+def topic_modeling():
 
     # temporal??
-    with open('playground/papers.json') as f:
+    with open('static/papers.json') as f:
         data = json.load(f)
     # Convert the data to a DataFrame
     papers = pd.DataFrame(data['papers'])
+    orig_papers = papers.copy()
 
-    papers = papers.drop(columns=['layer', 'paperId', 'citationCount', 'year', 'journal', 'url', 'venue', 'authors', 'publicationDate', 'publicationTypes', 'referenceCount' ], axis=1).sample(100)
+
+    papers = papers.drop(columns=['layer', 'paperId', 'citationCount', 'year', 'journal', 'url', 'venue', 'authors', 'publicationDate', 'publicationTypes', 'referenceCount' ], axis=1)
     papers.applymap(prepare_text)
 
     rel_text = papers.apply(lambda row : row.tolist(), axis = 1)
@@ -77,7 +79,6 @@ def topic_modeling(papers):
     data_words = remove_stopwords(data_words)
 
 
-
     # Create Dictionary
     id2word = corpora.Dictionary(data_words)
 
@@ -92,16 +93,15 @@ def topic_modeling(papers):
 
 
     # number of topics
-    num_topics = 10
+    num_topics = 5
 
     # Build LDA model
-    if __name__ == '__main__':
-        lda_model = gensim.models.LdaModel(corpus=corpus,
-                                            id2word=id2word,
-                                            num_topics=num_topics)
+    print(__name__)
+    #if __name__ == '__main__':
+    lda_model = gensim.models.LdaModel(corpus=corpus, id2word=id2word, num_topics=num_topics)
 
     # Print the Keyword in the 10 topics
-    pprint(lda_model.print_topics())
+    #pprint(lda_model.print_topics())
     doc_lda = lda_model[corpus]
 
 
@@ -140,10 +140,16 @@ def topic_modeling(papers):
     # Format
     df_dominant_topic = df_topic_sents_keywords.reset_index()
     df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords', 'Text']
-    pprint(df_dominant_topic.head(100))
-    
+    print(df_dominant_topic.head(100))
+    print(df_topic_sents_keywords.head(100))
     
 
+    #append topic info to papers
+    papers.reset_index(drop=True, inplace=True)
+    df_dominant_topic.reset_index(drop=True, inplace=True)
+    papers_with_topic = pd.concat([papers, df_dominant_topic], axis=1)
+    orig_papers_with_topic = pd.concat([orig_papers, papers_with_topic], axis=1)
+    orig_papers_with_topic = orig_papers_with_topic.iloc[:,~orig_papers_with_topic.columns.duplicated()]
 
     
     # Display setting to show more characters in column
@@ -153,9 +159,7 @@ def topic_modeling(papers):
     sent_topics_outdf_grpd = df_topic_sents_keywords.groupby('Dominant_Topic')
 
     for i, grp in sent_topics_outdf_grpd:
-        sent_topics_sorteddf_mallet = pd.concat([sent_topics_sorteddf_mallet, 
-                                                grp.sort_values(['Perc_Contribution'], ascending=False).head(1)], 
-                                                axis=0)
+        sent_topics_sorteddf_mallet = pd.concat([sent_topics_sorteddf_mallet,  grp.sort_values(['Perc_Contribution'], ascending=False).head(1)], axis=0)
 
     # Reset Index    
     sent_topics_sorteddf_mallet.reset_index(drop=True, inplace=True)
@@ -164,13 +168,13 @@ def topic_modeling(papers):
     sent_topics_sorteddf_mallet.columns = ['Topic_Num', "Topic_Perc_Contrib", "Keywords", "Representative Text"]
 
     # Show
-    pprint(sent_topics_sorteddf_mallet.head(100))
+    #pprint(sent_topics_sorteddf_mallet.head(100))
 
     
-    pprint(lda_model.get_topics())
+    #pprint(lda_model.get_topics())
     # similarities
-    cos_sims = cosine_similarity(lda_model.get_topics())
-    pprint(cos_sims)
+    #cos_sims = cosine_similarity(lda_model.get_topics())
+    #pprint(cos_sims)
 
 
     # Get topic weights and dominant topics ------------
@@ -189,10 +193,10 @@ def topic_modeling(papers):
     tsne = TSNE(n_components=2, perplexity=30)
     topic_vectors_2d_tsne = tsne.fit_transform(topic_vectors)
 
-    pprint(topic_vectors_2d_tsne)
+    #pprint(topic_vectors_2d_tsne)
     # plot topics
-    plt.scatter(topic_vectors_2d_tsne[:, 0], topic_vectors_2d_tsne[:, 1])
-    plt.show()
+    #plt.scatter(topic_vectors_2d_tsne[:, 0], topic_vectors_2d_tsne[:, 1])
+    #plt.show()
 
 
     # perform PCA dimensionality reduction
@@ -200,13 +204,88 @@ def topic_modeling(papers):
     topic_vectors_2d_pca = pca.fit_transform(topic_vectors)
 
     # plot topics
-    plt.scatter(topic_vectors_2d_pca[:, 0], topic_vectors_2d_pca[:, 1])
-    plt.show()
+    #plt.scatter(topic_vectors_2d_pca[:, 0], topic_vectors_2d_pca[:, 1])
+    #plt.show()
+
+
+    #NOT TESTED YET
+    import umap
+    reducer = umap.UMAP(random_state=42)
+    reducer.fit(topic_vectors)
+    topic_vectors_2d_umap = reducer.transform(topic_vectors)
+ 
+
     from sklearn import preprocessing
     min_max_scaler = preprocessing.MinMaxScaler()
 
     topic_vectors_2d_tsne_normalized = min_max_scaler.fit_transform(topic_vectors_2d_tsne)
     topic_vectors_2d_pca_normalized = min_max_scaler.fit_transform(topic_vectors_2d_pca)
+    topic_vectors_2d_umap_normalized = min_max_scaler.fit_transform(topic_vectors_2d_umap)
+
+    from pycolormap_2d import ColorMap2DBremm, ColorMap2DSchumann, ColorMap2DSteiger
+
+    # Create the color map object.
+    cmap_bremm = ColorMap2DBremm()
+    cmap_schumann = ColorMap2DSchumann()
+    cmap_steiger = ColorMap2DSteiger()
+
+    # Get the color value.
+    #color = cmap_bremm(0.2, 0.6)
+
+    def get_colors_matrix(coords_matrix):
+        color_matrix_bremm = []
+        color_matrix_schumann = []
+        color_matrix_steiger = []
+        for l in coords_matrix:
+            x=l[0]
+            y=l[1]
+            
+            color_matrix_bremm.append(cmap_bremm(x,y))
+            color_matrix_schumann.append(cmap_schumann(x,y))
+            color_matrix_steiger.append(cmap_steiger(x,y))
+        return color_matrix_bremm, color_matrix_schumann, color_matrix_steiger
+    
+    tsne_bremm, tsne_schumann, tsne_steiger = get_colors_matrix(topic_vectors_2d_tsne_normalized)
+    pca_bremm, pca_schumann, pca_steiger = get_colors_matrix(topic_vectors_2d_pca_normalized)
+    umap_bremm, umap_schumann, umap_steiger = get_colors_matrix(topic_vectors_2d_umap_normalized)
+
+    topics = sent_topics_sorteddf_mallet
 
 
-topic_modeling("test")
+    # es kann sein dass weniger topics in den dokumenten vorhanden sind als angegeben
+    # in dem fall ist die projection nicht korrekt
+    
+    #need to map 2d array to 1d here if necessary
+    #topics['TSNE'] =  topic_vectors_2d_tsne_normalized
+    #topics['PCA'] =  topic_vectors_2d_pca_normalized
+    #topics['UMAP'] =  topic_vectors_2d_umap_normalized
+    
+    topics['TSNE_Bremm'] =  tsne_bremm
+    topics['PCA_Bremm'] =  pca_bremm
+    topics['UMAP_Bremm'] =  umap_bremm
+    
+    topics['TSNE_Schumann'] =  tsne_schumann
+    topics['PCA_Schumann'] =  pca_schumann
+    topics['UMAP_Schumann'] =  umap_schumann
+    
+    topics['TSNE_Steiger'] =  tsne_steiger
+    topics['PCA_Steiger'] =  pca_steiger
+    topics['UMAP_Steiger'] =  umap_steiger
+    
+
+    # the json file where the output must be stored
+    topics_file = open("static/topics.json", "w")
+    json.dump(topics.to_json(), topics_file, indent = 6)
+    topics_file.close()
+
+    # the json file where the output must be stored
+    paper_file = open("static/papers_with_topics.json", "w")
+    json.dump(orig_papers_with_topic.to_json(), paper_file, indent = 6)
+    paper_file.close()
+
+    return topics
+
+    #pprint(tsne_bremm)
+    #pprint(pca_bremm)
+    #pprint(umap_bremm)
+topic_modeling()
