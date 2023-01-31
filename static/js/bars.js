@@ -42,22 +42,21 @@ function my_Func(network, papers){
     d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_stacked.csv", function(data) {
 
     console.log(data)
-    data = []
-    header = []
-    for (let step = 0; step < 20; step++) {
-      header.push(String(step))
-    }
-    data['columns'] = header
+    // data = []
+    // header = []
+    // for (let step = 0; step < 20; step++) {
+    //   header.push(String(step))
+    // }
+    // data['columns'] = header
     
-    for (let step = 0; step < 20; step++) {
-      row = {group : String(step)}
-      for (let s = 0; s < 20; s++) {
-        row[String(s)] = '1'
-      }
-      data.push(row)
-    }
+    // for (let step = 0; step < 20; step++) {
+    //   row = {group : String(step)}
+    //   for (let s = 0; s < 20; s++) {
+    //     row[String(s)] = '1'
+    //   }
+    //   data.push(row)
+    // }
 
-    console.log(data)
   // List of subgroups = header of the csv files = soil condition here
   var subgroups = data.columns.slice(1)
 
@@ -88,10 +87,9 @@ function my_Func(network, papers){
   var stackedData = d3.stack()
     .keys(subgroups)
     (data)
-  console.log(stackedData)
 
   // Show the bars
-  svg.append("g")
+  var container = svg.append("g")
     .selectAll("g")
     // Enter in the stack data = loop key per key = group per group
     .data(stackedData)
@@ -100,20 +98,34 @@ function my_Func(network, papers){
       .selectAll("rect")
       // enter a second time = loop subgroup per subgroup to add all rectangles
       .data(function(d) { return d; })
-      .enter().append("rect").attr("columnId", function(d) { return "group_"+ x(d.data.group); })
+      .enter().append("rect").attr("class", function(d) { return "group_"+ x(d.data.group); })
         .attr("x", function(d) { return x(d.data.group); })
-        .attr("y", function(d) {console.log(d); return y(d[1]); })
+        .attr("y", function(d) { return y(d[1]); })
         .attr("height", function(d) { return y(d[0]) - y(d[1]); })
         .attr("width",x.bandwidth())
-    })
-  //stackedData[0].forEach()
-  for (const x of Array(data.length).keys()) {
-    console.log(svg.selectAll("group_" + x))
-    console.log(svg.selectAll(".group_" + x))
-    console.log(svg.selectAll("#group_" + x))
-  }
 
-  svg.selectAll("columnId").each(function(d) { console.log(d); });
-  svg.selectAll(".columnId").each(function(d) { console.log(d); });
-  svg.selectAll("#columnId").each(function(d) { console.log(d); });
+  function move_bars_to_center(){
+    groups = ['.group_0', '.group_200', '.group_400', '.group_600']
+
+    for (const group of groups){
+        stack_height = 0;
+        svg.selectAll(group).each(function(){stack_height = stack_height + parseInt(this.attributes.height.value)})
+        moving_distance = -height/2 + stack_height/2
+        
+        svg.selectAll('g').selectAll(group).attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
+    }
+  }
+  //   stack_height = 0
+  //   svg.selectAll('.group_0').each(function(){console.log(this.attributes.height.value); stack_height = stack_height + parseInt(this.attributes.height.value)})
+  //   moving_distance =  -height/2 + stack_height/2
+  //   console.log(stack_height)
+  //   svg.selectAll('g').selectAll('.group_0').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
+  //   svg.selectAll('g').selectAll('.group_200').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
+  //   svg.selectAll('g').selectAll('.group_400').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
+  //   svg.selectAll('g').selectAll('.group_600').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
+  move_bars_to_center()
+  //svg.selectAll('g').selectAll('.group_0').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + -50 + ")");  
+
+
+  })
 }
