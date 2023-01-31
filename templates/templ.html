@@ -83,7 +83,7 @@ uncomment to add header -->
 <script src="//d3js.org/topojson.v1.min.js"></script>
 <script src="{{url_for('static', filename='js/bars.js')}}"></script>
 <!-- <script src="{{url_for('static', filename='influvis_update.js')}}"></script>-->
-<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'))</script>
+<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ topics | tojson }}'))</script>
 <!-- <div id="my_dataviz"></div> -->
 </body>
 </html>

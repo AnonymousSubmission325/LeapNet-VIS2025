@@ -1,4 +1,4 @@
-function my_Func(network, papers){
+function my_Func(network, papers, seeds, topics){
     data = network
     papers = papers['papers']
     var max_layer = Math.max(...papers.map(paper => paper.layer))
@@ -8,6 +8,8 @@ function my_Func(network, papers){
     console.log(data)
     console.log(network)
     console.log(paper_lookup)
+    console.log(seeds)
+    console.log(topics)
     
     
     var rect = document.querySelector('#vis'),
@@ -104,28 +106,18 @@ function my_Func(network, papers){
         .attr("height", function(d) { return y(d[0]) - y(d[1]); })
         .attr("width",x.bandwidth())
 
-  function move_bars_to_center(){
-    groups = ['.group_0', '.group_200', '.group_400', '.group_600']
+    function move_bars_to_center(){
+      groups = ['.group_0', '.group_200', '.group_400', '.group_600']
 
-    for (const group of groups){
-        stack_height = 0;
-        svg.selectAll(group).each(function(){stack_height = stack_height + parseInt(this.attributes.height.value)})
-        moving_distance = -height/2 + stack_height/2
-        
-        svg.selectAll('g').selectAll(group).attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
+      for (const group of groups){
+          stack_height = 0;
+          svg.selectAll(group).each(function(){stack_height = stack_height + parseInt(this.attributes.height.value)})
+          moving_distance = -height/2 + stack_height/2
+          
+          svg.selectAll('g').selectAll(group).attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
+      }
     }
-  }
-  //   stack_height = 0
-  //   svg.selectAll('.group_0').each(function(){console.log(this.attributes.height.value); stack_height = stack_height + parseInt(this.attributes.height.value)})
-  //   moving_distance =  -height/2 + stack_height/2
-  //   console.log(stack_height)
-  //   svg.selectAll('g').selectAll('.group_0').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
-  //   svg.selectAll('g').selectAll('.group_200').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
-  //   svg.selectAll('g').selectAll('.group_400').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
-  //   svg.selectAll('g').selectAll('.group_600').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
-  move_bars_to_center()
-  //svg.selectAll('g').selectAll('.group_0').attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + -50 + ")");  
-
+    move_bars_to_center()
 
   })
 }

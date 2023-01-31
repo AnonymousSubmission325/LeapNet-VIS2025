@@ -15,7 +15,11 @@ def returnOne():
         network = json.load(f)
     with open('static/papers.json') as f:
         papers = json.load(f)
-    return render_template("templ.html", network = network, papers = papers)
+    with open('static/seeds.json') as f:
+        seeds = json.load(f)
+    with open('static/topics.json') as f:
+        topics = json.load(f)
+    return render_template("templ.html", network = network, papers = papers, seeds = seeds, topics = topics)
 
 
 if __name__ == '__main__':

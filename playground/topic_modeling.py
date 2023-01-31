@@ -231,6 +231,8 @@ def topic_modeling():
 
     # Get the color value.
     #color = cmap_bremm(0.2, 0.6)
+    def rgb_to_hex(r, g, b):
+        return '#{:02x}{:02x}{:02x}'.format(r, g, b)
 
     def get_colors_matrix(coords_matrix):
         color_matrix_bremm = []
@@ -240,9 +242,14 @@ def topic_modeling():
             x=l[0]
             y=l[1]
             
-            color_matrix_bremm.append(cmap_bremm(x,y))
-            color_matrix_schumann.append(cmap_schumann(x,y))
-            color_matrix_steiger.append(cmap_steiger(x,y))
+            br = cmap_bremm(x,y)
+            color_matrix_bremm.append(rgb_to_hex(br[0], br[1], br[2]))
+
+            sc = cmap_schumann(x,y)
+            color_matrix_schumann.append(rgb_to_hex(sc[0], sc[1], sc[2]))
+
+            st = cmap_steiger(x,y)
+            color_matrix_steiger.append(rgb_to_hex(st[0], st[1], st[2]))
         return color_matrix_bremm, color_matrix_schumann, color_matrix_steiger
     
     tsne_bremm, tsne_schumann, tsne_steiger = get_colors_matrix(topic_vectors_2d_tsne_normalized)
@@ -275,7 +282,7 @@ def topic_modeling():
 
     # the json file where the output must be stored
     topics_file = open("static/topics.json", "w")
-    json.dump(topics.to_json(), topics_file, indent = 6)
+    json.dump(topics.to_dict(), topics_file, indent = 6)
     topics_file.close()
 
     # the json file where the output must be stored
