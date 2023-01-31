@@ -1,4 +1,4 @@
-function my_Func(network, papers, seeds, topics){
+function my_Func(network, papers, seeds, topics, pwt){
     data = network
     papers = papers['papers']
     var max_layer = Math.max(...papers.map(paper => paper.layer))
@@ -10,6 +10,7 @@ function my_Func(network, papers, seeds, topics){
     console.log(paper_lookup)
     console.log(seeds)
     console.log(topics)
+    console.log(pwt)
     
     
     var rect = document.querySelector('#vis'),

@@ -285,9 +285,13 @@ def topic_modeling():
     json.dump(topics.to_dict(), topics_file, indent = 6)
     topics_file.close()
 
+    values = {"citationCount": -1, "publicationTypes": "none", "referenceCount":-1, "abstract": "none", "journal":"", "tldr":"",
+    "venue": "", "athours":"", "publicationDate":"", "authors":""}
+    orig_papers_with_topic = orig_papers_with_topic.fillna(value=values)
+    # orig_papers_with_topic.fillna(-1)
     # the json file where the output must be stored
     paper_file = open("static/papers_with_topics.json", "w")
-    json.dump(orig_papers_with_topic.to_json(), paper_file, indent = 6)
+    json.dump(orig_papers_with_topic.to_dict(), paper_file, indent = 6)
     paper_file.close()
 
     return topics

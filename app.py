@@ -19,7 +19,9 @@ def returnOne():
         seeds = json.load(f)
     with open('static/topics.json') as f:
         topics = json.load(f)
-    return render_template("templ.html", network = network, papers = papers, seeds = seeds, topics = topics)
+    with open('static/papers_with_topics.json') as f:
+        pwt = json.load(f)
+    return render_template("templ.html", network = network, papers = papers, seeds = seeds, topics = topics, pwt = pwt)
 
 
 if __name__ == '__main__':
