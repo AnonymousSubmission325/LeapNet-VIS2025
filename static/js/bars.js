@@ -42,83 +42,64 @@ function my_Func(network, papers, seeds, topics, pwt){
     .append("g").attr("transform","translate(" + margin.left + "," + margin.top + ")");
 
 
-    d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_stacked.csv", function(data) {
+    data = prepare_data()
+  
+    var groups = [...Array(data.length).keys()];
+    console.log(groups)
+    var subgroups = ["Topic1", "Topic2"]
+  
+    // List of subgroups = header of the csv files = soil condition here
+    //var subgroups = data.columns.slice(1)
 
-    console.log(data)
-    // data = []
-    // header = []
-    // for (let step = 0; step < 20; step++) {
-    //   header.push(String(step))
+    // List of groups = species here = value of the first column called group -> I show them on the X axis
+    //var groups = d3.map(data, function(d){return(d.group)}).keys()
+    // Add X axis
+    var x = d3.scaleBand()
+        .domain(groups)
+        .range([0, width])
+        .padding([0])
+    svg.append("g")
+      .attr("transform", "translate(0," + height/2 + ")")
+      .call(d3.axisBottom(x));
+  
+    // Add Y axis
+    var y = d3.scaleLinear()
+      .domain([0, 6])  //get maximum number of rect in one column
+      .range([ height, 0 ]);
+    svg.append("g")
+      .call(d3.axisLeft(y));
+  
+    // color palette = one color per subgroup
+    var color = d3.scaleOrdinal()
+      .domain(subgroups)
+      .range(['#e41a1c','#377eb8','#4daf4a'])
+
+    rw = 45,
+    rh = 45;
+
+    // var data = [];
+    // for (var k = 0; k < 3; k += 1) {
+    //     data.push(d3.range(3));
     // }
-    // data['columns'] = header
-    
-    // for (let step = 0; step < 20; step++) {
-    //   row = {group : String(step)}
-    //   for (let s = 0; s < 20; s++) {
-    //     row[String(s)] = '1'
-    //   }
-    //   data.push(row)
-    // }
+    // Create a group for each row in the data matrix and
+    // translate the group horizontally
+    var grp = svg.append('g').selectAll('g')
+        .data(data)
+        .enter()
+        .append('g')
+        .attr('transform', function(d, i) { return 'translate('+ x(i) + ', 0)';});
 
-  // List of subgroups = header of the csv files = soil condition here
-  var subgroups = data.columns.slice(1)
+    // For each group, create a set of rectangles and bind 
+    // them to the inner array (the inner array is already
+    // binded to the group)
+    grp.selectAll('rect')
+        .data(function(d) { return d; })
+        .enter()
+        .append('rect')
+            .attr('y', function(d, i) { console.log(d); return y(i); })
+            .attr('transform', function(d, i) { return 'translate( 0,' + -rh/2 +')';})
+            .attr('width', rw)
+            .attr('height', rh)
+            .style('stroke', 'red');
 
-  // List of groups = species here = value of the first column called group -> I show them on the X axis
-  var groups = d3.map(data, function(d){return(d.group)}).keys()
-  // Add X axis
-  var x = d3.scaleBand()
-      .domain(groups)
-      .range([0, width])
-      .padding([0])
-  svg.append("g")
-    .attr("transform", "translate(0," + height/2 + ")")
-    .call(d3.axisBottom(x).tickSizeOuter(0));
-
-  // Add Y axis
-  var y = d3.scaleLinear()
-    .domain([0, 60])
-    .range([ height, 0 ]);
-  svg.append("g")
-    .call(d3.axisLeft(y));
-
-  // color palette = one color per subgroup
-  var color = d3.scaleOrdinal()
-    .domain(subgroups)
-    .range(['#e41a1c','#377eb8','#4daf4a'])
-
-  //stack the data? --> stack per subgroup
-  var stackedData = d3.stack()
-    .keys(subgroups)
-    (data)
-
-  // Show the bars
-  var container = svg.append("g")
-    .selectAll("g")
-    // Enter in the stack data = loop key per key = group per group
-    .data(stackedData)
-    .enter().append("g")
-      .attr("fill", function(d) { return color(d.key); })
-      .selectAll("rect")
-      // enter a second time = loop subgroup per subgroup to add all rectangles
-      .data(function(d) { return d; })
-      .enter().append("rect").attr("class", function(d) { return "group_"+ x(d.data.group); })
-        .attr("x", function(d) { return x(d.data.group); })
-        .attr("y", function(d) { return y(d[1]); })
-        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
-        .attr("width",x.bandwidth())
-
-    function move_bars_to_center(){
-      groups = ['.group_0', '.group_200', '.group_400', '.group_600']
-
-      for (const group of groups){
-          stack_height = 0;
-          svg.selectAll(group).each(function(){stack_height = stack_height + parseInt(this.attributes.height.value)})
-          moving_distance = -height/2 + stack_height/2
-          
-          svg.selectAll('g').selectAll(group).attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
-      }
-    }
-    move_bars_to_center()
-
-  })
 }

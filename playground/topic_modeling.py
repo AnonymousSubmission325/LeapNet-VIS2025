@@ -35,6 +35,18 @@ def prepare_text(cleaned_text):
         #print(cleaned_text)
         return ''
 
+def convert_to_json(pwt):
+    cleaned_paper_objects = {"papers":[]}
+    columns = pwt.columns
+    
+    for index, row in pwt.iterrows():
+        l = {}
+        for c in columns:
+            l[c] = row[c]
+        cleaned_paper_objects["papers"].append(l)
+        
+    return cleaned_paper_objects
+
 
 def topic_modeling():
 
@@ -96,7 +108,7 @@ def topic_modeling():
     num_topics = 5
 
     # Build LDA model
-    print(__name__)
+    #print(__name__)
     #if __name__ == '__main__':
     lda_model = gensim.models.LdaModel(corpus=corpus, id2word=id2word, num_topics=num_topics)
 
@@ -140,8 +152,8 @@ def topic_modeling():
     # Format
     df_dominant_topic = df_topic_sents_keywords.reset_index()
     df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords', 'Text']
-    print(df_dominant_topic.head(100))
-    print(df_topic_sents_keywords.head(100))
+    #print(df_dominant_topic.head(100))
+    #print(df_topic_sents_keywords.head(100))
     
 
     #append topic info to papers
@@ -288,10 +300,11 @@ def topic_modeling():
     values = {"citationCount": -1, "publicationTypes": "none", "referenceCount":-1, "abstract": "none", "journal":"", "tldr":"",
     "venue": "", "athours":"", "publicationDate":"", "authors":""}
     orig_papers_with_topic = orig_papers_with_topic.fillna(value=values)
+    pwt_json = convert_to_json(orig_papers_with_topic)
     # orig_papers_with_topic.fillna(-1)
     # the json file where the output must be stored
     paper_file = open("static/papers_with_topics.json", "w")
-    json.dump(orig_papers_with_topic.to_dict(), paper_file, indent = 6)
+    json.dump(pwt_json, paper_file, indent = 6)
     paper_file.close()
 
     return topics
