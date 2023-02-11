@@ -1,0 +1,10 @@
+version: '1'
+services:
+  frontend:
+    container_name: researchflow
+    image: researchflow:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-dev
+    ports:
+      - 4200:4200

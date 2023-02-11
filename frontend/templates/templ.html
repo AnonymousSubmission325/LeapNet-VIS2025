@@ -75,8 +75,7 @@ uncomment to add header -->
 </div> -->
 
 
-<div id="vis" class="svg-container">
-</div>
+<div id="vis" class="svg-container"></div>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
@@ -84,7 +83,7 @@ uncomment to add header -->
 <script src="{{url_for('static', filename='js/data_prep.js')}}"></script>
 <script src="{{url_for('static', filename='js/matrix.js')}}"></script>
 <!-- <script src="{{url_for('static', filename='influvis_update.js')}}"></script>-->
-<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ topics | tojson }}'), JSON.parse('{{ pwt | tojson }}'))</script>
+<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ topics | tojson }}'), JSON.parse('{{ pwt | tojson }}'), JSON.parse('{{ paths | tojson }}'))</script>
 <!-- <div id="my_dataviz"></div> -->
 </body>
 </html>

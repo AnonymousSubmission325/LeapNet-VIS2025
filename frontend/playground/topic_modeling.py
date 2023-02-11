@@ -51,7 +51,7 @@ def convert_to_json(pwt):
 def topic_modeling():
 
     # temporal??
-    with open('static/papers.json') as f:
+    with open('frontend/static/papers.json') as f:
         data = json.load(f)
     # Convert the data to a DataFrame
     papers = pd.DataFrame(data['papers'])
@@ -216,8 +216,8 @@ def topic_modeling():
     topic_vectors_2d_pca = pca.fit_transform(topic_vectors)
 
     # plot topics
-    #plt.scatter(topic_vectors_2d_pca[:, 0], topic_vectors_2d_pca[:, 1])
-    #plt.show()
+    # plt.scatter(topic_vectors_2d_pca[:, 0], topic_vectors_2d_pca[:, 1])
+    # plt.show()
 
 
     #NOT TESTED YET
@@ -226,6 +226,42 @@ def topic_modeling():
     reducer.fit(topic_vectors)
     topic_vectors_2d_umap = reducer.transform(topic_vectors)
  
+
+    def t_SNE_chart(lda_model, corpus):
+        # Get topic weights and dominant topics ------------
+        from sklearn.manifold import TSNE
+        from bokeh.plotting import figure, output_file, show
+        from bokeh.models import Label
+        from bokeh.io import output_notebook
+
+        # Get topic weights
+        topic_weights = []
+        for i, row_list in enumerate(lda_model[corpus]):
+            topic_weights.append([w for i, w in row_list[0]])
+
+        # Array of topic weights    
+        arr = pd.DataFrame(topic_weights).fillna(0).values
+
+        # Keep the well separated points (optional)
+        arr = arr[np.amax(arr, axis=1) > 0.35]
+
+        # Dominant topic number in each doc
+        topic_num = np.argmax(arr, axis=1)
+
+        # tSNE Dimension Reduction
+        tsne_model = TSNE(n_components=2, verbose=1, random_state=0, angle=.99, init='pca')
+        tsne_lda = tsne_model.fit_transform(arr)
+
+        # Plot the Topic Clusters using Bokeh
+        output_notebook()
+        n_topics = 4
+        mycolors = np.array([color for name, color in mcolors.TABLEAU_COLORS.items()])
+        plot = figure(title="t-SNE Clustering of {} LDA Topics".format(n_topics), 
+                    plot_width=900, plot_height=700)
+        plot.scatter(x=tsne_lda[:,0], y=tsne_lda[:,1], color=mycolors[topic_num])
+        show(plot)
+
+    t_SNE_chart(lda_model, corpus)
 
     from sklearn import preprocessing
     min_max_scaler = preprocessing.MinMaxScaler()
@@ -293,7 +329,7 @@ def topic_modeling():
     
 
     # the json file where the output must be stored
-    topics_file = open("static/topics.json", "w")
+    topics_file = open("frontend/static/topics.json", "w")
     json.dump(topics.to_dict(), topics_file, indent = 6)
     topics_file.close()
 
@@ -303,7 +339,7 @@ def topic_modeling():
     pwt_json = convert_to_json(orig_papers_with_topic)
     # orig_papers_with_topic.fillna(-1)
     # the json file where the output must be stored
-    paper_file = open("static/papers_with_topics.json", "w")
+    paper_file = open("frontend/static/papers_with_topics.json", "w")
     json.dump(pwt_json, paper_file, indent = 6)
     paper_file.close()
 

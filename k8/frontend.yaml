@@ -1,0 +1,25 @@
+app:
+  image: 
+    repository: "${CI_REGISTRY_IMAGE}/frontend"
+    tag: "$VERSION"
+    
+  replicaCount: $REPLICA_COUNT
+  
+  regcred: regcred-ukon-topicflow
+  port: 80
+  
+  #health: "/health"
+  # health checks off
+  readinessProbe: "null"
+  livenessProbe: "null"
+      
+  ingress:
+    enabled: true
+    url: "$URL_FRONTEND"
+    extraAnnotations: |
+      nginx.ingress.kubernetes.io/proxy-body-size: 2048m
+    auth:
+        enabled: true
+        # user: pegasus
+        # pass: $pegasus2020$
+        secret: basic-auth-pegasus

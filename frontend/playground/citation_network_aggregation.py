@@ -59,15 +59,26 @@ def clean_paper_to_json(paper_objects, layers):
     
     # just for dev
     # unneeded_fields = ["citations", "embedding", "externalIds", "fieldsofStudy", "isOpenAccess"]
-    remaining_fields = ["paperId", "citationCount", "publicationTypes", "referenceCount", "year"]
+    critical_fields = ["paperId", "year"]
+    remaining_fields = ["citationCount", "publicationTypes", "referenceCount"]
     text_fields = ["abstract", "journal", "title", "tldr", "url", "venue"]
     other_fields = ["authors", "publicationDate", "publicationTypes"]
     
 
     for p in paper_objects.keys():
         np = {}
+        valid = True
+
         if p in layers.keys():
             np["layer"] = layers[p]
+        else:
+            continue
+        
+        for c in critical_fields:
+            if paper_objects[p][c]:
+                np[c] = paper_objects[p][c]
+            if not paper_objects[p][c] or paper_objects[p][c] == "NaN":
+                valid = False
         for r in remaining_fields:
             if paper_objects[p][r]:
                 np[r] = paper_objects[p][r]
@@ -77,7 +88,8 @@ def clean_paper_to_json(paper_objects, layers):
         for o in other_fields:
             if paper_objects[p][o]:
                 np[o] = handle_other_field(paper_objects[p][o], o)
-        cleaned_paper_objects["papers"].append(np)
+        if valid:
+            cleaned_paper_objects["papers"].append(np)
 
     return cleaned_paper_objects
         
@@ -202,7 +214,7 @@ def aggregate_network(paper_objects, paper_limit):
         seeds['seeds'].append(s.paperId)
 
     # the json file where the output must be stored
-    seed_file = open("static/seeds.json", "w")
+    seed_file = open("frontend/static/seeds.json", "w")
     json.dump(seeds, seed_file, indent = 6)
     seed_file.close()
 
@@ -238,12 +250,12 @@ def dump(paper_objects, paper_hierarchies, layers):
     papers_json = convert_papers_to_json_formats(paper_objects, layers)
 
     # the json file where the output must be stored
-    network_file = open("static/network.json", "w")
+    network_file = open("frontend/static/network.json", "w")
     json.dump(network_json, network_file, indent = 6)
     network_file.close()
 
     # the json file where the output must be stored
-    json_file = open("static/papers.json", "w")
+    json_file = open("frontend/static/papers.json", "w")
     json.dump(papers_json, json_file, indent = 6)
     json_file.close()
 

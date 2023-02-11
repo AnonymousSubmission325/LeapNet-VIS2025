@@ -11,17 +11,19 @@ app = Flask(__name__)
 @app.route('/', methods=["POST", "GET"])
 def returnOne():
     # define some data
-    with open('static/network.json') as f:
+    with open('frontend/static/network.json') as f:
         network = json.load(f)
-    with open('static/papers.json') as f:
+    with open('frontend/static/papers.json') as f:
         papers = json.load(f)
-    with open('static/seeds.json') as f:
+    with open('frontend/static/seeds.json') as f:
         seeds = json.load(f)
-    with open('static/topics.json') as f:
+    with open('frontend/static/topics.json') as f:
         topics = json.load(f)
-    with open('static/papers_with_topics.json') as f:
+    with open('frontend/static/papers_with_topics.json') as f:
         pwt = json.load(f)
-    return render_template("templ.html", network = network, papers = papers, seeds = seeds, topics = topics, pwt = pwt)
+    with open('frontend/static/paths.json') as f:
+        paths = json.load(f)
+    return render_template("templ.html", network = network, papers = papers, seeds = seeds, topics = topics, pwt = pwt, paths = paths)
 
 
 if __name__ == '__main__':

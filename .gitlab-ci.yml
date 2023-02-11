@@ -1,0 +1,124 @@
+include:
+  - project: 'AdaptiveRecSys'
+    ref: main
+    file: '/.gitlab-ci-dbvis-template.yml'
+
+variables:
+  # The namespace for kubernetes
+  K8_NAMESPACE: rbuchmueller
+  # The suffix of the url (suffix.tld):
+  # feature     branches: branch-name.suffix.tld
+  # staging:    staging.suffix.tld
+  # production: suffix.tld
+  URL_SUFFIX: researchflow.dbvis.de
+  RELEASE_TOOL_NAME: AP7
+
+###########################################
+# PROJECTS SPECIFIC EMPLATES BELOW
+###########################################
+
+##########################
+# Test Python
+##########################
+
+test-frontend:
+  stage: test
+  image: alpine:latest
+  interruptible: true
+  needs: []
+  script:
+    - echo "hello"
+  tags:
+    - no-cache 
+
+test-backend:
+  stage: test:container
+  image: ${CI_REGISTRY_IMAGE}/backend:${CI_COMMIT_SHORT_SHA}
+  variables:
+    GIT_STRATEGY: none
+  interruptible: true
+  needs:
+    - export-environment
+    - dockerize
+  script:
+    - cd /app
+    - pip install -r ./test/requirements.txt --quiet
+    - export BACKEND_PORT=80
+    - pytest --junitxml="${CI_PROJECT_DIR}/report.xml" --cov-report=html:"${CI_PROJECT_DIR}/htmlcov" --cov-report=xml:"${CI_PROJECT_DIR}/coverage.xml"
+  coverage: "/(?i)total.*? (100(?:\\.0+)?\\%|[1-9]?\\d(?:\\.\\d+)?\\%)$/"
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - htmlcov/
+  tags:
+    - large-data
+
+###########################################
+# DOCKERIZE (which services)
+###########################################
+
+dockerize:
+  parallel:
+    matrix:
+      - SERVICE: [frontend]
+
+###########################################
+# Deploy (Extra)
+###########################################
+
+deploy-upstream:
+  extends: .deploy
+  variables:
+    ENV_TYPE: upstream
+    RUN_ON_UPSTREAM: "yes"
+  environment:
+    url: https://gitlab.dbvis.de/raphael.buchmueller/adaptiverecsys/container_registry
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - pwd
+    - ls
+    - source ./var.env
+    # export all variable names
+    - export $(cut -d= -f1 var.env)
+    - cat var.env  
+    # prepare kaniko for pushing
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"pegasus-registry-ci-builds\",\"password\":\"$CI_PEGASUS_EXTERNAL_DEPLOY_TOKEN_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    
+    # date
+    - VERSIONDATE=$(date +%Y%m%d)
+    # Publish each service
+    - K8_HELM_CONFIG_PATTERN="k8/*.yaml"
+    - |
+      for HELM_FILE in $K8_HELM_CONFIG_PATTERN
+      do
+        SERVICE_NAME=$(basename "$HELM_FILE" | cut -d. -f1)
+
+        if [[ "${SERVICE_NAME}" == 'central' ]] || [[ "${SERVICE_NAME}" == 'arango' ]] ; then
+          continue
+        fi
+        
+        echo "Publishing ${SERVICE_NAME} (as defined in ${HELM_FILE})..."
+        echo "FROM ${CI_REGISTRY_IMAGE}/${SERVICE_NAME}:${VERSION}" | /kaniko/executor --force --context ./${SERVICE_NAME} --dockerfile /dev/stdin --destination "registry.dbvis.de/pegasus/pegasus-external/ukon-${SERVICE_NAME}:${VERSIONDATE}" --destination "registry.dbvis.de/pegasus/pegasus-external/ukon-${SERVICE_NAME}:latest"
+      done
+      
+release:
+  extends: .deploy
+  variables:
+    ENV_TYPE: upstream
+    RUN_ON_UPSTREAM: "yes"
+  stage: test
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - VERSIONDATE=$(date +%Y%m%d)
+    - printf "New ukon release '${VERSIONDATE}' based on commit ${CI_COMMIT_SHORT_SHA}.\n\n" > ci-release-description.md
+    - cat CHANGELOG.md >> ci-release-description.md
+    - release-cli --project-id 983 create --name "UKON v${VERSIONDATE}" --tag-name "ukon-${VERSIONDATE}" --ref master --description "ci-release-description.md"
+

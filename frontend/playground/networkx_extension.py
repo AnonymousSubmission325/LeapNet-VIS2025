@@ -25,7 +25,7 @@ def import_graph():
 
     #Set up a graph with random edges and weights
 
-    G = read_json_file("static/network.json")
+    G = read_json_file("frontend/static/network.json")
     # n = G.nodes
     # counts = {}
     # for node in n:
@@ -59,7 +59,7 @@ def import_graph():
     return G
 
 def import_seeds():
-    filename = "static/seeds.json"
+    filename = "frontend/static/seeds.json"
     def read_seed_file(filename):
         with open(filename) as f:
             js_graph = json.load(f)
@@ -72,11 +72,12 @@ def extract_paths(G, seeds):
 
     for i in range(len(seeds)-1):
         k_paths = str(seeds[i]) + '_' + str(seeds[i+1])
-        paths = list(nx.all_simple_paths(G, source=seeds[i], target=seeds[i+1], cutoff=3))
-        path_dict["paths"].append({k_paths : paths})
+        if (seeds[i] in G and seeds[i+1] in G):
+            paths = list(nx.all_simple_paths(G, source=seeds[i], target=seeds[i+1], cutoff=3))
+            path_dict["paths"].append({k_paths : paths})
     
     # the json file where the output must be stored
-    paths_file = open("static/paths.json", "w")
+    paths_file = open("frontend/static/paths.json", "w")
     json.dump(path_dict, paths_file, indent = 6)
     paths_file.close()
 
