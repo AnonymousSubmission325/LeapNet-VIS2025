@@ -1,16 +1,16 @@
-function my_Func(network, papers, seeds, topics, pwt, paths){
+function my_Func(network, papers, seeds, keys, pwk, paths){
     data = network
     papers = papers['papers']
-    pwt = pwt['papers']
+    pwk = pwk['papers']
     seeds = seeds['seeds']
     var max_layer = Math.max(...papers.map(paper => paper.layer))
     var paper_lookup = {}
     papers.forEach(paper => {paper_lookup[paper.paperId] = paper})
     console.log(papers)
-    console.log(pwt)
+    console.log(pwk)
     console.log(paths)
-    var pwt_lookup = {}
-    pwt.forEach(paper => {pwt_lookup[paper.paperId] = paper})
+    var pwk_lookup = {}
+    pwk.forEach(paper => {pwk_lookup[paper.paperId] = paper})
 
     console.log(data)
 
@@ -23,14 +23,14 @@ function my_Func(network, papers, seeds, topics, pwt, paths){
     console.log("seeds")
     console.log(seeds)
     seeds.map(s => console.log(paper_lookup[s]["title"], paper_lookup[s]["year"]))
-    console.log("topics")
-    console.log(topics)
-    console.log("pwt")
-    console.log(pwt)
-    console.log("pwt_lookup")
-    console.log(pwt_lookup)
+    console.log("keys")
+    console.log(keys)
+    console.log("pwk")
+    console.log(pwk)
+    console.log("pwk_lookup")
+    console.log(pwk_lookup)
     console.log("paths")
-    console.log(pwt_lookup)
+    console.log(pwk_lookup)
     
     
     var rect = document.querySelector('#vis'),
@@ -60,8 +60,8 @@ function my_Func(network, papers, seeds, topics, pwt, paths){
   color_map = 'PCA_Bremm'
   key_to_sort = 'year'
   
-  topics_arr = Object.keys(topics['Topic_Num'])
-  data, columns = prepare_data(paper_lookup,pwt_lookup,topics_arr , key_to_sort)
+  //topics_arr = Object.keys(keys['Topic_Num'])
+  data, columns = prepare_data(paper_lookup,pwk_lookup,topics_arr , key_to_sort)
 
   max_stack = 0
   data.map(d => {if(d.length > max_stack){max_stack=d.length} })
@@ -92,13 +92,13 @@ function my_Func(network, papers, seeds, topics, pwt, paths){
     .selectAll("rect")
     // enter a second time = loop subgroup per subgroup to add all rectangles
     .data(function(d) { return d; })
-    .enter().append("rect").attr("class", function(d) {return 's' + String(pwt_lookup[d]['year']); })
+    .enter().append("rect").attr("class", function(d) {return 's' + String(pwk_lookup[d]['year']); })
       //.attr("class", function(d) { return "group_"+ x(d.data.group); })
       .attr("y", function(d,i) { return y(i); })
       .attr("height", cellSize)
       .attr("width",cellSize)
-      .attr("fill", function(d) { return topics[color_map][pwt_lookup[d]['Dominant_Topic']]; })
-      .attr("opacity", function(d) { return topics[color_map][pwt_lookup[d]['Topic_Perc_Contrib']]; })
+      //.attr("fill", function(d) { return topics[color_map][pwk_lookup[d]['Dominant_Topic']]; })
+      //.attr("opacity", function(d) { return topics[color_map][pwk_lookup[d]['Topic_Perc_Contrib']]; })
       .style("stroke", function(d) {if(seeds.includes(d)){return "blue"} });
 
       function move_bars_to_center(){

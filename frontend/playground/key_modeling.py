@@ -182,9 +182,6 @@ def keyword_modeling():
     #         papers_w_coords.append(p)
     #     return papers_w_coord
 
-    orig_papers["tsne"] = key_vectors_2d_tsne.tolist()
-    orig_papers["pca"] = key_vectors_2d_tsne.tolist()
-    orig_papers["umap"] = key_vectors_2d_tsne.tolist()
 
     #FOR TESTING
     # tsne_model = TSNE(perplexity=40, n_components=2, init='pca', n_iter=2500, random_state=23)
@@ -215,6 +212,10 @@ def keyword_modeling():
     topic_vectors_2d_tsne_normalized = min_max_scaler.fit_transform(key_vectors_2d_tsne)
     topic_vectors_2d_pca_normalized = min_max_scaler.fit_transform(key_vectors_2d_pca)
     topic_vectors_2d_umap_normalized = min_max_scaler.fit_transform(key_vectors_2d_umap)
+
+    orig_papers["tsne"] = topic_vectors_2d_tsne_normalized.tolist()
+    orig_papers["pca"] = topic_vectors_2d_pca_normalized.tolist()
+    orig_papers["umap"] = topic_vectors_2d_umap_normalized.tolist()
 
 
     flat_list = [item for sublist in corpus for item in sublist]

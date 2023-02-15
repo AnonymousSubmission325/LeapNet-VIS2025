@@ -19,13 +19,14 @@ function prepare_data(paper_lookup, pwt_lookup, topics_arr, key_to_sort){
     var all_years = Object.entries(year_dic).map(p => slices_unsorted.push(p[1]));
 
     data = []
-    function sort_by_topic(slice){
-        sorted = []
-        topics_arr.map(t => 
-            slice.map(c => {if(t == pwt_lookup[c]['Dominant_Topic']){sorted.push(c)}}))
-        return sorted
-    }
-    slices_unsorted.map(s => data.push(sort_by_topic(s)))
+    // function sort_by_topic(slice){
+    //     sorted = []
+    //     topics_arr.map(t => 
+    //         slice.map(c => {if(t == pwt_lookup[c]['Dominant_Topic']){sorted.push(c)}}))
+    //     return sorted
+    // }
+    // slices_unsorted.map(s => data.push(sort_by_topic(s)))
+    slices_unsorted.map(s => data.push(s))
     
     return data, columns
 }

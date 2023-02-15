@@ -1,35 +1,17 @@
-function my_Func(network, papers){
-data = network
-papers = papers['papers']
-var max_layer = Math.max(...papers.map(paper => paper.layer))
-var paper_lookup = {}
-papers.forEach(paper => {paper_lookup[paper.paperId] = paper})
-
-console.log(data)
-console.log(network)
-console.log(paper_lookup)
-
-
-var rect = document.querySelector('#vis'),
-    width = rect.offsetWidth,
-    height = rect.offsetHeight;
-
+function my_Func(network, papers, seeds, keys, pwk, paths){
 // set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 40}
-
+var margin = {top: 10, right: 10, bottom: 10, left: 10};
+var rect = document.querySelector('#network');
+var width = rect.offsetWidth;
+var height = rect.offsetHeight;
 // append the svg object to the body of the page
-
-// var svg = d3.select("#chart")
-//   .attr("width", width + margin.left + margin.right + "px")
-//   .attr("height", height + margin.top + margin.bottom + "px")
-// .append("g")
-//   .attr("transform",
-//         "translate(" + margin.left + "," + margin.top + ")");
-var svg = d3.select("#chart")
-  .attr("width", width + "px")
-  .attr("height", height  + "px")
+var svg = d3.select("#network")
+.append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
 .append("g");
 
+d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_network.json", function( data) {
 
   // Initialize the links
   var link = svg
@@ -40,41 +22,23 @@ var svg = d3.select("#chart")
       .style("stroke", "#aaa")
 
   // Initialize the nodes
-
-
-  console.log(max_layer)
-  var myColor = d3.scaleLinear().domain([0,max_layer])
-  .range(["red", "blue"])
-
-
-
-
   var node = svg
     .selectAll("circle")
     .data(data.nodes)
     .enter()
     .append("circle")
-      .attr("r", 5)
-      .attr("fill", function(d){ var l = paper_lookup[d.id].layer; console.log(l); if(l == 0){ return "red" }
-                                  if (l == 1) { return "orange"} 
-                                  else { return "blue"}
-      })
+      .attr("r", 20)
+      .style("fill", "#69b3a2")
 
-  var simulation = d3.forceSimulation(data.nodes)            
-      .force("link", d3.forceLink()                        
-            .id(function(d) { return d.id; })                    
-            .links(data.links)                                   
+  // Let's list the force we wanna apply on the network
+  var simulation = d3.forceSimulation(data.nodes)                 // Force algorithm is applied to data.nodes
+      .force("link", d3.forceLink()                               // This force provides links between nodes
+            .id(function(d) { return d.id; })                     // This provide  the id of a node
+            .links(data.links)                                    // and this the list of links
       )
-      .force("charge", d3.forceManyBody().strength(-100))       
-      .force("center", d3.forceCenter(width / 2, height / 2))     
+      .force("charge", d3.forceManyBody().strength(-100))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+      .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
       .on("end", ticked);
-
-  // const simulation = d3.forceSimulation(data.nodes)
-  //     .force("charge", d3.forceCollide().radius(6).iterations(2))
-  //     .force("r", d3.forceRadial(d => {var l = paper_lookup[d.id].layer; if (l===0) {return 10}; if(l===1) {return 70} else return 120}, width/2, height/2).strength(0.8))
-  //     .on("tick", ticked)
-  //     .alphaTarget(0.1);
-
 
   // This function is run at each iteration of the force algorithm, updating the nodes position.
   function ticked() {
@@ -85,10 +49,12 @@ var svg = d3.select("#chart")
         .attr("y2", function(d) { return d.target.y; });
 
     node
-         .attr("cx", function (d) { return d.x; })
-         .attr("cy", function(d) { return d.y; });
+         .attr("cx", function (d) { return d.x+6; })
+         .attr("cy", function(d) { return d.y-6; });
   }
+})
 
 
-return data
+
+
 }

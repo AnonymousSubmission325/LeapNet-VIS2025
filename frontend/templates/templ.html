@@ -3,87 +3,105 @@
 <html>
 <head>
 <style>
-/* Collabsible area*/
-/* Style the button that is used to open and close the collapsible content */
 
 
-/*Resize the wrap to see the search bar change!*/
-/* .wrap{
-  width: 30%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-} */
-
-
-
-/* HTML styles */
-/* html{ width: 100%; } */
-
-/* SVG styles */
-
-html, body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-}
-
-#header {
-    height: 100px;
-    background-color: grey;
-}
-
-#vis {
-    position: absolute;
-    top: 100px;
-    bottom: 0;
-    width: 100%; 
-}
-
-.svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%;
-    vertical-align: top;
-    overflow: hidden;
-}
-.svg-content {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.links line {
-  stroke: #aaa;
-}
-.nodes circle {
-  pointer-events: all;
-}
 
 </style>
+
+<title>ResearchSpace Vis</title>
+<!-- Load icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 </head>
 
 
 <body>
-<!-- 
-uncomment to add header -->
-<!-- <div id="header">
-  I have a fixed height
-</div> -->
+  
+  <div class="header"></div>
+  
+  <!-- <div class="topnav">
+    <a href="#">Link</a>
+    <a href="#">Link</a>
+    <a href="#">Link</a>
+  </div> -->
+  
+  <div class="row">
+    <div class="column leftside">
+      <h2>Navigation</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
+    </div>
+    
+    <div class="column middle">
+      <div id="hex" class="center"></div>
+      <div id="stacks" class="sub left"></div>
+      <div id="network" class="sub right"></div>  
+    </div>
+    
+    <div class="column rightside">
+      <div class="search-container">
+        <form class="example" action="insert">
+          <input type="text" placeholder="Search publications.." name="search">
+          <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+        <div class="cards-container">
+          <div class="card">
+            <div class="card-text">
+              <div class="card-title">
+                <p >VAIM:</p>
+              </div>
+              <div class="card-author">
+                <p >Arleo et al.</p>
+              </div>
+              <div class="card-info">
+                <p >Arleo et al.</p>
+              </div>
+            </div>
+            <div class="card-icon">
+              <i class="fa fa-flag" style="color:rgb(119, 119, 119)"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <hr>
+
+      <div class="search-container">
+        <div class="cards-container">
+          <div class="card">
+            <div class="card-text">
+              <div class="card-title">
+                <p >VAIM:</p>
+              </div>
+              <div class="card-author">
+                <p >Arleo et al.</p>
+              </div>
+              <div class="card-info">
+                <p >Arleo et al.</p>
+              </div>
+            </div>
+            <div class="card-icon">
+              <i class="fa fa-times-circle  style="color:rgb(119, 119, 119)"></i>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
 
 
-<div id="vis" class="svg-container"></div>
+
+
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
 <script src="//d3js.org/topojson.v1.min.js"></script>
 <script src="{{url_for('static', filename='js/data_prep.js')}}"></script>
-<script src="{{url_for('static', filename='js/matrix.js')}}"></script>
+<script src="{{url_for('static', filename='js/dashboard-network.js')}}"></script>
+<script src="{{url_for('static', filename='js/dashboard.js')}}"></script>
 <!-- <script src="{{url_for('static', filename='influvis_update.js')}}"></script>-->
-<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ topics | tojson }}'), JSON.parse('{{ pwt | tojson }}'), JSON.parse('{{ paths | tojson }}'))</script>
+<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ keys | tojson }}'), JSON.parse('{{ pwk | tojson }}'), JSON.parse('{{ paths | tojson }}'))</script>
 <!-- <div id="my_dataviz"></div> -->
 </body>
 </html>

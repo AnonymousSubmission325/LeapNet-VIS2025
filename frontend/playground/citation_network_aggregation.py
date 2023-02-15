@@ -199,7 +199,7 @@ def aggregate_network(paper_objects, paper_limit):
         if(len(sch.search_paper(x))>0):
             seed_first_results.append(sch.search_paper(x)[0])
         else:
-            print("Paper" + x + "not found" )
+            print("Paper " + x + " not found" )
 
     layer = 0
 
