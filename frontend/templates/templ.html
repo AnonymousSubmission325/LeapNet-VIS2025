@@ -12,6 +12,8 @@
 <!-- Load icon library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+<!-- <script src="hclust.min.js"></script> -->
 </head>
 
 
@@ -40,53 +42,43 @@
     <div class="column rightside">
       <div class="search-container">
         <form class="example" action="insert">
-          <input type="text" placeholder="Search publications.." name="search">
-          <button type="submit"><i class="fa fa-search"></i></button>
+          <input type="text" id="myInput" onkeyup="filter_on_search()" placeholder="Search publications.." name="search">
         </form>
-        <div class="cards-container">
-          <div class="card">
-            <div class="card-text">
-              <div class="card-title">
-                <p >VAIM:</p>
-              </div>
-              <div class="card-author">
-                <p >Arleo et al.</p>
-              </div>
-              <div class="card-info">
-                <p >Arleo et al.</p>
-              </div>
+          <table class="corpustb">
+            <colgroup>
+              <col span="1" style="width: 15%;">
+              <col span="1" style="width: 70%;">
+              <col span="1" style="width: 25%;">
+              <col span="1" style="width: 0%;">
+           </colgroup>
+            <tbody  id="myTable">
+              <tr class="header">
+                <th>Title</th>
+                <th>Authors</th>
+                <th>Year</th>
+                <th>Check</th>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      <div class="cards-container">
+        <div class="card">
+          <div class="card-text">
+            <div class="card-title">
+              <p >VAIM:</p>
             </div>
-            <div class="card-icon">
-              <i class="fa fa-flag" style="color:rgb(119, 119, 119)"></i>
+            <div class="card-author">
+              <p >Arleo et al.</p>
             </div>
+            <div class="card-info">
+              <p >Arleo et al.</p>
+            </div>
+          </div>
+          <div class="card-icon">
+            <i class="fa fa-times-circle  style="color:rgb(119, 119, 119)"></i>
           </div>
         </div>
       </div>
-      
-      <hr>
-
-      <div class="search-container">
-        <div class="cards-container">
-          <div class="card">
-            <div class="card-text">
-              <div class="card-title">
-                <p >VAIM:</p>
-              </div>
-              <div class="card-author">
-                <p >Arleo et al.</p>
-              </div>
-              <div class="card-info">
-                <p >Arleo et al.</p>
-              </div>
-            </div>
-            <div class="card-icon">
-              <i class="fa fa-times-circle  style="color:rgb(119, 119, 119)"></i>
-            </div>
-
-          </div>
-        </div>
-      </div>
-      
     </div>
   </div>
 
@@ -97,11 +89,14 @@
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
 <script src="//d3js.org/topojson.v1.min.js"></script>
+<!-- <script src="{{ url_for('static', filename='node_modules/@greenelab/hclust/src/hclust.js')}}"></script> -->
+<script src="{{ url_for('static', filename='js/external/figue.js')}}"></script>
+
 <script src="{{url_for('static', filename='js/data_prep.js')}}"></script>
 <script src="{{url_for('static', filename='js/dashboard-network.js')}}"></script>
 <script src="{{url_for('static', filename='js/dashboard.js')}}"></script>
 <!-- <script src="{{url_for('static', filename='influvis_update.js')}}"></script>-->
-<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ keys | tojson }}'), JSON.parse('{{ pwk | tojson }}'), JSON.parse('{{ paths | tojson }}'))</script>
+<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ keys | tojson }}'), JSON.parse('{{ key_projections | tojson }}'), JSON.parse('{{ pwk | tojson }}'), JSON.parse('{{ paths | tojson }}'))</script>
 <!-- <div id="my_dataviz"></div> -->
 </body>
 </html>

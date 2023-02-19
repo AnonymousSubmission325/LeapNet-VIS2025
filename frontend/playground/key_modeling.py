@@ -259,8 +259,6 @@ def keyword_modeling():
         coords_umap_xy_np = np.array(coords_umap_xy)
 
 
-        #create clusters by keywords
-        #CHECK!!
         clustering_tsne = DBSCAN(eps=0.1, min_samples=2).fit(coords_tsne_xy_np)
         clustering_pca = DBSCAN(eps=0.1, min_samples=2).fit(coords_pca_xy_np)
         clustering_umap = DBSCAN(eps=0.1, min_samples=2).fit(coords_umap_xy_np)

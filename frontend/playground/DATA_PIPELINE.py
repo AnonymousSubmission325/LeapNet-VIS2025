@@ -1,5 +1,6 @@
 import test
 import citation_network_aggregation
+import keyword_hdbscan
 
 
 
@@ -7,10 +8,16 @@ seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain","Vis
 paper_num = 2000
 citation_network_aggregation.main(seedset, paper_num)
 
-import key_modeling
-key_modeling.keyword_modeling()
+# TODO: extract keywords
+# TODO: projection
+# TODO: agglomerative clustering
 
-import networkx_extension
-networkx_extension.get_paths()
+#import key_modeling
+#key_modeling.keyword_modeling()
+
+keyword_hdbscan.keyword_modeling()
+
+#import networkx_extension
+#networkx_extension.get_paths()
 
 print("finished")

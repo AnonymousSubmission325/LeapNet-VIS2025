@@ -1,4 +1,4 @@
-function prepare_data(paper_lookup, pwt_lookup, topics_arr, key_to_sort){
+function prepare_data(paper_lookup, pwt_lookup, key_to_sort){
     // 
     //  following format is given:
     //      data = [
@@ -27,6 +27,5 @@ function prepare_data(paper_lookup, pwt_lookup, topics_arr, key_to_sort){
     // }
     // slices_unsorted.map(s => data.push(sort_by_topic(s)))
     slices_unsorted.map(s => data.push(s))
-    
-    return data, columns
+    return [data, columns]
 }
