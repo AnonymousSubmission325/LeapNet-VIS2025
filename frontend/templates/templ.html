@@ -18,8 +18,8 @@
 
 
 <body>
-  
-  <div class="header"></div>
+  <!-- can be used maybe if necessary   -->
+  <!-- <div class="header"></div> -->
   
   <!-- <div class="topnav">
     <a href="#">Link</a>
@@ -29,12 +29,52 @@
   
   <div class="row">
     <div class="column leftside">
-      <h2>Navigation</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
+      <div class="timeline-container">
+      <div class="topRightTime overlay">
+        <p>Timeline Properties</p>
+        <div>
+          <div class="dropdowncontainer">
+            <select name="scaling" id="scalingdropdown">
+              <option value="linear">linear</option>
+              <option value="logarithmic">logarithmic</option>
+            </select>
+            <br>
+            <label for="volume">Scaling</label>
+          </div>
+          <div class="dropdowncontainer">
+            <select name="scaling" id="scalingdropdown">
+              <option value="linear">Year</option>
+              <option value="logarithmic">Month</option>
+            </select>
+            <br>
+            <label for="volume">Grouped by</label>
+          </div>
+        </div> 
+      </div>
+      <div id="timeline" class="outer left"></div>
+      <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p> -->
+      </div>
     </div>
     
     <div class="column middle">
-      <div id="hex" class="center"></div>
+      <div class="hex-container">
+        <div id="hex" class="center"> </div>
+        <div class="topRightHex overlay">
+          <p>Space Navigation</p>
+          <div>
+            <div class="slidecontainer">
+              <input type="range" id="binsizeslider" name="volume" min="0" max="20" step="1">
+              <label for="volume">Scale</label>
+            </div>
+          </div>
+          
+          <div>
+            <input type="range" id="keywordnumslider" name="cowbell" min="0" max="20" value="10" step="1">
+            <label for="cowbell">Number of Keys</label>
+          </div>
+          
+        </div>
+      </div>
       <div id="stacks" class="sub left"></div>
       <div id="network" class="sub right"></div>  
     </div>
@@ -62,22 +102,7 @@
           </table>
       </div>
       <div class="cards-container">
-        <div class="card">
-          <div class="card-text">
-            <div class="card-title">
-              <p >VAIM:</p>
-            </div>
-            <div class="card-author">
-              <p >Arleo et al.</p>
-            </div>
-            <div class="card-info">
-              <p >Arleo et al.</p>
-            </div>
-          </div>
-          <div class="card-icon">
-            <i class="fa fa-times-circle  style="color:rgb(119, 119, 119)"></i>
-          </div>
-        </div>
+
       </div>
     </div>
   </div>
@@ -91,9 +116,10 @@
 <script src="//d3js.org/topojson.v1.min.js"></script>
 <!-- <script src="{{ url_for('static', filename='node_modules/@greenelab/hclust/src/hclust.js')}}"></script> -->
 <script src="{{ url_for('static', filename='js/external/figue.js')}}"></script>
+<script src="{{ url_for('static', filename='js/external/color2D.js')}}"></script>
 
 <script src="{{url_for('static', filename='js/data_prep.js')}}"></script>
-<script src="{{url_for('static', filename='js/dashboard-network.js')}}"></script>
+<script src="{{url_for('static', filename='js/dashboard-network.js')}}"></script> 
 <script src="{{url_for('static', filename='js/dashboard.js')}}"></script>
 <!-- <script src="{{url_for('static', filename='influvis_update.js')}}"></script>-->
 <script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ keys | tojson }}'), JSON.parse('{{ key_projections | tojson }}'), JSON.parse('{{ pwk | tojson }}'), JSON.parse('{{ paths | tojson }}'))</script>

@@ -11,6 +11,8 @@ function my_Func(network, papers, seeds, topics, pwt){
     console.log(seeds)
     console.log(topics)
     console.log(pwt)
+
+
     
     
     var rect = document.querySelector('#vis'),

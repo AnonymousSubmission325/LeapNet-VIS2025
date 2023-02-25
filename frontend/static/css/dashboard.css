@@ -68,8 +68,6 @@
 
   .cards-container {
     height: 40%;
-    overflow-x:hidden; 
-    overflow-y:auto;
     border: 1px solid #ccc;
     border-radius: 2px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
@@ -83,38 +81,57 @@
     background-color: #fff;
     line-height: 0.4;
     text-align: left;
-    max-width: 400px;
+    width: 100%;
+    height: auto;
     margin: 1 auto;
+    border-collapse: collapse;
+    overflow: hidden; /* add this to contain floated children */
+    display: flex;
   }
+
   .card-title {
-    border-radius: 5px;
+    border-radius: 0px;
     font-weight: bold;
     font-size: 10px;
   }
   .card-author {
-    border-radius: 5px;
+    border-radius: 0px;
     font-weight: lighter;
     font-size: 10px;
   }
   .card-info {
-    border-radius: 5px;
+    border-radius: 0px;
     font-weight: normal;
-    font-size: 6px;
+    font-size: 8px;
   }
   .card-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     width:90%;
-    float:left;
+    margin: 6px;
   }
   .card-icon {
-    width:10%;
-    float:right;
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2%;
+  }
+  .point {
+    margin: 0;
   }
 
+  /* .card-icon {
+    position: absolute;
+    right: 0;
+    width:10%;
+    margin: auto 0;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  } */
+
   table {
-    font-family: arial, sans-serif;
+    /* font-family: arial, sans-serif; */
     border-collapse: collapse;
     width: 100%;
   }
@@ -149,6 +166,62 @@ form.example::after {
   clear: both;
   display: table;
 }
+
+
+.topRightHex {
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 2px;
+  position:absolute;
+  top: 0;
+  right: 0;
+  background: #ffffff;
+  padding: 6px;
+  color: #818181;
+  width: 10%;
+  font-size: 0.5em;
+  z-index: 10;
+  border-color: #d6d6d6;
+  border-width: 2px;
+}
+
+.topRightTime {
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 2px;
+  position:absolute;
+  top: 0;
+  right: 0;
+  background: #ffffff;
+  padding: 6px;
+  color: #818181;
+  width: 30%;
+  font-size: 0.5em;
+  z-index: 10;
+  border-color: #d6d6d6;
+  border-width: 2px;
+}
+
+.hex-container{
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  padding: 2px;
+}
+
+.timeline-container{
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.overlay {
+  z-index: 9;
+  background: #ffffff;
+
+}
   /* Style the header */
   .header {
     background-color: #ddd;
@@ -181,19 +254,19 @@ form.example::after {
   /* Create three unequal columns that floats next to each other */
   .column {
     float: left;
-    padding: 10px;
-    height: 95%;
+    padding: 5px;
+    height: 97%;
     background-color: #ffffff;
   }
   
   /* Left column */
   .column.leftside {
-    width: 15%;
+    width: 20%;
   }
 
   /* Right column */
   .column.rightside {
-    width: 25%;
+    width: 20%;
   }
   
   /* Middle column */
@@ -202,8 +275,6 @@ form.example::after {
   }
 
   .center {
-    border-style: solid;
-    border-color: lightgray;
     width: 100%;
     height: 60%;
   }
@@ -212,11 +283,16 @@ form.example::after {
     border-color: lightgray;
     float: left;
     height: 40%;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    padding: 2px;
   }
   .sub.left {
     border-style: solid;
     border-color: lightgray;
     width: 50%;
+    padding:1%
   }
   .sub.right {
     width: 50%;
@@ -228,12 +304,47 @@ form.example::after {
     display: table;
     clear: both;
   }
+
+  .outer.left {
+    border-style: solid;
+    border-color: lightgray;
+    float: left;
+    height: 60%;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    padding: 2px;
+  }
+
+
   .keytext {
     font-family: 'Arial Black', Arial, sans-serif;
   }
-  /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
-  /* @media screen and (max-width: 600px) {
-    .column.side, .column.middle {
-      width: 100%;
-    }
-  } */
+
+  .dropdowncontainer {
+    width: 100%; /* Width of the outside container */
+    padding-bottom: 3px;
+  }
+  .slidecontainer {
+    width: 100%; /* Width of the outside container */
+  }
+  #binsizeslider {
+    width: 100%; /* Width of the outside container */
+  }
+  #timescaleslider {
+    width: 100%; /* Width of the outside container */
+  }
+  #keywordnumslider {
+    width: 100%; /* Width of the outside container */
+  }
+
+  .dropdown {
+    display: inline-block;
+    width: 100%;
+  }
+
+
+  .keytext:hover {
+    fill: red;
+  }

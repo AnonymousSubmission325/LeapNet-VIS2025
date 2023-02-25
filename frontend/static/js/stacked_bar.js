@@ -112,8 +112,9 @@ function my_Func(network, papers, seeds, topics, pwt){
 
       for (const group of groups){
           stack_height = 0;
-          svg.selectAll(group).each(function(){stack_height = stack_height + parseInt(this.attributes.height.value)})
-          moving_distance = -height/2 + stack_height/2
+          svg.selectAll(group).each(function(){
+            stack_height = stack_height + parseInt(this.attributes.height.value)})
+            moving_distance = -height/2 + stack_height/2
           
           svg.selectAll('g').selectAll(group).attr('width', 10).transition().duration(1000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
       }

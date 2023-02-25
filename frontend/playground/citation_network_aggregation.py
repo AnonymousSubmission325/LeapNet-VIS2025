@@ -245,9 +245,28 @@ def convert_network_to_json_formats(paper_hierarchies, paper_objects):
 def convert_papers_to_json_formats(paper_objects, layers):
     return clean_paper_to_json(paper_objects, layers)
 
+def authors_to_json(paper_objects):
+    already_used=[]
+    cleaned_author_lookup_objects = {"authors":{}, "papers":{}}
+    for p in paper_objects.keys():
+        cleaned_author_lookup_objects[paper_objects[p]["paperId"]] = []
+        np = {}
+        if paper_objects[p]["authors"]:
+            cleaned_field = []
+            for a in paper_objects[p]["authors"]:
+                if a["name"]:
+                    name = a["name"]
+                    cleaned_author_lookup_objects[paper_objects[p]["paperId"]].append(name)
+                    if name not in already_used:
+                        cleaned_author_lookup_objects["authors"][name] = [paper_objects[p]["paperId"]]
+                    else:
+                        cleaned_author_lookup_objects["authors"][name].append(paper_objects[p]["paperId"])
+    return cleaned_author_lookup_objects
+
 def dump(paper_objects, paper_hierarchies, layers):
     network_json = convert_network_to_json_formats(paper_hierarchies,paper_objects)
     papers_json = convert_papers_to_json_formats(paper_objects, layers)
+    authors_json = authors_to_json(paper_objects)
 
     # the json file where the output must be stored
     network_file = open("frontend/static/network.json", "w")
@@ -257,6 +276,10 @@ def dump(paper_objects, paper_hierarchies, layers):
     # the json file where the output must be stored
     json_file = open("frontend/static/papers.json", "w")
     json.dump(papers_json, json_file, indent = 6)
+    json_file.close()
+
+    json_file = open("frontend/static/authors.json", "w")
+    json.dump(authors_json, json_file, indent = 6)
     json_file.close()
 
     # add author data

@@ -127,7 +127,7 @@ def keyword_modeling():
     deduplication_algo = 'seqm'
     windowSize = 1
     numOfKeywords = 500
-    my_stopwords = ['method', 'number', 'used', 'using','also', 'many', 'several', 'demonstrated', 'three', 'abstract','without','dataset', 'draws','authors','algorithms','graphs', 'two','support','found','find','present','existing','propose','important','set','problem','design','presented','proposed','systems','user','users','system','techniques','show','study', 'results','work','visual','approach','present,''based','networks','paper','data','layer',"present", "describe", "show", "study", "technique", "techniques" ]
+    my_stopwords = ['little','changes','single','ones','need','improve','provides','based','method', 'number', 'used', 'using','also', 'many', 'several', 'demonstrated', 'three', 'abstract','without','dataset', 'draws','authors','algorithms','graphs', 'two','support','found','find','present','existing','propose','important','set','problem','design','presented','proposed','systems','user','users','system','techniques','show','study', 'results','work','visual','approach','present,''based','networks','paper','data','layer',"present", "describe", "show", "study", "technique", "techniques" ]
 
     all_stop = stops.union(my_stopwords)
     kw_extractor = yake.KeywordExtractor(lan=language, 
@@ -198,6 +198,77 @@ def keyword_modeling():
     orig_papers["umap"] = topic_vectors_2d_umap_normalized.tolist()
 
 
+
+    #COLORS
+    from pycolormap_2d import ColorMap2DBremm, ColorMap2DSchumann, ColorMap2DSteiger
+
+    # Create the color map object.
+    cmap_bremm = ColorMap2DBremm()
+    cmap_schumann = ColorMap2DSchumann()
+    cmap_steiger = ColorMap2DSteiger()
+
+    # Get the color value.
+    #color = cmap_bremm(0.2, 0.6)
+    def rgb_to_hex(r, g, b):
+        return '#{:02x}{:02x}{:02x}'.format(r, g, b)
+    
+    def get_color(x,y):
+        br = cmap_bremm(x,y)
+        colorbremm = (rgb_to_hex(br[0], br[1], br[2]))
+
+        sc = cmap_schumann(x,y)
+        colorschumann = (rgb_to_hex(sc[0], sc[1], sc[2]))
+
+        st = cmap_steiger(x,y)
+        colorsteiger = (rgb_to_hex(st[0], st[1], st[2]))
+        return {'bremm':colorbremm, 'schumann':colorschumann, 'steiger':colorsteiger}
+
+
+    def get_colors_matrix(coords_matrix):
+        color_matrix_bremm = []
+        color_matrix_schumann = []
+        color_matrix_steiger = []
+        for l in coords_matrix:
+            x=l[0]
+            y=l[1]
+            
+            br = cmap_bremm(x,y)
+            color_matrix_bremm.append(rgb_to_hex(br[0], br[1], br[2]))
+
+            sc = cmap_schumann(x,y)
+            color_matrix_schumann.append(rgb_to_hex(sc[0], sc[1], sc[2]))
+
+            st = cmap_steiger(x,y)
+            color_matrix_steiger.append(rgb_to_hex(st[0], st[1], st[2]))
+        return color_matrix_bremm, color_matrix_schumann, color_matrix_steiger
+    
+    tsne_bremm, tsne_schumann, tsne_steiger = get_colors_matrix(topic_vectors_2d_tsne_normalized)
+    pca_bremm, pca_schumann, pca_steiger = get_colors_matrix(topic_vectors_2d_pca_normalized)
+    umap_bremm, umap_schumann, umap_steiger = get_colors_matrix(topic_vectors_2d_umap_normalized)
+
+
+    # es kann sein dass weniger topics in den dokumenten vorhanden sind als angegeben
+    # in dem fall ist die projection nicht korrekt
+    
+    #need to map 2d array to 1d here if necessary
+    #topics['TSNE'] =  topic_vectors_2d_tsne_normalized
+    #topics['PCA'] =  topic_vectors_2d_pca_normalized
+    #topics['UMAP'] =  topic_vectors_2d_umap_normalized
+    
+    orig_papers['TSNE_Bremm'] =  tsne_bremm
+    orig_papers['PCA_Bremm'] =  pca_bremm
+    orig_papers['UMAP_Bremm'] =  umap_bremm
+    
+    orig_papers['TSNE_Schumann'] =  tsne_schumann
+    orig_papers['PCA_Schumann'] =  pca_schumann
+    orig_papers['UMAP_Schumann'] =  umap_schumann
+    
+    orig_papers['TSNE_Steiger'] =  tsne_steiger
+    orig_papers['PCA_Steiger'] =  pca_steiger
+    orig_papers['UMAP_Steiger'] =  umap_steiger
+
+
+
     flat_list = [item for sublist in corpus for item in sublist]
     flat_listu = list(dict.fromkeys(flat_list))
     key_dic = {}
@@ -235,32 +306,42 @@ def keyword_modeling():
                 y_vals.append(topic_vectors_2d_pca_normalized_np[j][1])
                 xy_vals.append([topic_vectors_2d_pca_normalized_np[j][0],topic_vectors_2d_pca_normalized_np[j][1]] )
                 keyword_list.extend(corpus[j])
-            x_coord = average(x_vals)
-            y_coord = average(y_vals)
 
             if len(xy_vals)>2:
                 from shapely.geometry import Polygon
                 p = Polygon(xy_vals)
                 c = [float(p.centroid.x) , float(p.centroid.y)]
+                if(c[0]<0 or c[0]>1 or c[1]<0 or c[1]>1):
+                    print("1:" + str(c))
             elif len(xy_vals)==2:
                 c = [float((xy_vals[0][0]+xy_vals[1][0])/2) , float((xy_vals[0][1]+xy_vals[1][1])/2)]
+                if(c[0]<0 or c[0]>1 or c[1]<0 or c[1]>1):
+                    print("2:" + str(c))
             else:
                 c = [float(xy_vals[0][0]),float(xy_vals[0][1])]
+                if(c[0]<0 or c[0]>1 or c[1]<0 or c[1]>1):
+                    print("3:" + str(c))
 
             # get best fitting keyword 
             from collections import Counter
             counter_dict = Counter(keyword_list)
             result_list = [(element, count) for element, count in counter_dict.items()]
             sorted_list = sorted(result_list, key=lambda x: x[1], reverse=True)
-            for e in sorted_list: 
+            keys=[]
+            for i, e in enumerate(sorted_list):
                 if e[0] not in keys_already_in_use:
-                    keys_per_cluster.append({"key":e[0], "coords":c})
-                    keys_already_in_use.append(e[0])
+                    keys.append(e[0])
+                    if i == 0:
+                        keys_already_in_use.append(e[0])
+                if i==1:
                     break
+
+            keys_per_cluster.append({"keys":keys, "coords":c, "color": get_color(c[0],c[1])})
         overall_key_projections.append(keys_per_cluster)
 
-
-        
+    #    tsne_bremm, tsne_schumann, tsne_steiger = get_colors_matrix(topic_vectors_2d_tsne_normalized)
+    #      pca_bremm, pca_schumann, pca_steiger = get_colors_matrix(topic_vectors_2d_pca_normalized)
+    #       umap_bremm, umap_schumann, umap_steiger = get_colors_matrix(topic_vectors_2d_umap_normalized)
 
 
 
@@ -280,7 +361,8 @@ def keyword_modeling():
     json.dump(pwt_json, paper_file, indent = 6)
     paper_file.close()
 
-    return pwt_json
+    #return pwt_json
+    return None
 
     #pprint(tsne_bremm)
     #pprint(pca_bremm)
