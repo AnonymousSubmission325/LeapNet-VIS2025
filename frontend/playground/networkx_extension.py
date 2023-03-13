@@ -2,8 +2,22 @@ import networkx as nx
 from networkx.readwrite import json_graph
 import json
 import matplotlib.pyplot as plt
+import pandas as pd
 
 import random
+
+
+def convert_to_json(pwt):
+    cleaned_paper_objects = {"papers":[]}
+    columns = pwt.columns
+    
+    for index, row in pwt.iterrows():
+        l = {}
+        for c in columns:
+            l[c] = row[c]
+        cleaned_paper_objects["papers"].append(l)
+        
+    return cleaned_paper_objects
 
 def get_biggest_connected_component(G):
     #G_test = nx.barabasi_albert_graph(6, 2, seed= 3214562)
@@ -26,6 +40,35 @@ def import_graph():
     #Set up a graph with random edges and weights
 
     G = read_json_file("frontend/static/network.json")
+    degree_c = nx.degree_centrality(G)
+    betweenness_c = nx.betweenness_centrality(G)
+
+    with open('frontend/static/papers_with_keys.json') as f:
+        data = json.load(f)
+    # Convert the data to a DataFrame
+    papers = pd.DataFrame(data['papers'])
+    degree_cs = []
+    betweenness_cs = []
+    for i,p in papers.iterrows():
+        degree_cs.append(degree_c[p.paperId])
+        betweenness_cs.append(betweenness_c[p.paperId])
+    papers["degreec"] = degree_cs
+    papers["betweenc"] = betweenness_cs
+
+    
+    values = {"citationCount": -1, "publicationTypes": "none", "referenceCount":-1, "abstract": "none", "journal":"", "tldr":"",
+    "venue": "", "athours":"", "publicationDate":"", "authors":"", "degreec":0, "betweenc":0}
+    papers = papers.fillna(value=values)
+    pwt_json = convert_to_json(papers)
+    # orig_papers_with_topic.fillna(-1)
+    # the json file where the output must be stored
+    paper_file = open("frontend/static/papers_with_keys_and_centrals.json", "w")
+    json.dump(pwt_json, paper_file, indent = 6)
+    paper_file.close()
+
+    #for node in n:
+        
+
     # n = G.nodes
     # counts = {}
     # for node in n:
@@ -51,8 +94,8 @@ def import_graph():
     #plt.show()
 
     # remove single nodes
-    G = nx.to_undirected(G)
-    G = get_biggest_connected_component(G)
+    #G = nx.to_undirected(G)
+    #G = get_biggest_connected_component(G)
     #subgraphs = nx.connected_components(G)
     #G = max(subgraphs, key=len)
 

@@ -109,6 +109,7 @@ def keyword_modeling():
 
     texts_p_publication = []
     for d in data:
+        # TODO: add keywords to the origin_paper to export keywords of papers
         su = ""
         for text in d:
             if not pd.isnull(text) and text is not None:
@@ -127,7 +128,7 @@ def keyword_modeling():
     deduplication_algo = 'seqm'
     windowSize = 1
     numOfKeywords = 500
-    my_stopwords = ['little','changes','single','ones','need','improve','provides','based','method', 'number', 'used', 'using','also', 'many', 'several', 'demonstrated', 'three', 'abstract','without','dataset', 'draws','authors','algorithms','graphs', 'two','support','found','find','present','existing','propose','important','set','problem','design','presented','proposed','systems','user','users','system','techniques','show','study', 'results','work','visual','approach','present,''based','networks','paper','data','layer',"present", "describe", "show", "study", "technique", "techniques" ]
+    my_stopwords = ['new','this','often','example','current','use','much','one','little','changes','single','ones','need','improve','provides','based','method', 'number', 'used', 'using','also', 'many', 'several', 'demonstrated', 'three', 'abstract','without','dataset', 'draws','authors','algorithms','graphs', 'two','support','found','find','present','existing','propose','important','set','problem','design','presented','proposed','systems','user','users','system','techniques','show','study', 'results','work','visual','approach','present,''based','networks','paper','data','layer',"present", "describe", "show", "study", "technique", "techniques" ]
 
     all_stop = stops.union(my_stopwords)
     kw_extractor = yake.KeywordExtractor(lan=language, 

@@ -6,13 +6,15 @@ import codecs
 sch = SemanticScholar(timeout=30)
 
 def clean_text(text,t):
-    cleaned_text = ""
+    cleaned_text = "none"
     if t == "journal": 
         if text is dict:
             if(text['name']):
                 cleaned_text = text['name']
     elif t == "tldr" and type(text) is dict: 
-        cleaned_text = text['text']
+        if "text" in text.keys():
+            if text["text"] is not None:
+                cleaned_text = text['text']
     else: cleaned_text = text
 
     cleaned_text = cleaned_text.replace("/\\n/g", "\\n")
@@ -217,7 +219,7 @@ def aggregate_network(paper_objects, paper_limit):
     seed_file = open("frontend/static/seeds.json", "w")
     json.dump(seeds, seed_file, indent = 6)
     seed_file.close()
-
+    print("dumped seeds")
 
     paper_hierarchies = {}
     paper_lookup = []
@@ -226,7 +228,8 @@ def aggregate_network(paper_objects, paper_limit):
     while not limit_reached: 
         layer += 1
         paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached, layer, layers = append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, paper_limit, limit_reached, layer, layers)
-
+        print("extracted layer")
+    print("aggregation finished")
     return paper_objects, paper_hierarchies, layers
 
 
@@ -249,25 +252,27 @@ def authors_to_json(paper_objects):
     already_used=[]
     cleaned_author_lookup_objects = {"authors":{}, "papers":{}}
     for p in paper_objects.keys():
-        cleaned_author_lookup_objects[paper_objects[p]["paperId"]] = []
+        cleaned_author_lookup_objects["papers"][paper_objects[p]["paperId"]] = []
         np = {}
         if paper_objects[p]["authors"]:
-            cleaned_field = []
             for a in paper_objects[p]["authors"]:
                 if a["name"]:
-                    name = a["name"]
-                    cleaned_author_lookup_objects[paper_objects[p]["paperId"]].append(name)
+                    name = clean_text(a["name"], "author")
+                    cleaned_author_lookup_objects["papers"][paper_objects[p]["paperId"]].append(name)
                     if name not in already_used:
                         cleaned_author_lookup_objects["authors"][name] = [paper_objects[p]["paperId"]]
+                        already_used.append(name)
                     else:
                         cleaned_author_lookup_objects["authors"][name].append(paper_objects[p]["paperId"])
     return cleaned_author_lookup_objects
 
 def dump(paper_objects, paper_hierarchies, layers):
     network_json = convert_network_to_json_formats(paper_hierarchies,paper_objects)
+    print("converted network")
     papers_json = convert_papers_to_json_formats(paper_objects, layers)
+    print("converted papers")
     authors_json = authors_to_json(paper_objects)
-
+    print("converted authors")
     # the json file where the output must be stored
     network_file = open("frontend/static/network.json", "w")
     json.dump(network_json, network_file, indent = 6)
@@ -298,6 +303,7 @@ def main(seedset, paper_num):
     #seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain","Visual Exploration of Financial Data with Incremental Domain Knowledge", "Vaim: Visual analytics for influence maximization","Influence Maximization With Visual Analytics", "A distributed multilevel force-directed algorithm", "Profiling distributed graph processing systems through visual analytics"]
     #seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain","Visual Exploration of Financial Data with Incremental Domain Knowledge", "Vaim: Visual analytics for influence maximization","Influence Maximization With Visual Analytics", "A distributed multilevel force-directed algorithm", "Profiling distributed graph processing systems through visual analytics"]
     #seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain"]
+    print("network is aggregated")
     paper_objects, paper_hierarchies, layers = aggregate_network(seedset,paper_num)
 
     dump(paper_objects, paper_hierarchies, layers)

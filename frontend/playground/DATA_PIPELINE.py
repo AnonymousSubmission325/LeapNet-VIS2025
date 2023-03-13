@@ -1,11 +1,13 @@
 import test
 import citation_network_aggregation
 import keyword_hdbscan
+import networkx_extension
 
 
 
-seedset = ["Event‐based Dynamic Graph Drawing without the Agonizing Pain","Visual Exploration of Financial Data with Incremental Domain Knowledge", "Vaim: Visual analytics for influence maximization","Influence Maximization With Visual Analytics", "A distributed multilevel force-directed algorithm", "Profiling distributed graph processing systems through visual analytics"]
-paper_num = 2000
+seedset = ["Visual Comparison of Language Model Adaptation","LMFingerprints: Visual Explanations of Language Model Embedding Spaces through Layerwise Contextualization Scores", "Questioncomb: A gamification approach for the visual explanation of linguistic phenomena through interactive labeling", "Going beyond visualization: Verbalization as complementary medium to explain machine learning models"]
+#seedset = ["Information visualization and visual data mining", "Visualization of Time-Oriented Data","Standards for Internet-based experimenting"]
+paper_num = 3000
 citation_network_aggregation.main(seedset, paper_num)
 
 # TODO: extract keywords
@@ -17,7 +19,7 @@ citation_network_aggregation.main(seedset, paper_num)
 
 keyword_hdbscan.keyword_modeling()
 
-#import networkx_extension
-#networkx_extension.get_paths()
+
+networkx_extension.import_graph()
 
 print("finished")

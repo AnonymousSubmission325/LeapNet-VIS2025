@@ -21,11 +21,14 @@ def returnOne():
         keys = json.load(f)
     with open('frontend/static/key_projections.json') as f:
         key_projections = json.load(f)
+    # with open('frontend/static/papers_with_keys_and_centrals.json') as f:
     with open('frontend/static/papers_with_keys.json') as f:
         pwk = json.load(f)
     with open('frontend/static/paths.json') as f:
         paths = json.load(f)
-    return render_template("templ.html", network = network, papers = papers, seeds = seeds, keys = keys, key_projections = key_projections, pwk = pwk, paths = paths)
+    with open('frontend/static/authors.json') as f:
+        authors = json.load(f)
+    return render_template("templ.html", network = network, papers = papers, seeds = seeds, keys = keys, key_projections = key_projections, pwk = pwk, paths = paths, authors = authors)
 
 
 if __name__ == '__main__':

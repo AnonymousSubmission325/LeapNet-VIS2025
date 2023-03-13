@@ -1,154 +1,147 @@
 * {
-    box-sizing: border-box;
-  }
-  
-  .corpustb {
-    display:block;
-    height: 80%;
-    width: 100%;
-    overflow-y: scroll;
-    /* overflow-x: hidden; */
-  }
+  box-sizing: border-box;
+}
+
+.corpustb {
+  display:block;
+  height: 50%;
+  overflow-y: scroll;
+  table-layout: fixed;
+}
+.authortb {
+  display:block;
+  height: 30%;
+  overflow-y: scroll;
+  table-layout: fixed;
+}
+
+table {
+  border-collapse: collapse; 
+  width: 100%; 
+  table-layout: fixed;
+  } 
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  overflow: hidden;
+}
 
   td {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 100%;
-    max-width: 0;
-  }
-  tr {
-    height: 6px;
-    line-height: 6px;
-    font-size: 60%;
-    cursor: pointer;
-  }
-  .header {
-    position: sticky;
-    top:0;
-    padding:40px;
-    background: lightblue;
-    text-align: center;
-  }
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+tr {
+  height: 6px;
+  line-height: 6px;
+  font-size: 60%;
+  cursor: pointer;
+}
+
+.header {
+  position: sticky;
+  top:0;
+  padding:40px;
+  background: lightblue;
+  text-align: center;
+}
 
 
-  html, body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-  }
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
 
-  #header {
-    height: 60px;
-    background-color: rgb(183, 183, 183);
-  }
+#header {
+  height: 60px;
+  background-color: rgb(183, 183, 183);
+}
 
-  #vis {
-    position: absolute;
-    top: 100px;
-    bottom: 0;
-    width: 100%; 
-  }
+#vis {
+  position: absolute;
+  top: 100px;
+  bottom: 0;
+  width: 100%; 
+}
 
-  .links line {
-  stroke: #aaa;
-  }
-  .nodes circle {
-  pointer-events: all;
-  }
+.links line {
+stroke: #aaa;
+}
+.nodes circle {
+pointer-events: all;
+}
 
-  body {
-    margin: 0;
-    background-color: #ddd;
-  }
-  .search-container{
-    height:40%;
-  }
+body {
+  margin: 0;
+  background-color: #ddd;
+}
+.search-container{
+  height:70%;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  padding: 2px;
+}
 
-  .cards-container {
-    height: 40%;
-    border: 1px solid #ccc;
-    border-radius: 2px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    padding: 2px;
-    background-color: #fff;
-  }
-  .card {
-    border: 1px solid #ccc;
-    border-radius: 2px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    background-color: #fff;
-    line-height: 0.4;
-    text-align: left;
-    width: 100%;
-    height: auto;
-    margin: 1 auto;
-    border-collapse: collapse;
-    overflow: hidden; /* add this to contain floated children */
-    display: flex;
-  }
+.cards-container {
+  height: 40%;
+  background-color: #fff;
+  overflow-y: scroll;
+}
+.card {
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  line-height: 0.4;
+  text-align: left;
+  width: 100%;
+  height: auto;
+  margin: 1 auto;
+  border-collapse: collapse;
+  overflow: hidden; 
+  display: flex;
+}
 
-  .card-title {
-    border-radius: 0px;
-    font-weight: bold;
-    font-size: 10px;
-  }
-  .card-author {
-    border-radius: 0px;
-    font-weight: lighter;
-    font-size: 10px;
-  }
-  .card-info {
-    border-radius: 0px;
-    font-weight: normal;
-    font-size: 8px;
-  }
-  .card-text {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width:90%;
-    margin: 6px;
-  }
-  .card-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2%;
-  }
-  .point {
-    margin: 0;
-  }
-
-  /* .card-icon {
-    position: absolute;
-    right: 0;
-    width:10%;
-    margin: auto 0;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-  } */
-
-  table {
-    /* font-family: arial, sans-serif; */
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-  td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #dddddd;
-  }
+.card-title {
+  border-radius: 0px;
+  font-weight: bold;
+  font-size: 10px;
+}
+.card-author {
+  border-radius: 0px;
+  font-weight: lighter;
+  font-size: 10px;
+}
+.card-info {
+  border-radius: 0px;
+  font-weight: normal;
+  font-size: 8px;
+}
+.card-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width:90%;
+  margin: 6px;
+}
+.card-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2%;
+}
+.point {
+  margin: 0;
+}
 
 /* Style the search field */
 form.example input[type=text] {
-  padding: 10px;
+  padding: 8px;
   font-size: 17px;
   border: 1px solid grey;
   float: left;
@@ -209,12 +202,35 @@ form.example::after {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   padding: 2px;
 }
+#hex{
+  padding: 0px;
+  font-size: 16px;
+}
+
+.axisselection-container{
+  height: 60%;
+  width: 10%;
+  float: left;
+}
+
+.legend-container{
+  height: 60%;
+  width: 10%;
+  float: left;
+}
 
 .timeline-container{
+  width: 100%;
+  float: left;
   position: relative;
   border: 1px solid #ccc;
   border-radius: 2px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.timelineinner-container{
+  width: 80%;
+  float: left;
 }
 
 .overlay {
@@ -291,11 +307,23 @@ form.example::after {
   .sub.left {
     border-style: solid;
     border-color: lightgray;
-    width: 50%;
-    padding:1%
+    width: 33%;
+  }
+  .sub.mid {
+    width: 33%;
   }
   .sub.right {
-    width: 50%;
+    width: 34%;
+  }
+  .stack {
+    border-style: solid;
+    border-color: lightgray;
+    float: left;
+    height: 33%;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    /* overflow-y: hidden;
+    overflow-x: scroll; */
   }
   
   /* Clear floats after the columns */
@@ -320,6 +348,7 @@ form.example::after {
 
   .keytext {
     font-family: 'Arial Black', Arial, sans-serif;
+    text-shadow: -1px 0 rgb(255, 255, 255), 0 1px rgb(255, 255, 255), 1px 0 rgb(255, 255, 255), 0 -1px rgb(250, 250, 250);
   }
 
   .dropdowncontainer {
@@ -347,4 +376,46 @@ form.example::after {
 
   .keytext:hover {
     fill: red;
+  }
+
+  .keytext_g{
+    order:2
+  }
+  .hexagons_g{
+    order:1
+  }
+  #keytext_g{
+    order:2
+  }
+  #hexagons_g{
+    order:1
+  }
+
+
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 3px;
+  }
+  
+  .node text { font: 12px sans-serif; }
+  
+  .node--internal text {
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+  }
+  
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+  }
+
+  .axistext {
+    font-family: 'Roboto', sans-serif;
+  }
+  #axistext {
+    font-family: 'Roboto', sans-serif;
+  }
+  axistext {
+    font-family: 'Roboto', sans-serif;
   }

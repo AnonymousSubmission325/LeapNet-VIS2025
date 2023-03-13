@@ -29,32 +29,29 @@
   
   <div class="row">
     <div class="column leftside">
-      <div class="timeline-container">
-      <div class="topRightTime overlay">
-        <p>Timeline Properties</p>
-        <div>
-          <div class="dropdowncontainer">
-            <select name="scaling" id="scalingdropdown">
-              <option value="linear">linear</option>
-              <option value="logarithmic">logarithmic</option>
-            </select>
-            <br>
-            <label for="volume">Scaling</label>
-          </div>
-          <div class="dropdowncontainer">
-            <select name="scaling" id="scalingdropdown">
-              <option value="linear">Year</option>
-              <option value="logarithmic">Month</option>
-            </select>
-            <br>
-            <label for="volume">Grouped by</label>
-          </div>
-        </div> 
+      <div class="search-container">
+        <form class="example" action="insert">
+          <input type="text" id="myInput" onkeyup="filter_on_search()" placeholder="Search..." name="search">
+        </form>
+        <table id="myTable" class="corpustb">
+            <tr class="header">
+              <th width="10%"></th>
+              <th width="10%">Title</th>
+              <th width="60%">Authors</th>
+              <th width="10%">Year</th>
+              <th width="10%">Venue</th>
+            </tr>
+        </table>
+        <div class="cards-container"> </div>
       </div>
-      <div id="timeline" class="outer left"></div>
-      <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p> -->
+
+      <table id="myTableB" class="authortb">
+        <tr class="header">
+          <th width="90%">Author</th>
+          <th width="10%">Publications</th>
+        </tr>
+      </table> 
       </div>
-    </div>
     
     <div class="column middle">
       <div class="hex-container">
@@ -63,46 +60,60 @@
           <p>Space Navigation</p>
           <div>
             <div class="slidecontainer">
-              <input type="range" id="binsizeslider" name="volume" min="0" max="20" step="1">
+              <input type="range" id="binsizeslider" name="volume" min="0" max="40" step="1">
               <label for="volume">Scale</label>
             </div>
           </div>
           
           <div>
-            <input type="range" id="keywordnumslider" name="cowbell" min="0" max="20" value="10" step="1">
+            <input type="range" id="keywordnumslider" name="cowbell" min="1" max="500" value="20" step="20">
             <label for="cowbell">Number of Keys</label>
           </div>
           
         </div>
       </div>
-      <div id="stacks" class="sub left"></div>
+      <div id="stacks" class="sub left">
+        <div id="stack1" class="stack"></div>
+        <div id="stack2" class="stack">
+        </div>
+        <div id="stack3" class="stack"></div>
+      </div>
+      
+      <div id="star" class="sub mid">
+        <div class="radarChart"></div>
+      </div>  
       <div id="network" class="sub right"></div>  
     </div>
     
     <div class="column rightside">
-      <div class="search-container">
-        <form class="example" action="insert">
-          <input type="text" id="myInput" onkeyup="filter_on_search()" placeholder="Search publications.." name="search">
-        </form>
-          <table class="corpustb">
-            <colgroup>
-              <col span="1" style="width: 15%;">
-              <col span="1" style="width: 70%;">
-              <col span="1" style="width: 25%;">
-              <col span="1" style="width: 0%;">
-           </colgroup>
-            <tbody  id="myTable">
-              <tr class="header">
-                <th>Title</th>
-                <th>Authors</th>
-                <th>Year</th>
-                <th>Check</th>
-              </tr>
-            </tbody>
-          </table>
-      </div>
-      <div class="cards-container">
-
+      <div class="timeline-container">
+        <div class="axisselection-container"></div>
+        <div class="legend-container"></div>
+        <div class="timelineinner-container">
+          <div class="topRightTime overlay">
+            <p>Timeline Properties</p>
+            <div>
+              <div class="dropdowncontainer">
+                <select name="scaling" id="scalingdropdown">
+                  <option value="linear">linear</option>
+                  <option value="logarithmic">logarithmic</option>
+                </select>
+                <br>
+                <label for="volume">Scaling</label>
+              </div>
+              <div class="dropdowncontainer">
+                <select name="scaling" id="scalingdropdown">
+                  <option value="linear">Year</option>
+                  <option value="logarithmic">Month</option>
+                </select>
+                <br>
+                <label for="volume">Grouped by</label>
+              </div>
+            </div> 
+          </div>
+          <div id="timeline" class="outer left"></div>
+          <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p> -->
+        </div>
       </div>
     </div>
   </div>
@@ -117,12 +128,13 @@
 <!-- <script src="{{ url_for('static', filename='node_modules/@greenelab/hclust/src/hclust.js')}}"></script> -->
 <script src="{{ url_for('static', filename='js/external/figue.js')}}"></script>
 <script src="{{ url_for('static', filename='js/external/color2D.js')}}"></script>
+<script src="{{ url_for('static', filename='js/RadarChart.js')}}"></script>
 
 <script src="{{url_for('static', filename='js/data_prep.js')}}"></script>
 <script src="{{url_for('static', filename='js/dashboard-network.js')}}"></script> 
 <script src="{{url_for('static', filename='js/dashboard.js')}}"></script>
 <!-- <script src="{{url_for('static', filename='influvis_update.js')}}"></script>-->
-<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ keys | tojson }}'), JSON.parse('{{ key_projections | tojson }}'), JSON.parse('{{ pwk | tojson }}'), JSON.parse('{{ paths | tojson }}'))</script>
+<script type="text/javascript"> myVar = my_Func(JSON.parse('{{ network | tojson }}'),JSON.parse('{{ papers | tojson }}'),JSON.parse('{{ seeds | tojson }}'), JSON.parse('{{ keys | tojson }}'), JSON.parse('{{ key_projections | tojson }}'), JSON.parse('{{ pwk | tojson }}'), JSON.parse('{{ paths | tojson }}'), JSON.parse('{{ authors | tojson }}'))</script>
 <!-- <div id="my_dataviz"></div> -->
 </body>
 </html>
