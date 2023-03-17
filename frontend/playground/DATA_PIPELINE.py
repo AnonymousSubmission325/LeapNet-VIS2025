@@ -5,9 +5,9 @@ import networkx_extension
 
 
 
-seedset = ["Visual Comparison of Language Model Adaptation","LMFingerprints: Visual Explanations of Language Model Embedding Spaces through Layerwise Contextualization Scores", "Questioncomb: A gamification approach for the visual explanation of linguistic phenomena through interactive labeling", "Going beyond visualization: Verbalization as complementary medium to explain machine learning models"]
+seedset = ["A nested model for visualization design and validation","Design study methodology: Reflections from the trenches and the stacks", "A multi-level typology of abstract visualization tasks", "Squarified Treemaps Wijk", "Visual analysis of large graphs: state‐of‐the‐art and future research challenges", "Force‐directed edge bundling for graph visualization"]
 #seedset = ["Information visualization and visual data mining", "Visualization of Time-Oriented Data","Standards for Internet-based experimenting"]
-paper_num = 3000
+paper_num = 2000
 citation_network_aggregation.main(seedset, paper_num)
 
 # TODO: extract keywords

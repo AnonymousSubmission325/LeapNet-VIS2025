@@ -1,19 +1,13 @@
-/////////////////////////////////////////////////////////
-/////////////// The Radar Chart Function ////////////////
-/////////////// Written by Nadieh Bremer ////////////////
-////////////////// VisualCinnamon.com ///////////////////
-/////////// Inspired by the code of alangrafu ///////////
-/////////////////////////////////////////////////////////
 	
-function RadarChart(id, data, options) {
+function RadarChart(id, data, options, maxistr) {
 	var cfg = {
 	 w: 200,				//Width of the circle
 	 h: 200,				//Height of the circle
 	 margin: {top: 20, right: 20, bottom: 20, left: 20}, //The margins of the SVG
 	 levels: 3,				//How many levels or inner circles should there be drawn
 	 maxValue: 0, 			//What is the value that the biggest circle will represent
-	 labelFactor: 1.25, 	//How much farther than the radius of the outer circle should the labels be placed
-	 wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
+	 labelFactor: 1.15, 	//How much farther than the radius of the outer circle should the labels be placed
+	 wrapWidth: 40, 		//The number of pixels after which a label needs to be given a new line
 	 opacityArea: 0.35, 	//The opacity of the area of the blob
 	 dotRadius: 4, 			//The size of the colored circles of each blog
 	 opacityCircles: 0.1, 	//The opacity of the circles of each blob
@@ -84,22 +78,22 @@ function RadarChart(id, data, options) {
 		.append("circle")
 		.attr("class", "gridCircle")
 		.attr("r", function(d, i){return radius/cfg.levels*d;})
-		.style("fill", "#CDCDCD")
-		.style("stroke", "#CDCDCD")
+		.style("fill", "#808080")
+		.style("stroke", "#808080")
 		.style("fill-opacity", cfg.opacityCircles)
 		.style("filter" , "url(#glow)");
 
-	//Text indicating at what % each level is
-	axisGrid.selectAll(".axisLabel")
-	   .data(d3.range(1,(cfg.levels+1)).reverse())
-	   .enter().append("text")
-	   .attr("class", "axisLabel")
-	   .attr("x", 4)
-	   .attr("y", function(d){return -d*radius/cfg.levels;})
-	   .attr("dy", "0.4em")
-	   .style("font-size", "10px")
-	   .attr("fill", "#737373")
-	   .text(function(d,i) { return Format(maxValue * d/cfg.levels); });
+	// // Text indicating at what % each level is
+	// axisGrid.selectAll(".axisLabel")
+	//    .data(d3.range(1,(cfg.levels+1)).reverse())
+	//    .enter().append("text")
+	//    .attr("class", "axisLabel")
+	//    .attr("x", 4)
+	//    .attr("y", function(d){return -d*radius/cfg.levels;})
+	//    .attr("dy", "0.4em")
+	//    .style("font-size", "10px")
+	//    .attr("fill", "#737373")
+	//    .text(function(d,i) { return Format(maxValue * d/cfg.levels); });
 
 	/////////////////////////////////////////////////////////
 	//////////////////// Draw the axes //////////////////////
@@ -130,6 +124,17 @@ function RadarChart(id, data, options) {
 		.attr("x", function(d, i){ return rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice*i - Math.PI/2); })
 		.attr("y", function(d, i){ return rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice*i - Math.PI/2); })
 		.text(function(d){return d})
+		.call(wrap, cfg.wrapWidth);
+	
+	//Append the maximas at each axis
+	axis.append("text")
+		.attr("class", "legend")
+		.style("font-size", "9px")
+		.attr("text-anchor", "middle")
+		.attr("dy", "0.35em")
+		.attr("x", function(d, i){ return rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice*i - Math.PI/2); })
+		.attr("y", function(d, i){ return rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice*i - Math.PI/2); })
+		.text(function(d){return maxistr[d].toFixed(2)})
 		.call(wrap, cfg.wrapWidth);
 
 	/////////////////////////////////////////////////////////
@@ -181,6 +186,7 @@ function RadarChart(id, data, options) {
 		.attr("class", "radarStroke")
 		.attr("d", function(d,i) { return radarLine(d); })
 		.style("stroke-width", cfg.strokeWidth + "px")
+		// .style("stroke", function(d,i) { return cfg.color(i); })
 		.style("stroke", function(d,i) { return cfg.color(i); })
 		.style("fill", "none")
 		//.style("filter" , "url(#glow)");	//GLOWING EFFECT	
@@ -193,8 +199,10 @@ function RadarChart(id, data, options) {
 		.attr("r", cfg.dotRadius)
 		.attr("cx", function(d,i){ return rScale(d.value) * Math.cos(angleSlice*i - Math.PI/2); })
 		.attr("cy", function(d,i){ return rScale(d.value) * Math.sin(angleSlice*i - Math.PI/2); })
-		.style("fill", function(d,i,j) { return cfg.color(j); })
+		// .style("fill", function(d,i,j) { return cfg.color(j); })
+		 .style("fill", function(d,i,j) { return "#7a7878"; })
 		.style("fill-opacity", 0.8);
+	
 
 	/////////////////////////////////////////////////////////
 	//////// Append invisible circles for tooltip ///////////

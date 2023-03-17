@@ -47,6 +47,38 @@ function prepare_data(paper_lookup, pwt_lookup, key_to_sort){
     return [data, columns]
 }
 
+
+function prep_geninfo(selection, pwk_lookup, authors){
+  
+  var venue_rel = {}
+  selection.forEach(s => {
+    console.log(pwk_lookup[s])
+    a = pwk_lookup[s]["venue"]
+    if(a !== ""){
+      if((Object.keys(venue_rel).includes(a))){
+        venue_rel[a] = venue_rel[a] + 1
+      }
+      else{ venue_rel[a] = 1}
+    }
+  });
+  var author_ls = []
+  var max = 0
+  Object.entries(venue_rel).forEach(([k,v]) => {
+    if(max<v){max =v}
+    author_ls.push({author:k, value:v })
+  })
+  author_ls.sort(function(a, b) {
+    return b["value"] - a["value"];
+  });
+  author_ls["columns"]= ["author", "value"]
+
+  return [author_ls,max]
+}
+
+
+
+
+
 function prep_keys_author(selection, pwk_lookup, authors){
   
   var authors_rel = {}
@@ -79,7 +111,6 @@ function prep_keys_venue(selection, pwk_lookup, authors){
   var venue_rel = {}
   selection.forEach(s => {
     a = pwk_lookup[s]["venue"]
-    console.log(a)
     if(a !== ""){
       if((Object.keys(venue_rel).includes(a))){
         venue_rel[a] = venue_rel[a] + 1
@@ -104,58 +135,105 @@ function prep_keys_venue(selection, pwk_lookup, authors){
 
 
 function prep_network(selection, pwk_lookup, source_lookup, children_lookup){
-    all_nodes = []
+    node_lu = []
+    nodes = []
+    links = []
+
     console.log(selection)
     console.log(pwk_lookup)
     console.log(source_lookup)
     console.log(children_lookup)
+
+    selection.forEach(s => {
+      node_lu.push(s)
+      if(source_lookup[s]){
+        source_lookup[s].forEach(l => {
+            node_lu.push(l)
+            node_lu.push(s)
+          
+        })
+      }
+      if(children_lookup[s]){
+        children_lookup[s].forEach(l => {
+            node_lu.push(l)
+            node_lu.push(s)
+        })
+      }
+    })
+
+    var rel_nodes = node_lu.reduce(function(list, item, index, array) { 
+      if (array.indexOf(item, index + 1) !== -1 && list.indexOf(item) === -1) {
+        list.push(item);
+      }
+      return list;
+    }, []);
+    var already_in = []
+
+    selection.forEach(s => {
+      nodes.push({"id" : s})
+      node_lu.push(s)
+      if(source_lookup[s]){
+        source_lookup[s].forEach(l => {
+            if(rel_nodes.includes(l)){
+              if(!(already_in.includes(l))){
+              nodes.push({"id" : l})
+              already_in.push(l)
+            }
+            links.push({"source":l, "target":s})
+          }
+        })
+      }
+      if(children_lookup[s]){
+        children_lookup[s].forEach(l => {
+          if(rel_nodes.includes(l)){
+            if(!(already_in.includes(l))){
+            nodes.push({"id" : l})
+            already_in.push(l)
+          }
+          links.push({"source":l, "target":s})
+        }
+        })
+      }
+    })
+
+
+    var graph = {"nodes": nodes, "links":links}
     //while 
-    var treeData =
-    {
-      "name": "Top Level",
-      "children": [
-        { 
-      "name": "Level 2: A",
-          "children": [
-            { "name": "Son of A" },
-            { "name": "Daughter of A" }
-          ]
-        },
-        { "name": "Son of A" }
-      ]
-    };
-  
+    console.log(graph)
+    return graph
 }
 
 function prep_influ(selection, pwk_lookup){
+  
   //get maximas
   var data = []
-  var ax = ["Citation Count", "Reference Count", "Betweenness Centrality", "Closeness Centrality", "Connectivity"]
+  var mtemp = ["citationCount", "referenceCount", "betweenc", "degreec", "degreec"]
+  var maxis = {citationCount:0.0000000000000000000000001, referenceCount:0.0000000000000000000000001, betweenc:0.0000000000000000000000001, degreec:0.0000000000000000000000001, degreec:0.0000000000000000000000001}
+  var colors = []
+  selection.forEach(s => {
+    colors.push(pwk_lookup[s]["PCA_Bremm"])
+    mtemp.forEach(a =>{
+      console.log(pwk_lookup[s][a])
+      if( pwk_lookup[s][a] > maxis[a]){maxis[a] =  pwk_lookup[s][a]}
+      if( pwk_lookup[s][a] == 0 ){pwk_lookup[s][a] = 0.0000000000000000000000001}
+    })
+  })
+  var maxistr = {}
+  maxistr["#Citation"] = maxis["citationCount"]
+  maxistr["#Reference"] = maxis["referenceCount"]
+  maxistr["Betweenness"] = maxis["betweenc"]
+  maxistr["Degree"] = maxis["degreec"]
+  maxistr["Connectivity"] = maxis["degreec"]
+
   selection.forEach(s => {
     pinfl = []
-    pinfl.push({axis: "Citation Count", value: pwk_lookup[s]["citationCount"]})
-    pinfl.push({axis: "Reference Count", value: pwk_lookup[s]["referenceCount"]})
-    pinfl.push({axis: "Betweenness Centrality", value: pwk_lookup[s]["betweenc"]})
-    pinfl.push({axis: "Degree Centrality", value: pwk_lookup[s]["degreec"]})
-    pinfl.push({axis: "Connectivity", value: pwk_lookup[s]["degreec"]})
+    pinfl.push({axis: "#Citation", value: pwk_lookup[s]["citationCount"]/maxis.citationCount})
+    pinfl.push({axis: "#Reference", value: pwk_lookup[s]["referenceCount"]/maxis.referenceCount})
+    pinfl.push({axis: "Betweenness", value: pwk_lookup[s]["betweenc"]/maxis.betweenc})
+    pinfl.push({axis: "Degree", value: pwk_lookup[s]["degreec"]/maxis.degreec})
+    pinfl.push({axis: "Connectivity", value: pwk_lookup[s]["degreec"]/maxis.degreec})
     data.push(pinfl)
   })
 
-  var data = [
-    [//iPhone
-    {axis:"Citation Count",value:0.22},
-    {axis:"Reference Count",value:0.28},
-    {axis:"Betweenness Centrality",value:0.29},
-    {axis:"Closeness Centrality",value:0.17},
-    {axis:"Connectivity",value:0.22}	
-    ],[//Samsung
-    {axis:"Citation Count",value:0.27},
-    {axis:"Reference Count",value:0.16},
-    {axis:"Betweenness Centrality",value:0.35},
-    {axis:"Closeness Centrality",value:0.13},
-    {axis:"Have Internet Connectivity",value:0.20},
-    {axis:"Connectivity",value:0.13}
-    ]
-  ];
-  return data;
+  return [data,colors, maxistr];
 }

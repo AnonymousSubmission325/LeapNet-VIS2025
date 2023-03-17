@@ -35,7 +35,9 @@
                   "UMAP_Schumann": "#7a1a80",
                   "TSNE_Steiger": "#8b92d2",
                   "PCA_Steiger": "#92b2c3",
-                  "UMAP_Steiger": "#c23cb3"
+                  "UMAP_Steiger": "#c23cb3",
+                  "degreec": 0.40800000000000003,
+                  "betweenc": 0.26944423787260624
             },
             {
                   "layer": 0,
@@ -72,7 +74,9 @@
                   "UMAP_Schumann": "#7ac280",
                   "TSNE_Steiger": "#de9d79",
                   "PCA_Steiger": "#d28b92",
-                  "UMAP_Steiger": "#bfb894"
+                  "UMAP_Steiger": "#bfb894",
+                  "degreec": 0.6,
+                  "betweenc": 0.5171421127470464
             },
             {
                   "layer": 0,
@@ -109,7 +113,9 @@
                   "UMAP_Schumann": "#1fe580",
                   "TSNE_Steiger": "#c55dac",
                   "PCA_Steiger": "#cfc078",
-                  "UMAP_Steiger": "#e0cd47"
+                  "UMAP_Steiger": "#e0cd47",
+                  "degreec": 0.024,
+                  "betweenc": 0.0009451612903225807
             },
             {
                   "layer": 0,
@@ -146,7 +152,9 @@
                   "UMAP_Schumann": "#00ab80",
                   "TSNE_Steiger": "#dc329a",
                   "PCA_Steiger": "#e99270",
-                  "UMAP_Steiger": "#f4ab46"
+                  "UMAP_Steiger": "#f4ab46",
+                  "degreec": 0.096,
+                  "betweenc": 0.014870109312993552
             },
             {
                   "layer": 0,
@@ -183,7 +191,9 @@
                   "UMAP_Schumann": "#cb8d80",
                   "TSNE_Steiger": "#c3af94",
                   "PCA_Steiger": "#dca579",
-                  "UMAP_Steiger": "#8a95d2"
+                  "UMAP_Steiger": "#8a95d2",
+                  "degreec": 0.024,
+                  "betweenc": 0.0013287378023620902
             },
             {
                   "layer": 1,
@@ -220,7 +230,9 @@
                   "UMAP_Schumann": "#76c480",
                   "TSNE_Steiger": "#c581a4",
                   "PCA_Steiger": "#dbb66d",
-                  "UMAP_Steiger": "#c0ba91"
+                  "UMAP_Steiger": "#c0ba91",
+                  "degreec": 0.024,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -257,7 +269,9 @@
                   "UMAP_Schumann": "#245580",
                   "TSNE_Steiger": "#d77f91",
                   "PCA_Steiger": "#df8983",
-                  "UMAP_Steiger": "#ee7178"
+                  "UMAP_Steiger": "#ee7178",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -294,7 +308,9 @@
                   "UMAP_Schumann": "#9d6580",
                   "TSNE_Steiger": "#6cb4da",
                   "PCA_Steiger": "#c07dab",
-                  "UMAP_Steiger": "#af7abc"
+                  "UMAP_Steiger": "#af7abc",
+                  "degreec": 0.032,
+                  "betweenc": 0.001398775776195131
             },
             {
                   "layer": 1,
@@ -331,7 +347,9 @@
                   "UMAP_Schumann": "#303380",
                   "TSNE_Steiger": "#9f74ca",
                   "PCA_Steiger": "#c1bb8f",
-                  "UMAP_Steiger": "#ea5586"
+                  "UMAP_Steiger": "#ea5586",
+                  "degreec": 0.064,
+                  "betweenc": 0.013244634998145433
             },
             {
                   "layer": 1,
@@ -368,7 +386,9 @@
                   "UMAP_Schumann": "#5c3280",
                   "TSNE_Steiger": "#8882d8",
                   "PCA_Steiger": "#97aec1",
-                  "UMAP_Steiger": "#d4549e"
+                  "UMAP_Steiger": "#d4549e",
+                  "degreec": 0.032,
+                  "betweenc": 0.0028426226103645466
             },
             {
                   "layer": 1,
@@ -405,7 +425,9 @@
                   "UMAP_Schumann": "#849e80",
                   "TSNE_Steiger": "#cf9592",
                   "PCA_Steiger": "#e35c8c",
-                  "UMAP_Steiger": "#bda1a2"
+                  "UMAP_Steiger": "#bda1a2",
+                  "degreec": 0.032,
+                  "betweenc": 0.0002870576187464233
             },
             {
                   "layer": 1,
@@ -442,7 +464,9 @@
                   "UMAP_Schumann": "#428780",
                   "TSNE_Steiger": "#e78978",
                   "PCA_Steiger": "#b685b3",
-                  "UMAP_Steiger": "#df937e"
+                  "UMAP_Steiger": "#df937e",
+                  "degreec": 0.064,
+                  "betweenc": 0.004133174057652236
             },
             {
                   "layer": 1,
@@ -479,7 +503,9 @@
                   "UMAP_Schumann": "#46a780",
                   "TSNE_Steiger": "#af68bf",
                   "PCA_Steiger": "#c1b891",
-                  "UMAP_Steiger": "#daa879"
+                  "UMAP_Steiger": "#daa879",
+                  "degreec": 0.07200000000000001,
+                  "betweenc": 0.004178140855560215
             },
             {
                   "layer": 1,
@@ -516,7 +542,9 @@
                   "UMAP_Schumann": "#2ed180",
                   "TSNE_Steiger": "#c433b2",
                   "PCA_Steiger": "#d8a77c",
-                  "UMAP_Steiger": "#dec25b"
+                  "UMAP_Steiger": "#dec25b",
+                  "degreec": 0.056,
+                  "betweenc": 0.0004919807790775533
             },
             {
                   "layer": 1,
@@ -553,7 +581,9 @@
                   "UMAP_Schumann": "#ca3480",
                   "TSNE_Steiger": "#8dc4be",
                   "PCA_Steiger": "#9662d3",
-                  "UMAP_Steiger": "#8656de"
+                  "UMAP_Steiger": "#8656de",
+                  "degreec": 0.024,
+                  "betweenc": 1.6129032258064517e-05
             },
             {
                   "layer": 1,
@@ -590,7 +620,9 @@
                   "UMAP_Schumann": "#8b0b80",
                   "TSNE_Steiger": "#9d9bc2",
                   "PCA_Steiger": "#af81ba",
-                  "UMAP_Steiger": "#b62abe"
+                  "UMAP_Steiger": "#b62abe",
+                  "degreec": 0.10400000000000001,
+                  "betweenc": 0.004145040675116574
             },
             {
                   "layer": 1,
@@ -627,7 +659,9 @@
                   "UMAP_Schumann": "#3f6a80",
                   "TSNE_Steiger": "#e57682",
                   "PCA_Steiger": "#cf62a2",
-                  "UMAP_Steiger": "#e28083"
+                  "UMAP_Steiger": "#e28083",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -664,7 +698,9 @@
                   "UMAP_Schumann": "#561080",
                   "TSNE_Steiger": "#9c8ec7",
                   "PCA_Steiger": "#c68ca0",
-                  "UMAP_Steiger": "#d62fa1"
+                  "UMAP_Steiger": "#d62fa1",
+                  "degreec": 0.128,
+                  "betweenc": 0.00771484484311809
             },
             {
                   "layer": 1,
@@ -701,7 +737,9 @@
                   "UMAP_Schumann": "#c6c380",
                   "TSNE_Steiger": "#d9c95d",
                   "PCA_Steiger": "#cb9e93",
-                  "UMAP_Steiger": "#89b9c7"
+                  "UMAP_Steiger": "#89b9c7",
+                  "degreec": 0.024,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -738,7 +776,9 @@
                   "UMAP_Schumann": "#67e180",
                   "TSNE_Steiger": "#c076ad",
                   "PCA_Steiger": "#b7aca3",
-                  "UMAP_Steiger": "#c3cc7f"
+                  "UMAP_Steiger": "#c3cc7f",
+                  "degreec": 0.024,
+                  "betweenc": 0.000564953684308523
             },
             {
                   "layer": 1,
@@ -775,7 +815,9 @@
                   "UMAP_Schumann": "#f39a80",
                   "TSNE_Steiger": "#bcdc79",
                   "PCA_Steiger": "#c2cb81",
-                  "UMAP_Steiger": "#549deb"
+                  "UMAP_Steiger": "#549deb",
+                  "degreec": 0.032,
+                  "betweenc": 0.00049470744309454
             },
             {
                   "layer": 1,
@@ -812,7 +854,9 @@
                   "UMAP_Schumann": "#8b7180",
                   "TSNE_Steiger": "#b979b3",
                   "PCA_Steiger": "#d48493",
-                  "UMAP_Steiger": "#bb83af"
+                  "UMAP_Steiger": "#bb83af",
+                  "degreec": 0.024,
+                  "betweenc": 0.0031839263203589565
             },
             {
                   "layer": 1,
@@ -849,7 +893,9 @@
                   "UMAP_Schumann": "#48d580",
                   "TSNE_Steiger": "#c25bb0",
                   "PCA_Steiger": "#d99685",
-                  "UMAP_Steiger": "#d3c46d"
+                  "UMAP_Steiger": "#d3c46d",
+                  "degreec": 0.024,
+                  "betweenc": 0.0009923724809872815
             },
             {
                   "layer": 1,
@@ -886,7 +932,9 @@
                   "UMAP_Schumann": "#cf3880",
                   "TSNE_Steiger": "#9db9b6",
                   "PCA_Steiger": "#9080d3",
-                  "UMAP_Steiger": "#8159e0"
+                  "UMAP_Steiger": "#8159e0",
+                  "degreec": 0.032,
+                  "betweenc": 0.006844875554552975
             },
             {
                   "layer": 1,
@@ -923,7 +971,9 @@
                   "UMAP_Schumann": "#b88f80",
                   "TSNE_Steiger": "#f59b56",
                   "PCA_Steiger": "#c573a8",
-                  "UMAP_Steiger": "#9b97c6"
+                  "UMAP_Steiger": "#9b97c6",
+                  "degreec": 0.04,
+                  "betweenc": 0.0006229437229437228
             },
             {
                   "layer": 1,
@@ -960,7 +1010,9 @@
                   "UMAP_Schumann": "#895d80",
                   "TSNE_Steiger": "#a97bc1",
                   "PCA_Steiger": "#a38ec1",
-                  "UMAP_Steiger": "#bc75b0"
+                  "UMAP_Steiger": "#bc75b0",
+                  "degreec": 0.032,
+                  "betweenc": 0.0013353672471319528
             },
             {
                   "layer": 1,
@@ -997,7 +1049,9 @@
                   "UMAP_Schumann": "#35f180",
                   "TSNE_Steiger": "#b033c2",
                   "PCA_Steiger": "#d08996",
-                  "UMAP_Steiger": "#d5d554"
+                  "UMAP_Steiger": "#d5d554",
+                  "degreec": 0.064,
+                  "betweenc": 0.001183372899501932
             },
             {
                   "layer": 1,
@@ -1034,7 +1088,9 @@
                   "UMAP_Schumann": "#971580",
                   "TSNE_Steiger": "#949ec9",
                   "PCA_Steiger": "#b195b3",
-                  "UMAP_Steiger": "#ae38c4"
+                  "UMAP_Steiger": "#ae38c4",
+                  "degreec": 0.048,
+                  "betweenc": 0.000582497788949402
             },
             {
                   "layer": 1,
@@ -1071,7 +1127,9 @@
                   "UMAP_Schumann": "#6c5680",
                   "TSNE_Steiger": "#ba8aae",
                   "PCA_Steiger": "#b7a2a9",
-                  "UMAP_Steiger": "#cc70a1"
+                  "UMAP_Steiger": "#cc70a1",
+                  "degreec": 0.136,
+                  "betweenc": 0.015295573170241116
             },
             {
                   "layer": 1,
@@ -1108,7 +1166,9 @@
                   "UMAP_Schumann": "#e1a880",
                   "TSNE_Steiger": "#ccd06e",
                   "PCA_Steiger": "#aba6b3",
-                  "UMAP_Steiger": "#70a7dc"
+                  "UMAP_Steiger": "#70a7dc",
+                  "degreec": 0.088,
+                  "betweenc": 0.03148608242906157
             },
             {
                   "layer": 1,
@@ -1145,7 +1205,9 @@
                   "UMAP_Schumann": "#857780",
                   "TSNE_Steiger": "#ed677d",
                   "PCA_Steiger": "#d068a0",
-                  "UMAP_Steiger": "#be87aa"
+                  "UMAP_Steiger": "#be87aa",
+                  "degreec": 0.04,
+                  "betweenc": 0.010608131611167663
             },
             {
                   "layer": 1,
@@ -1182,7 +1244,9 @@
                   "UMAP_Schumann": "#47bb80",
                   "TSNE_Steiger": "#b45bbc",
                   "PCA_Steiger": "#da9b81",
-                  "UMAP_Steiger": "#d7b474"
+                  "UMAP_Steiger": "#d7b474",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -1219,7 +1283,9 @@
                   "UMAP_Schumann": "#59ea80",
                   "TSNE_Steiger": "#a435cc",
                   "PCA_Steiger": "#ccdc5e",
-                  "UMAP_Steiger": "#c8d173"
+                  "UMAP_Steiger": "#c8d173",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -1256,7 +1322,9 @@
                   "UMAP_Schumann": "#18cf80",
                   "TSNE_Steiger": "#ce5ca3",
                   "PCA_Steiger": "#e59275",
-                  "UMAP_Steiger": "#e7c04a"
+                  "UMAP_Steiger": "#e7c04a",
+                  "degreec": 0.08,
+                  "betweenc": 0.0029452218032863173
             },
             {
                   "layer": 1,
@@ -1293,7 +1361,9 @@
                   "UMAP_Schumann": "#3f5380",
                   "TSNE_Steiger": "#905cd7",
                   "PCA_Steiger": "#dc748f",
-                  "UMAP_Steiger": "#e27088"
+                  "UMAP_Steiger": "#e27088",
+                  "degreec": 0.096,
+                  "betweenc": 0.006491519570456949
             },
             {
                   "layer": 1,
@@ -1330,7 +1400,9 @@
                   "UMAP_Schumann": "#156b80",
                   "TSNE_Steiger": "#e72a8f",
                   "PCA_Steiger": "#d09392",
-                  "UMAP_Steiger": "#f3826a"
+                  "UMAP_Steiger": "#f3826a",
+                  "degreec": 0.024,
+                  "betweenc": 9.775171065493646e-05
             },
             {
                   "layer": 1,
@@ -1367,7 +1439,9 @@
                   "UMAP_Schumann": "#0dc780",
                   "TSNE_Steiger": "#d155a2",
                   "PCA_Steiger": "#e0a572",
-                  "UMAP_Steiger": "#ecbc44"
+                  "UMAP_Steiger": "#ecbc44",
+                  "degreec": 0.16,
+                  "betweenc": 0.018877646525938735
             },
             {
                   "layer": 1,
@@ -1404,7 +1478,9 @@
                   "UMAP_Schumann": "#179f80",
                   "TSNE_Steiger": "#e1648d",
                   "PCA_Steiger": "#c5b290",
-                  "UMAP_Steiger": "#eea35c"
+                  "UMAP_Steiger": "#eea35c",
+                  "degreec": 0.056,
+                  "betweenc": 0.004074202858073828
             },
             {
                   "layer": 1,
@@ -1441,7 +1517,9 @@
                   "UMAP_Schumann": "#6c2380",
                   "TSNE_Steiger": "#4b8bf1",
                   "PCA_Steiger": "#9ebcb4",
-                  "UMAP_Steiger": "#cb46a9"
+                  "UMAP_Steiger": "#cb46a9",
+                  "degreec": 0.016,
+                  "betweenc": 0.002579680155391729
             },
             {
                   "layer": 1,
@@ -1478,7 +1556,9 @@
                   "UMAP_Schumann": "#a58b80",
                   "TSNE_Steiger": "#c0a19f",
                   "PCA_Steiger": "#dc977f",
-                  "UMAP_Steiger": "#a994bb"
+                  "UMAP_Steiger": "#a994bb",
+                  "degreec": 0.04,
+                  "betweenc": 0.0008306102499650886
             },
             {
                   "layer": 1,
@@ -1515,7 +1595,9 @@
                   "UMAP_Schumann": "#662680",
                   "TSNE_Steiger": "#7978e1",
                   "PCA_Steiger": "#b188b7",
-                  "UMAP_Steiger": "#cf49a6"
+                  "UMAP_Steiger": "#cf49a6",
+                  "degreec": 0.056,
+                  "betweenc": 0.0005650131230776391
             },
             {
                   "layer": 1,
@@ -1552,7 +1634,9 @@
                   "UMAP_Schumann": "#b0ca80",
                   "TSNE_Steiger": "#d8ab7a",
                   "PCA_Steiger": "#b569ba",
-                  "UMAP_Steiger": "#9abdb7"
+                  "UMAP_Steiger": "#9abdb7",
+                  "degreec": 0.016,
+                  "betweenc": 0.001376804915514593
             },
             {
                   "layer": 1,
@@ -1589,7 +1673,9 @@
                   "UMAP_Schumann": "#b14a80",
                   "TSNE_Steiger": "#97d4ac",
                   "PCA_Steiger": "#4aa1ed",
-                  "UMAP_Steiger": "#9f67cc"
+                  "UMAP_Steiger": "#9f67cc",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -1626,7 +1712,9 @@
                   "UMAP_Schumann": "#dc7180",
                   "TSNE_Steiger": "#c8af8d",
                   "PCA_Steiger": "#ba33ba",
-                  "UMAP_Steiger": "#7782e1"
+                  "UMAP_Steiger": "#7782e1",
+                  "degreec": 0.056,
+                  "betweenc": 0.003352249237163848
             },
             {
                   "layer": 1,
@@ -1663,7 +1751,9 @@
                   "UMAP_Schumann": "#914380",
                   "TSNE_Steiger": "#669ee4",
                   "PCA_Steiger": "#9f99c2",
-                  "UMAP_Steiger": "#b661ba"
+                  "UMAP_Steiger": "#b661ba",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -1700,7 +1790,9 @@
                   "UMAP_Schumann": "#a1e480",
                   "TSNE_Steiger": "#8dc0c0",
                   "PCA_Steiger": "#b67bb5",
-                  "UMAP_Steiger": "#a1cea7"
+                  "UMAP_Steiger": "#a1cea7",
+                  "degreec": 0.04,
+                  "betweenc": 0.0023233626588465297
             },
             {
                   "layer": 1,
@@ -1737,7 +1829,9 @@
                   "UMAP_Schumann": "#624280",
                   "TSNE_Steiger": "#766fe4",
                   "PCA_Steiger": "#c577a7",
-                  "UMAP_Steiger": "#d1619f"
+                  "UMAP_Steiger": "#d1619f",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -1774,7 +1868,9 @@
                   "UMAP_Schumann": "#702780",
                   "TSNE_Steiger": "#8583d9",
                   "PCA_Steiger": "#b3a2ac",
-                  "UMAP_Steiger": "#c949ab"
+                  "UMAP_Steiger": "#c949ab",
+                  "degreec": 0.032,
+                  "betweenc": 0.0022082763115021183
             },
             {
                   "layer": 1,
@@ -1811,7 +1907,9 @@
                   "UMAP_Schumann": "#ada580",
                   "TSNE_Steiger": "#bba6a2",
                   "PCA_Steiger": "#c1b494",
-                  "UMAP_Steiger": "#a1a5bb"
+                  "UMAP_Steiger": "#a1a5bb",
+                  "degreec": 0.024,
+                  "betweenc": 1.8433179723502303e-05
             },
             {
                   "layer": 1,
@@ -1848,7 +1946,9 @@
                   "UMAP_Schumann": "#87da80",
                   "TSNE_Steiger": "#d07e99",
                   "PCA_Steiger": "#cca090",
-                  "UMAP_Steiger": "#b3c897"
+                  "UMAP_Steiger": "#b3c897",
+                  "degreec": 0.024,
+                  "betweenc": 7.74193548387097e-05
             },
             {
                   "layer": 1,
@@ -1885,7 +1985,9 @@
                   "UMAP_Schumann": "#25b080",
                   "TSNE_Steiger": "#ce68a2",
                   "PCA_Steiger": "#cbc27c",
-                  "UMAP_Steiger": "#e6ae60"
+                  "UMAP_Steiger": "#e6ae60",
+                  "degreec": 0.048,
+                  "betweenc": 0.0014403303843531544
             },
             {
                   "layer": 1,
@@ -1922,7 +2024,9 @@
                   "UMAP_Schumann": "#a19080",
                   "TSNE_Steiger": "#b193b3",
                   "PCA_Steiger": "#bba3a4",
-                  "UMAP_Steiger": "#ac97b7"
+                  "UMAP_Steiger": "#ac97b7",
+                  "degreec": 0.024,
+                  "betweenc": 0.0008537075827398407
             },
             {
                   "layer": 1,
@@ -1959,7 +2063,9 @@
                   "UMAP_Schumann": "#dbc180",
                   "TSNE_Steiger": "#d4b17b",
                   "PCA_Steiger": "#ca869e",
-                  "UMAP_Steiger": "#72b8d5"
+                  "UMAP_Steiger": "#72b8d5",
+                  "degreec": 0.024,
+                  "betweenc": 0.0019769585253456216
             },
             {
                   "layer": 1,
@@ -1996,7 +2102,9 @@
                   "UMAP_Schumann": "#88e280",
                   "TSNE_Steiger": "#d08797",
                   "PCA_Steiger": "#da9883",
-                  "UMAP_Steiger": "#b1cd95"
+                  "UMAP_Steiger": "#b1cd95",
+                  "degreec": 0.024,
+                  "betweenc": 0.0010881171327091629
             },
             {
                   "layer": 1,
@@ -2033,7 +2141,9 @@
                   "UMAP_Schumann": "#3cb880",
                   "TSNE_Steiger": "#cc6ca2",
                   "PCA_Steiger": "#eca65c",
-                  "UMAP_Steiger": "#dcb26e"
+                  "UMAP_Steiger": "#dcb26e",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2070,7 +2180,9 @@
                   "UMAP_Schumann": "#3dfc80",
                   "TSNE_Steiger": "#913cd8",
                   "PCA_Steiger": "#c5a895",
-                  "UMAP_Steiger": "#d0db57"
+                  "UMAP_Steiger": "#d0db57",
+                  "degreec": 0.128,
+                  "betweenc": 0.013599151417842098
             },
             {
                   "layer": 1,
@@ -2107,7 +2219,9 @@
                   "UMAP_Schumann": "#c36480",
                   "TSNE_Steiger": "#b2b7a3",
                   "PCA_Steiger": "#b190b5",
-                  "UMAP_Steiger": "#9079d4"
+                  "UMAP_Steiger": "#9079d4",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2144,7 +2258,9 @@
                   "UMAP_Schumann": "#748d80",
                   "TSNE_Steiger": "#f37a6d",
                   "PCA_Steiger": "#ca889d",
-                  "UMAP_Steiger": "#c7969b"
+                  "UMAP_Steiger": "#c7969b",
+                  "degreec": 0.048,
+                  "betweenc": 0.00023996648512777545
             },
             {
                   "layer": 1,
@@ -2181,7 +2297,9 @@
                   "UMAP_Schumann": "#1b8380",
                   "TSNE_Steiger": "#f25b7a",
                   "PCA_Steiger": "#c4979f",
-                  "UMAP_Steiger": "#ef9167"
+                  "UMAP_Steiger": "#ef9167",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2218,7 +2336,9 @@
                   "UMAP_Schumann": "#2fc480",
                   "TSNE_Steiger": "#d3639e",
                   "PCA_Steiger": "#f89752",
-                  "UMAP_Steiger": "#e0ba61"
+                  "UMAP_Steiger": "#e0ba61",
+                  "degreec": 0.04,
+                  "betweenc": 0.002163492063492064
             },
             {
                   "layer": 1,
@@ -2255,7 +2375,9 @@
                   "UMAP_Schumann": "#485a80",
                   "TSNE_Steiger": "#fb845c",
                   "PCA_Steiger": "#91adc5",
-                  "UMAP_Steiger": "#de748c"
+                  "UMAP_Steiger": "#de748c",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2292,7 +2414,9 @@
                   "UMAP_Schumann": "#069c80",
                   "TSNE_Steiger": "#e34291",
                   "PCA_Steiger": "#cb8d9a",
-                  "UMAP_Steiger": "#f4a251"
+                  "UMAP_Steiger": "#f4a251",
+                  "degreec": 0.07200000000000001,
+                  "betweenc": 0.00437587394684169
             },
             {
                   "layer": 1,
@@ -2329,7 +2453,9 @@
                   "UMAP_Schumann": "#7fe780",
                   "TSNE_Steiger": "#a996ba",
                   "PCA_Steiger": "#db8f86",
-                  "UMAP_Steiger": "#b6d08e"
+                  "UMAP_Steiger": "#b6d08e",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2366,7 +2492,9 @@
                   "UMAP_Schumann": "#9eba80",
                   "TSNE_Steiger": "#ca9399",
                   "PCA_Steiger": "#d78390",
-                  "UMAP_Steiger": "#aab3ad"
+                  "UMAP_Steiger": "#aab3ad",
+                  "degreec": 0.16,
+                  "betweenc": 0.011595570105627043
             },
             {
                   "layer": 1,
@@ -2403,7 +2531,9 @@
                   "UMAP_Schumann": "#526780",
                   "TSNE_Steiger": "#7957e4",
                   "PCA_Steiger": "#da7790",
-                  "UMAP_Steiger": "#d97d8f"
+                  "UMAP_Steiger": "#d97d8f",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2440,7 +2570,9 @@
                   "UMAP_Schumann": "#66a780",
                   "TSNE_Steiger": "#d5958a",
                   "PCA_Steiger": "#d97791",
-                  "UMAP_Steiger": "#cca78d"
+                  "UMAP_Steiger": "#cca78d",
+                  "degreec": 0.024,
+                  "betweenc": 6.451612903225807e-05
             },
             {
                   "layer": 1,
@@ -2477,7 +2609,9 @@
                   "UMAP_Schumann": "#266e80",
                   "TSNE_Steiger": "#db768f",
                   "PCA_Steiger": "#ca869e",
-                  "UMAP_Steiger": "#ec8373"
+                  "UMAP_Steiger": "#ec8373",
+                  "degreec": 0.032,
+                  "betweenc": 0.00012903225806451613
             },
             {
                   "layer": 1,
@@ -2514,7 +2648,9 @@
                   "UMAP_Schumann": "#02d180",
                   "TSNE_Steiger": "#cf1ea9",
                   "PCA_Steiger": "#ceb781",
-                  "UMAP_Steiger": "#eec135"
+                  "UMAP_Steiger": "#eec135",
+                  "degreec": 0.128,
+                  "betweenc": 0.017382998374174837
             },
             {
                   "layer": 1,
@@ -2551,7 +2687,9 @@
                   "UMAP_Schumann": "#0fde80",
                   "TSNE_Steiger": "#cc0fac",
                   "PCA_Steiger": "#daac76",
-                  "UMAP_Steiger": "#e7c93b"
+                  "UMAP_Steiger": "#e7c93b",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2588,7 +2726,9 @@
                   "UMAP_Schumann": "#ca9280",
                   "TSNE_Steiger": "#d1c373",
                   "PCA_Steiger": "#bf98a4",
-                  "UMAP_Steiger": "#8a98d1"
+                  "UMAP_Steiger": "#8a98d1",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2625,7 +2765,9 @@
                   "UMAP_Schumann": "#7b0280",
                   "TSNE_Steiger": "#979dc6",
                   "PCA_Steiger": "#bf8da7",
-                  "UMAP_Steiger": "#c018b7"
+                  "UMAP_Steiger": "#c018b7",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2662,7 +2804,9 @@
                   "UMAP_Schumann": "#cbd680",
                   "TSNE_Steiger": "#e3b75e",
                   "PCA_Steiger": "#e8797d",
-                  "UMAP_Steiger": "#80c6c7"
+                  "UMAP_Steiger": "#80c6c7",
+                  "degreec": 0.04,
+                  "betweenc": 0.0001280202403542062
             },
             {
                   "layer": 1,
@@ -2699,7 +2843,9 @@
                   "UMAP_Schumann": "#3fea80",
                   "TSNE_Steiger": "#ac1ac7",
                   "PCA_Steiger": "#bc89ac",
-                  "UMAP_Steiger": "#d3d160"
+                  "UMAP_Steiger": "#d3d160",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2736,7 +2882,9 @@
                   "UMAP_Schumann": "#70a480",
                   "TSNE_Steiger": "#e78a77",
                   "PCA_Steiger": "#e47b82",
-                  "UMAP_Steiger": "#c7a594"
+                  "UMAP_Steiger": "#c7a594",
+                  "degreec": 0.032,
+                  "betweenc": 0.000292268305171531
             },
             {
                   "layer": 1,
@@ -2773,7 +2921,9 @@
                   "UMAP_Schumann": "#2eeb80",
                   "TSNE_Steiger": "#b733bd",
                   "PCA_Steiger": "#cf8e95",
-                  "UMAP_Steiger": "#d9d152"
+                  "UMAP_Steiger": "#d9d152",
+                  "degreec": 0.024,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -2810,7 +2960,9 @@
                   "UMAP_Schumann": "#319780",
                   "TSNE_Steiger": "#d64f9d",
                   "PCA_Steiger": "#ea8c72",
-                  "UMAP_Steiger": "#e59e6f"
+                  "UMAP_Steiger": "#e59e6f",
+                  "degreec": 0.016,
+                  "betweenc": 0.002840148024018992
             },
             {
                   "layer": 1,
@@ -2847,7 +2999,9 @@
                   "UMAP_Schumann": "#650a80",
                   "TSNE_Steiger": "#9594cb",
                   "PCA_Steiger": "#a394c0",
-                  "UMAP_Steiger": "#ce26aa"
+                  "UMAP_Steiger": "#ce26aa",
+                  "degreec": 0.064,
+                  "betweenc": 0.004265907927198253
             },
             {
                   "layer": 1,
@@ -2884,7 +3038,9 @@
                   "UMAP_Schumann": "#e97380",
                   "TSNE_Steiger": "#c5bc8a",
                   "PCA_Steiger": "#a992bb",
-                  "UMAP_Steiger": "#6683e9"
+                  "UMAP_Steiger": "#6683e9",
+                  "degreec": 0.032,
+                  "betweenc": 0.008920135651824448
             },
             {
                   "layer": 1,
@@ -2921,7 +3077,9 @@
                   "UMAP_Schumann": "#92af80",
                   "TSNE_Steiger": "#cea28d",
                   "PCA_Steiger": "#d67495",
-                  "UMAP_Steiger": "#b3aca8"
+                  "UMAP_Steiger": "#b3aca8",
+                  "degreec": 0.024,
+                  "betweenc": 0.0037412698412698383
             },
             {
                   "layer": 1,
@@ -2958,7 +3116,9 @@
                   "UMAP_Schumann": "#9adb80",
                   "TSNE_Steiger": "#dbac74",
                   "PCA_Steiger": "#d3579f",
-                  "UMAP_Steiger": "#a7c9a4"
+                  "UMAP_Steiger": "#a7c9a4",
+                  "degreec": 0.016,
+                  "betweenc": 0.0018207373271889378
             },
             {
                   "layer": 1,
@@ -2995,7 +3155,9 @@
                   "UMAP_Schumann": "#b26080",
                   "TSNE_Steiger": "#acc89f",
                   "PCA_Steiger": "#9961d0",
-                  "UMAP_Steiger": "#9f76ca"
+                  "UMAP_Steiger": "#9f76ca",
+                  "degreec": 0.04,
+                  "betweenc": 0.01177657575399512
             },
             {
                   "layer": 1,
@@ -3032,7 +3194,9 @@
                   "UMAP_Schumann": "#636380",
                   "TSNE_Steiger": "#b285b6",
                   "PCA_Steiger": "#c97ca2",
-                  "UMAP_Steiger": "#d17a9a"
+                  "UMAP_Steiger": "#d17a9a",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3069,7 +3233,9 @@
                   "UMAP_Schumann": "#64ce80",
                   "TSNE_Steiger": "#c474aa",
                   "PCA_Steiger": "#df7f88",
-                  "UMAP_Steiger": "#c8c083"
+                  "UMAP_Steiger": "#c8c083",
+                  "degreec": 0.032,
+                  "betweenc": 9.470744309453987e-05
             },
             {
                   "layer": 1,
@@ -3106,7 +3272,9 @@
                   "UMAP_Schumann": "#57cf80",
                   "TSNE_Steiger": "#b25ebe",
                   "PCA_Steiger": "#da9c80",
-                  "UMAP_Steiger": "#cec179"
+                  "UMAP_Steiger": "#cec179",
+                  "degreec": 0.04,
+                  "betweenc": 0.0021930596285434983
             },
             {
                   "layer": 1,
@@ -3143,7 +3311,9 @@
                   "UMAP_Schumann": "#ca6180",
                   "TSNE_Steiger": "#b3cb96",
                   "PCA_Steiger": "#cb819f",
-                  "UMAP_Steiger": "#8a77d8"
+                  "UMAP_Steiger": "#8a77d8",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3180,7 +3350,9 @@
                   "UMAP_Schumann": "#713580",
                   "TSNE_Steiger": "#7d8add",
                   "PCA_Steiger": "#9eb3b9",
-                  "UMAP_Steiger": "#c957aa"
+                  "UMAP_Steiger": "#c957aa",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3217,7 +3389,9 @@
                   "UMAP_Schumann": "#726d80",
                   "TSNE_Steiger": "#a367c9",
                   "PCA_Steiger": "#e65a89",
-                  "UMAP_Steiger": "#c981a0"
+                  "UMAP_Steiger": "#c981a0",
+                  "degreec": 0.04,
+                  "betweenc": 0.0051896782955606485
             },
             {
                   "layer": 1,
@@ -3254,7 +3428,9 @@
                   "UMAP_Schumann": "#8dc080",
                   "TSNE_Steiger": "#ce9a91",
                   "PCA_Steiger": "#d38494",
-                  "UMAP_Steiger": "#b4b7a1"
+                  "UMAP_Steiger": "#b4b7a1",
+                  "degreec": 0.048,
+                  "betweenc": 0.0009102918586789556
             },
             {
                   "layer": 1,
@@ -3291,7 +3467,9 @@
                   "UMAP_Schumann": "#d49d80",
                   "TSNE_Steiger": "#cfca6e",
                   "PCA_Steiger": "#bda0a2",
-                  "UMAP_Steiger": "#7fa0d6"
+                  "UMAP_Steiger": "#7fa0d6",
+                  "degreec": 0.064,
+                  "betweenc": 0.005929852942756167
             },
             {
                   "layer": 1,
@@ -3328,7 +3506,9 @@
                   "UMAP_Schumann": "#d1da80",
                   "TSNE_Steiger": "#e2b95d",
                   "PCA_Steiger": "#c2bc8c",
-                  "UMAP_Steiger": "#79c8ca"
+                  "UMAP_Steiger": "#79c8ca",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3365,7 +3545,9 @@
                   "UMAP_Schumann": "#2ca980",
                   "TSNE_Steiger": "#d6429f",
                   "PCA_Steiger": "#dec25b",
-                  "UMAP_Steiger": "#e5a967"
+                  "UMAP_Steiger": "#e5a967",
+                  "degreec": 0.024,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3402,7 +3584,9 @@
                   "UMAP_Schumann": "#809580",
                   "TSNE_Steiger": "#f08a6a",
                   "PCA_Steiger": "#de788a",
-                  "UMAP_Steiger": "#c09ba1"
+                  "UMAP_Steiger": "#c09ba1",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3439,7 +3623,9 @@
                   "UMAP_Schumann": "#6c7780",
                   "TSNE_Steiger": "#be8ea9",
                   "PCA_Steiger": "#cd889a",
-                  "UMAP_Steiger": "#cc889b"
+                  "UMAP_Steiger": "#cc889b",
+                  "degreec": 0.048,
+                  "betweenc": 0.0008357166131359673
             },
             {
                   "layer": 1,
@@ -3476,7 +3662,9 @@
                   "UMAP_Schumann": "#c2e480",
                   "TSNE_Steiger": "#e2c056",
                   "PCA_Steiger": "#c9bd83",
-                  "UMAP_Steiger": "#85cfbe"
+                  "UMAP_Steiger": "#85cfbe",
+                  "degreec": 0.024,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3513,7 +3701,9 @@
                   "UMAP_Schumann": "#1eb280",
                   "TSNE_Steiger": "#c658ad",
                   "PCA_Steiger": "#caab8e",
-                  "UMAP_Steiger": "#e9af5a"
+                  "UMAP_Steiger": "#e9af5a",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3550,7 +3740,9 @@
                   "UMAP_Schumann": "#c87880",
                   "TSNE_Steiger": "#bbc68e",
                   "PCA_Steiger": "#c57ba7",
-                  "UMAP_Steiger": "#8c87d4"
+                  "UMAP_Steiger": "#8c87d4",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3587,7 +3779,9 @@
                   "UMAP_Schumann": "#218e80",
                   "TSNE_Steiger": "#dd6d8f",
                   "PCA_Steiger": "#c99d96",
-                  "UMAP_Steiger": "#ec9968"
+                  "UMAP_Steiger": "#ec9968",
+                  "degreec": 0.04,
+                  "betweenc": 0.0031011753479495427
             },
             {
                   "layer": 1,
@@ -3624,7 +3818,9 @@
                   "UMAP_Schumann": "#297880",
                   "TSNE_Steiger": "#f87368",
                   "PCA_Steiger": "#c392a2",
-                  "UMAP_Steiger": "#ea8a72"
+                  "UMAP_Steiger": "#ea8a72",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3661,7 +3857,9 @@
                   "UMAP_Schumann": "#673e80",
                   "TSNE_Steiger": "#7d74e0",
                   "PCA_Steiger": "#9e94c4",
-                  "UMAP_Steiger": "#cf5ea2"
+                  "UMAP_Steiger": "#cf5ea2",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3698,7 +3896,9 @@
                   "UMAP_Schumann": "#a5a780",
                   "TSNE_Steiger": "#bd8eaa",
                   "PCA_Steiger": "#c9a592",
-                  "UMAP_Steiger": "#a7a6b6"
+                  "UMAP_Steiger": "#a7a6b6",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3735,7 +3935,9 @@
                   "UMAP_Schumann": "#7ca280",
                   "TSNE_Steiger": "#e9a165",
                   "PCA_Steiger": "#d5539e",
-                  "UMAP_Steiger": "#c1a49c"
+                  "UMAP_Steiger": "#c1a49c",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3772,7 +3974,9 @@
                   "UMAP_Schumann": "#e87680",
                   "TSNE_Steiger": "#bfba92",
                   "PCA_Steiger": "#a68fbe",
-                  "UMAP_Steiger": "#6885e8"
+                  "UMAP_Steiger": "#6885e8",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3809,7 +4013,9 @@
                   "UMAP_Schumann": "#f89680",
                   "TSNE_Steiger": "#bada7e",
                   "PCA_Steiger": "#9ed1a8",
-                  "UMAP_Steiger": "#4b9bee"
+                  "UMAP_Steiger": "#4b9bee",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3846,7 +4052,9 @@
                   "UMAP_Schumann": "#356480",
                   "TSNE_Steiger": "#d8828e",
                   "PCA_Steiger": "#cf829a",
-                  "UMAP_Steiger": "#e67c7f"
+                  "UMAP_Steiger": "#e67c7f",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3883,7 +4091,9 @@
                   "UMAP_Schumann": "#9a1680",
                   "TSNE_Steiger": "#95b1c1",
                   "PCA_Steiger": "#aa87bd",
-                  "UMAP_Steiger": "#ac39c6"
+                  "UMAP_Steiger": "#ac39c6",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3920,7 +4130,9 @@
                   "UMAP_Schumann": "#a77880",
                   "TSNE_Steiger": "#a8d799",
                   "PCA_Steiger": "#bd6eb1",
-                  "UMAP_Steiger": "#a887bf"
+                  "UMAP_Steiger": "#a887bf",
+                  "degreec": 0.07200000000000001,
+                  "betweenc": 0.0017867415001191092
             },
             {
                   "layer": 1,
@@ -3957,7 +4169,9 @@
                   "UMAP_Schumann": "#ab2780",
                   "TSNE_Steiger": "#9cabbe",
                   "PCA_Steiger": "#b282b7",
-                  "UMAP_Steiger": "#a14bcd"
+                  "UMAP_Steiger": "#a14bcd",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -3994,7 +4208,9 @@
                   "UMAP_Schumann": "#90a980",
                   "TSNE_Steiger": "#f0af4c",
                   "PCA_Steiger": "#c6b090",
-                  "UMAP_Steiger": "#b5a8a8"
+                  "UMAP_Steiger": "#b5a8a8",
+                  "degreec": 0.048,
+                  "betweenc": 0.004358391787424049
             },
             {
                   "layer": 1,
@@ -4031,7 +4247,9 @@
                   "UMAP_Schumann": "#508180",
                   "TSNE_Steiger": "#f0896a",
                   "PCA_Steiger": "#a195c1",
-                  "UMAP_Steiger": "#d98f88"
+                  "UMAP_Steiger": "#d98f88",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4068,7 +4286,9 @@
                   "UMAP_Schumann": "#974280",
                   "TSNE_Steiger": "#4f9fec",
                   "PCA_Steiger": "#8eadc8",
-                  "UMAP_Steiger": "#b261bd"
+                  "UMAP_Steiger": "#b261bd",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4105,7 +4325,9 @@
                   "UMAP_Schumann": "#57ea80",
                   "TSNE_Steiger": "#a437cc",
                   "PCA_Steiger": "#b5ce90",
-                  "UMAP_Steiger": "#c9d171"
+                  "UMAP_Steiger": "#c9d171",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4142,7 +4364,9 @@
                   "UMAP_Schumann": "#a4c080",
                   "TSNE_Steiger": "#d9a87b",
                   "PCA_Steiger": "#b615bf",
-                  "UMAP_Steiger": "#a5b7b0"
+                  "UMAP_Steiger": "#a5b7b0",
+                  "degreec": 0.024,
+                  "betweenc": 0.00014746543778801843
             },
             {
                   "layer": 1,
@@ -4179,7 +4403,9 @@
                   "UMAP_Schumann": "#de4d80",
                   "TSNE_Steiger": "#94ceb3",
                   "PCA_Steiger": "#6678eb",
-                  "UMAP_Steiger": "#7169e7"
+                  "UMAP_Steiger": "#7169e7",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4216,7 +4442,9 @@
                   "UMAP_Schumann": "#443480",
                   "TSNE_Steiger": "#9b7acc",
                   "PCA_Steiger": "#b1ca98",
-                  "UMAP_Steiger": "#e05691"
+                  "UMAP_Steiger": "#e05691",
+                  "degreec": 0.032,
+                  "betweenc": 0.004482395614084415
             },
             {
                   "layer": 1,
@@ -4253,7 +4481,9 @@
                   "UMAP_Schumann": "#47db80",
                   "TSNE_Steiger": "#c66fa9",
                   "PCA_Steiger": "#deb767",
-                  "UMAP_Steiger": "#d2c86b"
+                  "UMAP_Steiger": "#d2c86b",
+                  "degreec": 0.04,
+                  "betweenc": 0.004550942605781314
             },
             {
                   "layer": 1,
@@ -4290,7 +4520,9 @@
                   "UMAP_Schumann": "#7bd080",
                   "TSNE_Steiger": "#d4908e",
                   "PCA_Steiger": "#dea773",
-                  "UMAP_Steiger": "#bcc291"
+                  "UMAP_Steiger": "#bcc291",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4327,7 +4559,9 @@
                   "UMAP_Schumann": "#e88f80",
                   "TSNE_Steiger": "#c7be85",
                   "PCA_Steiger": "#b7c991",
-                  "UMAP_Steiger": "#6796e5"
+                  "UMAP_Steiger": "#6796e5",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4364,7 +4598,9 @@
                   "UMAP_Schumann": "#b86f80",
                   "TSNE_Steiger": "#b3bc9f",
                   "PCA_Steiger": "#ba90ac",
-                  "UMAP_Steiger": "#9b81cb"
+                  "UMAP_Steiger": "#9b81cb",
+                  "degreec": 0.016,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4401,7 +4637,9 @@
                   "UMAP_Schumann": "#3e6d80",
                   "TSNE_Steiger": "#df7a88",
                   "PCA_Steiger": "#c577a8",
-                  "UMAP_Steiger": "#e28282"
+                  "UMAP_Steiger": "#e28282",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4438,7 +4676,9 @@
                   "UMAP_Schumann": "#5b9980",
                   "TSNE_Steiger": "#ec8c6f",
                   "PCA_Steiger": "#ca81a0",
-                  "UMAP_Steiger": "#d29e89"
+                  "UMAP_Steiger": "#d29e89",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4475,7 +4715,9 @@
                   "UMAP_Schumann": "#677d80",
                   "TSNE_Steiger": "#bd92a8",
                   "PCA_Steiger": "#ca78a2",
-                  "UMAP_Steiger": "#ce8b97"
+                  "UMAP_Steiger": "#ce8b97",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4512,7 +4754,9 @@
                   "UMAP_Schumann": "#d4b680",
                   "TSNE_Steiger": "#d3ce62",
                   "PCA_Steiger": "#c5989d",
-                  "UMAP_Steiger": "#7cb0d2"
+                  "UMAP_Steiger": "#7cb0d2",
+                  "degreec": 0.008,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4549,7 +4793,9 @@
                   "UMAP_Schumann": "#d85280",
                   "TSNE_Steiger": "#ada5b1",
                   "PCA_Steiger": "#ab7ebe",
-                  "UMAP_Steiger": "#7a6ce2"
+                  "UMAP_Steiger": "#7a6ce2",
+                  "degreec": 0.0,
+                  "betweenc": 0.0
             },
             {
                   "layer": 1,
@@ -4586,7 +4832,9 @@
                   "UMAP_Schumann": "#708580",
                   "TSNE_Steiger": "#e8a267",
                   "PCA_Steiger": "#bd62b4",
-                  "UMAP_Steiger": "#ca919a"
+                  "UMAP_Steiger": "#ca919a",
+                  "degreec": 0.04,
+                  "betweenc": 0.0019156272569934808
             },
             {
                   "layer": 1,
@@ -4623,7 +4871,9 @@
                   "UMAP_Schumann": "#4fb880",
                   "TSNE_Steiger": "#a25dcb",
                   "PCA_Steiger": "#d4988a",
-                  "UMAP_Steiger": "#d4b27a"
+                  "UMAP_Steiger": "#d4b27a",
+                  "degreec": 0.024,
+                  "betweenc": 0.0009790113112693758
             },
             {
                   "layer": 1,
@@ -4660,7 +4910,9 @@
                   "UMAP_Schumann": "#6d0080",
                   "TSNE_Steiger": "#89a1d0",
                   "PCA_Steiger": "#9693ca",
-                  "UMAP_Steiger": "#c810af"
+                  "UMAP_Steiger": "#c810af",
+                  "degreec": 0.04,
+                  "betweenc": 0.002408602150537635
             }
       ]
 }

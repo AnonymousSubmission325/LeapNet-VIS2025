@@ -1,17 +1,27 @@
 * {
   box-sizing: border-box;
 }
+tt1 {
+  font-size: 0.5em; /* 40px/16=2.5em */
+  margin-bottom: 2%;
+  margin-right: 2%;
+  padding-right: 3px;
+  border-bottom: 1px solid #535353;
+  border-right: 1px solid #535353;
+}
 
 .corpustb {
   display:block;
-  height: 50%;
+  height: 60%;
   overflow-y: scroll;
+  overflow-x: hidden;
   table-layout: fixed;
 }
 .authortb {
   display:block;
   height: 30%;
   overflow-y: scroll;
+  overflow-x: hidden;
   table-layout: fixed;
 }
 
@@ -39,7 +49,9 @@ tr {
   font-size: 60%;
   cursor: pointer;
 }
-
+tr:not(:first-child):hover {
+  background-color: rgb(255, 173, 144);
+}
 .header {
   position: sticky;
   top:0;
@@ -80,7 +92,7 @@ body {
   background-color: #ddd;
 }
 .search-container{
-  height:70%;
+  height:60%;
   border: 1px solid #ccc;
   border-radius: 2px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
@@ -91,7 +103,13 @@ body {
   height: 40%;
   background-color: #fff;
   overflow-y: scroll;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  padding: 2px;
 }
+
+
 .card {
   border: 1px solid #ccc;
   border-radius: 2px;
@@ -105,7 +123,12 @@ body {
   border-collapse: collapse;
   overflow: hidden; 
   display: flex;
+  cursor: pointer;
 }
+.card:hover {
+  background-color: rgb(255, 173, 144);
+}
+
 
 .card-title {
   border-radius: 0px;
@@ -157,7 +180,7 @@ form.example button:hover {
 form.example::after {
   content: "";
   clear: both;
-  display: table;
+  /* display: table; */
 }
 
 
@@ -169,7 +192,6 @@ form.example::after {
   top: 0;
   right: 0;
   background: #ffffff;
-  padding: 6px;
   color: #818181;
   width: 10%;
   font-size: 0.5em;
@@ -209,7 +231,7 @@ form.example::after {
 
 .axisselection-container{
   height: 60%;
-  width: 10%;
+  width: 20%;
   float: left;
 }
 
@@ -322,6 +344,7 @@ form.example::after {
     height: 33%;
     width: 100%;
     border-bottom: 1px solid #ccc;
+    text-overflow: ellipsis;
     /* overflow-y: hidden;
     overflow-x: scroll; */
   }
@@ -398,7 +421,7 @@ form.example::after {
     stroke-width: 3px;
   }
   
-  .node text { font: 12px sans-serif; }
+  .node text { font: 12px 'Roboto', sans-serif; }
   
   .node--internal text {
     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
@@ -416,6 +439,69 @@ form.example::after {
   #axistext {
     font-family: 'Roboto', sans-serif;
   }
-  axistext {
-    font-family: 'Roboto', sans-serif;
+
+  .textc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Arial Black', Arial, sans-serif;
+    color: rgb(173, 173, 173);
+    font-size: 1em;
+  }
+  .textcdescribtion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Arial Black', Arial, sans-serif;
+    color: rgb(77, 77, 77);
+    font-size: 1em;
+  }
+
+  
+  .toggle {
+    cursor: pointer;
+    display: inline-block;
+    align-items: center;
+    padding: 2px;
+  }
+  
+  .toggle-switch {
+    display: inline-block;
+    background: #ccc;
+    border-radius: 16px;
+    width: 46px;
+    height: 15px;
+    position: relative;
+    vertical-align: middle;
+    transition: background 0.25s;
+  }
+  .toggle-switch:before, .toggle-switch:after {
+    content: "";
+  }
+  .toggle-switch:before {
+    display: block;
+    background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    transition: left 0.25s;
+  }
+  .toggle:hover .toggle-switch:before {
+    background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+  }
+  .toggle-checkbox:checked + .toggle-switch {
+    background: #56c080;
+  }
+  .toggle-checkbox:checked + .toggle-switch:before {
+    left: 30px;
+  }
+  
+  .toggle-checkbox {
+    position: absolute;
+    visibility: hidden;
   }

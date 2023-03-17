@@ -29,10 +29,17 @@
   
   <div class="row">
     <div class="column leftside">
+      <div id="ccontainer" class="cards-container"> 
+        <tt1>Selection</tt1>
+      </div>
       <div class="search-container">
-        <form class="example" action="insert">
-          <input type="text" id="myInput" onkeyup="filter_on_search()" placeholder="Search..." name="search">
-        </form>
+        <tt1>Corpus Search </tt1>
+        <div class="search-form">
+          <form class="example" action="insert">
+            <input type="text" id="myInput" onkeyup="filter_on_search()" placeholder="Search..." name="search">
+          </form>
+        </div>
+
         <table id="myTable" class="corpustb">
             <tr class="header">
               <th width="10%"></th>
@@ -42,21 +49,74 @@
               <th width="10%">Venue</th>
             </tr>
         </table>
-        <div class="cards-container"> </div>
-      </div>
 
-      <table id="myTableB" class="authortb">
-        <tr class="header">
-          <th width="90%">Author</th>
-          <th width="10%">Publications</th>
-        </tr>
-      </table> 
+        <table id="myTableB" class="authortb">
+          <tr class="header">
+            <th width="90%">Author</th>
+            <th width="10%">Publications</th>
+          </tr>
+        </table> 
+
       </div>
+    </div>
     
     <div class="column middle">
       <div class="hex-container">
+        <tt1>Layered Projection </tt1>
         <div id="hex" class="center"> </div>
         <div class="topRightHex overlay">
+          <label>Layer Toggles</label>
+          <div class="toogle-container">
+          <label class="toggle">
+            <input class="toggle-checkbox" type="checkbox" id="trackingbox">
+            <div class="toggle-switch"></div>
+            <span class="toggle-label">Tracking</span>
+          </label>
+
+          <label class="toggle">
+            <input class="toggle-checkbox" type="checkbox" id="selectionbox" checked>
+            <div class="toggle-switch"></div>
+            <span class="toggle-label">Selection</span>
+          </label>
+
+          <label class="toggle">
+            <input class="toggle-checkbox" type="checkbox" id="conceptbox" checked>
+            <div class="toggle-switch"></div>
+            <span class="toggle-label">Concept</span>
+          </label>
+
+          <label class="toggle">
+            <input class="toggle-checkbox" type="checkbox" id="binningbox" checked>
+            <div class="toggle-switch"></div>
+            <span class="toggle-label">Binning</span>
+          </label>
+
+          <label class="toggle">
+            <input class="toggle-checkbox" type="checkbox" id="researchbox" checked>
+            <div class="toggle-switch"></div>
+            <span class="toggle-label">Research</span>
+          </label>
+
+          <label class="toggle">
+            <input class="toggle-checkbox" type="checkbox" id="relatedbox"checked>
+            <div class="toggle-switch"></div>
+            <span class="toggle-label">Related</span>
+          </label>
+
+          <label class="toggle">
+            <input class="toggle-checkbox" type="checkbox" id="seedbox" checked>
+            <div class="toggle-switch"></div>
+            <span class="toggle-label">Seed</span>
+          </label>
+
+          <label class="toggle">
+            <input class="toggle-checkbox" type="checkbox" id="inputbox" >
+            <div class="toggle-switch"></div>
+            <span class="toggle-label">Input</span>
+          </label>
+
+          <hr>
+
           <p>Space Navigation</p>
           <div>
             <div class="slidecontainer">
@@ -69,28 +129,50 @@
             <input type="range" id="keywordnumslider" name="cowbell" min="1" max="500" value="20" step="20">
             <label for="cowbell">Number of Keys</label>
           </div>
-          
+
+
+        </div>
+
         </div>
       </div>
       <div id="stacks" class="sub left">
-        <div id="stack1" class="stack"></div>
+        <div id="stack1" class="stack">
+          <tt1>Summary </tt1>
+          <div style = "width:100%">
+		
+            <div id="textc1" class="textc" style = "height:50%; width:100%">
+              <!-- <div id="textc11" class="textc" style = "height:50%";></div>
+              <div id="textc12" class="textc" style = "height:50%";></div> -->
+            </div>
+         
+            <div id= "textc2" class="textc" style = "height:50%; width:50%; float:left;">
+            </div>
+       
+            <div id="textc3" class="textc" style = "height:50%; width:50%; float:right;">
+            </div>
+         
+          </div>
+        </div>
         <div id="stack2" class="stack">
         </div>
         <div id="stack3" class="stack"></div>
       </div>
       
       <div id="star" class="sub mid">
+        <tt1>Impact</tt1>
         <div class="radarChart"></div>
       </div>  
-      <div id="network" class="sub right"></div>  
+      <div id="network" class="sub right">
+        <tt1>Local Network</tt1>
+      </div>  
     </div>
     
     <div class="column rightside">
       <div class="timeline-container">
-        <div class="axisselection-container"></div>
-        <div class="legend-container"></div>
+
         <div class="timelineinner-container">
-          <div class="topRightTime overlay">
+
+          <!-- <div class="topRightTime overlay">
             <p>Timeline Properties</p>
             <div>
               <div class="dropdowncontainer">
@@ -110,11 +192,20 @@
                 <label for="volume">Grouped by</label>
               </div>
             </div> 
+          </div> -->
+          <div id="timeline" class="outer left">
+            <tt1>Timeline </tt1>
           </div>
-          <div id="timeline" class="outer left"></div>
           <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p> -->
         </div>
+        <div class="axisselection-container"></div>
       </div>
+      <table id="myTable" class="corpustb">
+        <tr class="header">
+          <th width="10%"></th>
+          <th width="10%">Tracked Papers</th>
+        </tr>
+    </table>
     </div>
   </div>
 

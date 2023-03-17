@@ -19,7 +19,6 @@ function my_Func(network, papers, seeds, keys, key_projections, pwk, paths, auth
   })
 
 
-  console.log(children_lookup)
   var key_lookup = {}
   keys.forEach(k => {key_lookup[k.key] = k})
   var pwk_lookup = {}
@@ -77,7 +76,7 @@ pwk.forEach(element => {points.push([element[PROJECTION][0] * (width),element[PR
 keyword_points = []
 keys.forEach(element => {keyword_points.push([element[PROJECTION_KEYCLUSTERCENTERS][0], element[PROJECTION_KEYCLUSTERCENTERS][1],element.key])});
 
-color_points = d3.scaleOrdinal(d3.schemeCategory10)
+
 
 //https://stackoverflow.com/questions/50029490/in-d3-hexbin-increase-radius-of-multiple-hexagons-with-mouseover
 //resize
@@ -88,7 +87,7 @@ color_points = d3.scaleOrdinal(d3.schemeCategory10)
 
 var field = svg.append("g")
 
-
+var card_ids = seeds
 var bin_lookup = {}
 
 function createHexBins(hexbin_slider_vals){
@@ -127,7 +126,6 @@ function createHexBins(hexbin_slider_vals){
       d3.select(this).style("stroke", function(d) { return colorStroke(d.length)})
     })
     .on("click", function(arr) {
-      console.log(arr)
       const result = [];
       for (let i = 0; i < arr.length; i++) {
         console.log(arr[i])
@@ -188,7 +186,7 @@ function create_keywords(keynum){
   
   var textopacity_scale = d3.scaleLinear()
               .domain([0, keynum])
-              .range([0.2, 1]);
+              .range([0.4, 1]);
   var already_used_key = []
   var key_proj_flat = []
 
@@ -353,11 +351,13 @@ function create_stacked_bars(){
     // .attr("font-size", "11px")
 
     // Draw the axis
-    var xAxis = d3.axisRight(y).tickSize(0).tickValues(y.domain().filter(function(d, idx) { return idx%4==0 }))
+    var xAxis = d3.axisLeft(y).tickSize(0).tickValues(y.domain().filter(function(d, idx) { return idx%4==0 }))
+    var rect = document.querySelector('#timeline');
+    var rwidth = rect.offsetWidth - rect.offsetWidth*0.01;
 
     svg
     .append("g")
-    .attr("transform", "translate("+ "0" + ",0)")      // This controls the vertical position of the Axis
+    .attr("transform", "translate("+ rwidth + ",0)")      // This controls the vertical position of the Axis
     .call(xAxis);
     
     svg.selectAll('.tick text')
@@ -386,22 +386,84 @@ function create_stacked_bars(){
 
   create_stacked_bars()
 
+  function insert_all_points(pwk_lookup){
+     var symbolset = ["\uf02e", "\uf0c8", "\uf111"]
 
 
+    var layer1 = []
+    var layer2 = []
+    var layer3 = []
+    pwk.forEach(p=>{
+      if(p.layer == 0){layer1.push(p)}
+      if(p.layer == 1){layer2.push(p)}
+      if(p.layer >= 2){layer3.push(p)}
+    })
 
-  function insert_seedselection(seeds,color_points){
-    color_points = d3.scaleOrdinal(d3.schemeCategory10)
-    var symbolset = ["\uf02e", "\uf0c8", "\uf111"]
 
-    field.selectAll(".seed_points")
-    .data(seeds)
+    field.selectAll(".seed_layer")
+    .data(layer1)
     .enter()
+    .append("g").attr("class", function(d){return "seedpoint"}) 
     .append("text")       // Append a text element
     .attr("class", "fa")  // Give it the font-awesome class
+    .attr('text-anchor', 'middle')
+    .text(function(d){return symbolset[0]})      // Specify your icon in unicode
+    .style("font-size", "0.6em")
+    .attr('x', function(d){return widthScale(pwk_lookup[d.paperId]['pca'][0])})
+    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1])})
+    .attr("fill", function(d){return "#3B3B3B"})
+    .attr("width", 1)
+    .attr("height", 1);
+
+    field.selectAll(".relation_layer")
+    .data(layer2)
+    .enter()
+    .append("g").attr("class", function(d){return "relationpoint"}) 
+    .append("text")       // Append a text element
+    .attr("class", "fa")  // Give it the font-awesome class
+    .attr('text-anchor', 'middle')
+    .text(function(d){return symbolset[1]})      // Specify your icon in unicode
+    .style("font-size", "0.6em")
+    .attr('x', function(d){return widthScale(pwk_lookup[d.paperId]['pca'][0])})
+    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1])})
+    .attr("fill", function(d){return "#525252"})
+    .attr("width", 1)
+    .attr("height", 1);
+
+    field.selectAll(".space_layer")
+    .data(layer2)
+    .enter()
+    .append("g").attr("class", function(d){return "spacepoint"}) 
+    .append("text")       // Append a text element
+    .attr("class", "fa")  // Give it the font-awesome class
+    .attr('text-anchor', 'middle')
+    .text(function(d){return symbolset[2]})      // Specify your icon in unicode
+    .style("font-size", "0.6em")
+    .attr('x', function(d){return widthScale(pwk_lookup[d.paperId]['pca'][0])})
+    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1])})
+    .attr("fill", function(d){return "#696969"})
+    .attr("width", 1)
+    .attr("height", 1);
+  }
+
+  insert_all_points(pwk_lookup)
+
+  function insert_seedselection(card_ids, point_color_lookup){
+
+    var symbolset = ["\uf02e", "\uf0c8", "\uf111"]
+
+    field.selectAll(".selection_points")
+    .data(card_ids)
+    .enter()
+    .append("g").attr("class", function(d){return "seedp"}) 
+    .append("text")       // Append a text element
+    .attr("class", "fa")  // Give it the font-awesome class
+    .attr('text-anchor', 'middle')
     .text(function(d){return symbolset[parseInt(pwk_lookup[d]['layer'])]})      // Specify your icon in unicode
+    .style("font-size", "0.8em")
     .attr('x', function(d){return widthScale(pwk_lookup[d]['pca'][0])})
     .attr('y', function(d){return heightScale(pwk_lookup[d]['pca'][1])})
-    .attr("fill", function(d){return color_points(d)})
+    .attr("fill", function(d){return point_color_lookup[d]})
     .attr("width", 1)
     .attr("height", 1);
 
@@ -410,21 +472,23 @@ function create_stacked_bars(){
     // Append a cell for each piece of data in the row
 
 
-    marked_seeds = seeds.map( d => bin_lookup[d])
+    var marked_seeds = card_ids.map( d => bin_lookup[d])
     marked_seeds.forEach(m =>{
-      d3.select('#hex' + String(m)).style('stroke',color_points(m)).style('stroke-width','8px')
+      d3.select('#hex' + String(m)).style('stroke',point_color_lookup[m]).style('stroke-width','8px')
     })
-    relevant_bins = {}
-    bin_colors={}
-    paper_to_seed_lookup = {}
-    seeds.forEach(s => {
+    var relevant_bins = {}
+    var bin_colors={}
+    var paper_to_seed_lookup = {}
+    var bin = '';
+
+    card_ids.forEach(s => {
       if(source_lookup[s]){
         source_lookup[s].forEach( p => {
           paper_to_seed_lookup[p] = s
           bin = bin_lookup[p]
           if(relevant_bins[bin]){ relevant_bins[bin].push(p);}
           else {relevant_bins[bin] = [p]; }
-          seed_color = color_points(s)
+          seed_color = point_color_lookup[s]
 
           if(bin_colors[bin]){ 
             if(!bin_colors[bin].includes(seed_color)){
@@ -440,32 +504,30 @@ function create_stacked_bars(){
     var fillopacity_scale = d3.scaleLinear()
     .domain([0, max_pinbin])
     .range([0.2, 0.7]);
-
-    var defs = svg.append("defs");
+    console.log(relevant_bins)
+    svg.selectAll("#cdefs").selectAll("*").remove()
+    svg.selectAll(".cdefs").selectAll("*").remove()
+    var defs = svg.append("defs").attr("class", "cdefs");
     Object.keys(relevant_bins).forEach(b =>{
-
-    //create color gradient
-    var gradient = defs.append("linearGradient")
-    .attr("id", "svgGradient_bin" + String(b))
-    .attr("x1", "0%")
-    .attr("x2", "100%")
-    .attr("y1", "50%")
-    .attr("y2", "50%");
-    bin_colors[b].forEach( (c,i) =>{
-    gradient.append("stop")
-      .attr('class', 'end')
-      .attr("offset", 100/(bin_colors[b].length+1)*i+"%")
-      .attr("stop-color", c)
-      .attr("stop-opacity", 1)
-    gradient.append("stop")
-      .attr('class', 'end')
-      .attr("offset", 100/(bin_colors[b].length)*(i+1)+"%")
-      .attr("stop-color", c)
-      .attr("stop-opacity", 1);
-    })
-
-
-
+      //create color gradient
+      var gradient = defs.append("linearGradient")
+      .attr("id", "svgGradient_bin" + String(b))
+      .attr("x1", "0%")
+      .attr("x2", "100%")
+      .attr("y1", "50%")
+      .attr("y2", "50%");
+      bin_colors[b].forEach( (c,i) =>{
+        gradient.append("stop")
+          .attr('class', 'end')
+          .attr("offset", 100/(bin_colors[b].length+1)*i+"%")
+          .attr("stop-color", c)
+          .attr("stop-opacity", 1)
+        gradient.append("stop")
+          .attr('class', 'end')
+          .attr("offset", 100/(bin_colors[b].length)*(i+1)+"%")
+          .attr("stop-color", c)
+          .attr("stop-opacity", 1);
+      })
       //d3.select('#hex' + String(b)).style('fill',color_points(paper_to_seed_lookup[relevant_bins[b][0]])).style('opacity',fillopacity_scale(relevant_bins[b].length))
       d3.select('#hex' + String(b)).style('fill',"url(#svgGradient_bin"+String(b) +")").style('opacity',fillopacity_scale(relevant_bins[b].length))
     })
@@ -473,7 +535,8 @@ function create_stacked_bars(){
   }
 
 
-  function update_selection(seeds){
+  function update_selection(card_ids){
+    var color_points = d3.scaleOrdinal(d3.schemeCategory10)
     // Option 2: use a palette:
     // Include <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script> in your code!
 
@@ -483,14 +546,16 @@ function create_stacked_bars(){
     // Select the table element
     var cardscontainer = d3.select('.cards-container');
     // Bind the data to the table
+    var point_color_lookup = {}
+
     var cards = cardscontainer.selectAll('card')
-      .data(seeds)
+      .data(card_ids)
       .enter()
-    var card = cards.append('div').attr("class","card")
+    var card = cards.append('div').attr("class","card").on("click", function(d) { card_click(d3.select(this),d) });
     var icondiv = card.append('div').attr("class","card-icon")
           .append("text")       // Append a text element
           .attr("class", "fa")  // Give it the font-awesome class
-          .style("color", function(d){return color_points(d)})
+          .style("color", function(d){ point_color_lookup[d] = color_points(d); return color_points(d)})
           .attr("width", 12)
           .attr("height", 12)
           .text(function(d){return symbolset[parseInt(pwk_lookup[d]['layer'])]})
@@ -504,21 +569,28 @@ function create_stacked_bars(){
     .append('div')
     .attr("class","card-info")
     .append('p')
-    .text(function(d) { return paper_lookup[d].year })
+    .text(function(d) { return paper_lookup[d].year+ ' , ' + paper_lookup[d].venue; })
     .append('div')
     .attr("class","card-author")
     .append('p')
-    .text(function(d) { return paper_lookup[d].authors_name; });
+    .text(function(d) { return paper_lookup[d].authors_name; })
+
 
 
           // .attr("width",  10).append("circle").attr("cx", 5).attr("cy", 5).attr("r", 5).attr("fill", function(d){console.log(d); return color_points(d)})
       // icondiv.append("svg").attr("height", 10).attr("width",  10).append("circle").attr("cx", 5).attr("cy", 5).attr("r", 5).attr("fill", function(d){console.log(d); return color_points(d)})
       // .style('stroke', function(d) { return "grey"; })
       // .style('stroke-width', function(d) { return '1px'; })
-      insert_seedselection(seeds, color_points)
+    var hexbin_slider = document.getElementById("binsizeslider");
+    field.selectAll(".selection_point").remove()
+    field.selectAll(".seedp").remove()
+    field.selectAll(".hexagon_path").remove()
+    
+    createHexBins(hexbin_slider.value)
+    insert_seedselection(card_ids, point_color_lookup)
   }
   
-  update_selection(seeds)
+  update_selection(card_ids)
 
 
   var hexbin_slider = document.getElementById("binsizeslider");
@@ -526,11 +598,101 @@ function create_stacked_bars(){
   function update_by_binsizeslider(){
     field.selectAll(".hexagon_path").remove()
     createHexBins(hexbin_slider.value)
-    // d3.select('.cards-container').selectAll('card').remove()
-     update_selection(seeds)
+    update_selection(card_ids)
   }
   // Update the current slider value (each time you drag the slider handle)
   hexbin_slider.oninput = update_by_binsizeslider
+
+
+//TODO
+  var trackingbox = document.getElementById("trackingbox");
+  function update_by_trackingbox(){
+    // const element = field.selectAll(".hexagon_path")
+    // element.style('display', 'none');
+    // if(trackingbox.checked){
+    //   element.style('display', 'block');}
+    // else{element.style('display', 'none'); }
+  }
+  trackingbox.oninput = update_by_trackingbox
+
+//TODO
+  var selectionbox = document.getElementById("selectionbox");
+  function update_by_selectionbox(){
+    const element = field.selectAll(".seedp")
+    element.style('display', 'none');
+    if(selectionbox.checked){
+      element.style('display', 'block');}
+    else{element.style('display', 'none'); }
+  }
+  selectionbox.oninput = update_by_selectionbox
+
+
+    var conceptbox = document.getElementById("conceptbox");
+  function update_by_conceptbox(){
+    console.log(conceptbox.checked)
+    const element = d3.selectAll(".keytext")
+    element.style('display', 'none');
+    if(conceptbox.checked){
+      element.style('display', 'block');}
+    else{element.style('display', 'none'); }
+  }
+  conceptbox.oninput = update_by_conceptbox
+
+    var binningbox = document.getElementById("binningbox");
+  function update_by_binningbox(){
+    console.log(binningbox.checked)
+    const element = field.selectAll(".hexagon_path")
+    element.style('display', 'none');
+    if(binningbox.checked){
+      element.style('display', 'block');}
+    else{element.style('display', 'none'); }
+  }
+  binningbox.oninput = update_by_binningbox
+
+
+  var researchbox = document.getElementById("researchbox");
+  function update_by_researchbox(){
+    console.log(researchbox.checked)
+    const element = d3.selectAll(".spacepoint")
+    element.style('display', 'none');
+    if(researchbox.checked){
+      element.style('display', 'block');}
+    else{element.style('display', 'none'); }
+  }
+  researchbox.oninput = update_by_researchbox
+
+  var relatedbox = document.getElementById("relatedbox");
+  function update_by_relatedbox(){
+    console.log(relatedbox.checked)
+    const element = d3.selectAll(".relationpoint")
+    element.style('display', 'none');
+    if(relatedbox.checked){
+      element.style('display', 'block');}
+    else{element.style('display', 'none'); }
+  }
+  relatedbox.oninput = update_by_relatedbox
+
+  var seedbox = document.getElementById("seedbox");
+  function update_by_seedbox(){
+    console.log(seedbox.checked)
+    const element = d3.selectAll(".seedpoint")
+    element.style('display', 'none');
+    if(seedbox.checked){
+      element.style('display', 'block');}
+    else{element.style('display', 'none'); }
+  }
+  seedbox.oninput = update_by_seedbox
+
+
+
+
+
+
+
+
+
+
+
 
 
   function create_corpus_table(){
@@ -542,7 +704,9 @@ function create_stacked_bars(){
     var rows = table.selectAll('tr')
       .data(papers)
       .enter()
-      .append('tr');
+      .append('tr')
+      .on("click", function(d) { table_row_click(d) });
+
     var icons = ["fa fa-bookmark", "fa fa-square", "fa fa-circle"]
     // Set the width of each td element to match its corresponding th element
     // Append a cell for each piece of data in the row
@@ -551,13 +715,14 @@ function create_stacked_bars(){
       .enter()
       .append('td')
       .append("i")
-      .attr("class", function(d){return icons[parseInt(d)]})
+      .attr("class", function(d){return icons[parseInt(d)]});
 
     var cells = rows.selectAll('td')
       .data(function(d) { return [d.title, d.title, d.authors_name, d.year, d.venue]; })
       .enter()
       .append('td')
       .text(function(d) { return d; });
+
 
     var author_ls = Object.keys(authors["authors"]).map((key) => [key, authors["authors"][key]]);
     var table = d3.select('#myTableB tbody');
@@ -583,15 +748,15 @@ function create_stacked_bars(){
   function create_stacks(selection){
 
     var all_data  = prep_keys_author(selection, pwk_lookup,authors)
-    var data = all_data[0]
+    var dataA = all_data[0]
     var max = all_data[1]
     // append the svg object to the body of the page
-    var select = d3.select("#stack1")
+    var select = d3.select("#stack2")
     var margin = {top: 5, right: 10, bottom: 5, left: 20},
     width = select.node().getBoundingClientRect().width - margin.left - margin.right,
     height = select.node().getBoundingClientRect().height - margin.top - margin.bottom;
-    console.log(data)
-    var svg = d3.select("#stack1")
+
+    var svg = d3.select("#stack2")
     .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -602,7 +767,7 @@ function create_stacked_bars(){
     // X axis
     var x = d3.scaleBand()
     .range([ 0, width ])
-    .domain(data.map(function(d) { return d.author; }))
+    .domain(dataA.map(function(d) { return d.author; }))
     .padding(0.2);
 
 
@@ -619,17 +784,18 @@ function create_stacked_bars(){
       .tickSize(0).tickSizeOuter(0).tickSizeInner(0)
     );
 
+
   var bars = svg.selectAll("mybar")
-    .data(data)
+    .data(dataA)
     .enter()
     .append("rect")
       .attr("x", function(d) { return x(d.author); })
       .attr("y", function(d) { return y(d.value); })
       .attr("width", x.bandwidth())
       .attr("height", function(d) { return height - y(d.value); })
-      .attr("fill", "#69b3a2")
+      .attr("fill", "#C5C5C5")
 
-    if(data.length <40){
+    if(dataA.length <40){
     var bartext = svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x))
@@ -642,15 +808,15 @@ function create_stacked_bars(){
 
 
     var all_data  = prep_keys_venue(selection, pwk_lookup,authors)
-    var data = all_data[0]
+    var dataV = all_data[0]
     var max = all_data[1]
     // append the svg object to the body of the page
-    var select = d3.select("#stack2")
+    var select = d3.select("#stack3")
     var margin = {top: 5, right: 10, bottom: 5, left: 20},
     width = select.node().getBoundingClientRect().width - margin.left - margin.right,
     height = select.node().getBoundingClientRect().height - margin.top - margin.bottom;
-    console.log(data)
-    var svg = d3.select("#stack2")
+
+    var svg = d3.select("#stack3")
     .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -661,9 +827,8 @@ function create_stacked_bars(){
     // X axis
     var x = d3.scaleBand()
     .range([ 0, width ])
-    .domain(data.map(function(d) { return d.author; }))
+    .domain(dataV.map(function(d) { return d.author; }))
     .padding(0.2);
-
 
     // Add Y axis
     var y = d3.scaleLinear()
@@ -679,16 +844,16 @@ function create_stacked_bars(){
     );
 
   var bars = svg.selectAll("mybar")
-    .data(data)
+    .data(dataV)
     .enter()
     .append("rect")
       .attr("x", function(d) { return x(d.author); })
       .attr("y", function(d) { return y(d.value); })
       .attr("width", x.bandwidth())
       .attr("height", function(d) { return height - y(d.value); })
-      .attr("fill", "#69b3a2")
+      .attr("fill", "#C5C5C5")
 
-    if(data.length <40){
+    if(dataV.length <40){
     var bartext = svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x))
@@ -696,13 +861,45 @@ function create_stacked_bars(){
         .attr("transform", "translate(-15,-2)rotate(-90)")
         .style("text-anchor", "start");
     }
+    //var gen_info  = prep_geninfo(selection, pwk_lookup,authors)
+
+    console.log(dataA)
+    console.log(dataV)
+    var svg = d3.select("#textc1")
+              .append('h1')
+                .text(function() { return String(selection.length); })
+                .attr('class', 'textc')
+    var svg = d3.select("#textc1")
+              svg.append('h1')
+                .text(function() { return 'Publications'; })
+                .attr('class', 'textcdescribtion')
+    
+    var svg = d3.select("#textc2")
+                .append('h1')
+                  .text(function() { return String(dataA.length); })
+                  .attr('class', 'textc')
+    var svg = d3.select("#textc2")
+                svg.append('h1')
+                  .text(function() { return 'Authors'; })
+                  .attr('class', 'textcdescribtion')
+
+    var svg = d3.select("#textc3")
+                  .append('h1')
+                    .text(function() { return String(dataV.length); })
+                    .attr('class', 'textc')
+    var svg = d3.select("#textc3")
+                  svg.append('h1')
+                    .text(function() { return 'Venues'; })
+                    .attr('class', 'textcdescribtion')
 
   }
   create_stacks(seeds)
 
-  function create_radar(seeds){
-    //var data  = prep_influ(selection, pwk_lookup)
-
+  function create_radar(selection){
+    dataAcolor = prep_influ(selection, pwk_lookup)
+    data = dataAcolor[0]
+    colors = dataAcolor[1]
+    maxistr = dataAcolor[2]
 
     var rect = document.querySelector('.radarChart');
     var width = rect.clientWidth;
@@ -712,51 +909,35 @@ function create_stacked_bars(){
 				width = Math.min(width, window.innerWidth - 10) - margin.left - margin.right,
 				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
 					
-			////////////////////////////////////////////////////////////// 
-			////////////////////////// Data ////////////////////////////// 
-			////////////////////////////////////////////////////////////// 
-
-			var data = [
-					  [//iPhone
-						{axis:"Citation Count",value:0.22},
-						{axis:"Reference Count",value:0.28},
-						{axis:"Betweenness Centrality",value:0.29},
-						{axis:"Closeness Centrality",value:0.17},
-						{axis:"Connectivity",value:0.22}	
-					  ],[//Samsung
-						{axis:"Citation Count",value:0.27},
-						{axis:"Reference Count",value:0.16},
-						{axis:"Betweenness Centrality",value:0.35},
-						{axis:"Closeness Centrality",value:0.13},
-						{axis:"Have Internet Connectivity",value:0.20},
-						{axis:"Connectivity",value:0.13}
-					  ]
-					];
-			////////////////////////////////////////////////////////////// 
-			//////////////////// Draw the Chart ////////////////////////// 
-			////////////////////////////////////////////////////////////// 
-
 			var color = d3.scaleOrdinal(d3.schemeCategory10)
-				.range(["#EDC951","#CC333F","#00A0B0"]);
+				.range(colors);
 				
 			var radarChartOptions = {
 			  w: width,
 			  h: height,
 			  margin: margin,
 			  maxValue: 0.5,
-			  levels: 5,
-			  roundStrokes: true,
+			  levels: 1,
+			  roundStrokes: false,
 			  color: color
 			};
 			//Call function to draw the Radar chart
-			RadarChart(".radarChart", data, radarChartOptions);
+			RadarChart(".radarChart", data, radarChartOptions, maxistr);
   }
   create_radar(seeds)
 
   function create_network(selection){
-    console.log(selection)
-    var data  = prep_network(selection, pwk_lookup, source_lookup, children_lookup)
+    var graph  = prep_network(selection, pwk_lookup, source_lookup, children_lookup)
     // append the svg object to the body of the page
+    var maxref = 0
+    graph.nodes.forEach(n => {
+      if(pwk_lookup[n.id].referenceCount > maxref)
+      maxref = pwk_lookup[n.id].referenceCount
+    })
+    var radiusScale = d3.scaleLinear(3,maxref)
+    .domain([5, 10 ]);
+
+
     var select = d3.select("#network")
     var margin = {top: 50, right: 50, bottom: 50, left: 50},
     width = select.node().getBoundingClientRect().width - margin.left - margin.right,
@@ -769,178 +950,122 @@ function create_stacked_bars(){
     .append("g")
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")")
-  
-    var treeData =
-    {
-      "name": "Top Level",
-      "children": [
-        { 
-      "name": "Level 2: A",
-          "children": [
-            { "name": "Son of A" },
-            { "name": "Daughter of A" }
-          ]
-        },
-        { "name": "Son of A" }
-      ]
-    };
-    var colors = d3.scaleOrdinal(d3.schemeCategory10)
+            .call(d3.zoom().on("zoom", function () {
+              svg.attr("transform", d3.event.transform)
+           }))
+    
+    var color = d3.scaleOrdinal(d3.schemeCategory20c);
+    var nodeRadius = 20;
 
     var simulation = d3.forceSimulation()
-        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(300).strength(1))
-        .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(width / 2, height / 2));
+    .force("link", d3.forceLink().id(function(d) {
+        return d.id;
+    }).distance(80))
+    .force("charge", d3.forceManyBody().strength(-50))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collide", d3.forceCollide().radius(function(d) {
+        return nodeRadius + 0.5; }).iterations(4))
 
-var graph = {
-  "nodes": [
-    {
-      "name": "Peter",
-      "label": "Person",
-      "id": 1
-    },
-    {
-      "name": "Michael",
-      "label": "Person",
-      "id": 2
-    },
-    {
-      "name": "Neo4j",
-      "label": "Database",
-      "id": 3
-    },
-    {
-      "name": "Graph Database",
-      "label": "Database",
-      "id": 4
-    }
-  ],
-  "links": [
-    {
-      "source": 1,
-      "target": 2,
-      "type": "KNOWS",
-      "since": 2010
-    },
-    {
-      "source": 1,
-      "target": 3,
-      "type": "FOUNDED"
-    },
-    {
-      "source": 2,
-      "target": 3,
-      "type": "WORKS_ON"
-    },
-    {
-      "source": 3,
-      "target": 4,
-      "type": "IS_A"
-    }
-  ]
-}
-  update(graph.links, graph.nodes)
-    function update(links, nodes) {
-        link = svg.selectAll(".link")
-            .data(links)
-            .enter()
-            .append("line")
+
+        simulation.nodes(graph.nodes);
+        simulation.force("link").links(graph.links);
+
+
+        var link = svg.append("g")
             .attr("class", "link")
-            .attr('marker-end','url(#arrowhead)')
+            .selectAll("line")
+            .data(graph.links)
+            .enter().append("line");
 
-        link.append("title")
-            .text(function (d) {return d.type;});
+        var node = svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("circle")
+            .data(graph.nodes)
+            .enter().append("circle")
 
-        edgepaths = svg.selectAll(".edgepath")
-            .data(links)
-            .enter()
-            .append('path')
-            .attrs({
-                'class': 'edgepath',
-                'fill-opacity': 0,
-                'stroke-opacity': 0,
-                'id': function (d, i) {return 'edgepath' + i}
+            
+        //Setting node radius by group value. If 'group' key doesn't exist, set radius to 9
+        .attr("r", function(d) {
+            return radiusScale(pwk_lookup[d.id].referenceCount) 
             })
-            .style("pointer-events", "none");
+          .attr('stroke', 'black')
+            //Colors by 'group' value
+            .style("fill", function(d) {
+              if (selection.includes(d.id)) {
+                return pwk_lookup[d.id].PCA_Bremm;
+            } else {
+                return "white";
+            }
+            })
+            .style("stroke", function(d) {
+              return color(d.group);
+          })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
 
-        edgelabels = svg.selectAll(".edgelabel")
-            .data(links)
-            .enter()
-            .append('text')
-            .style("pointer-events", "none")
-            .attrs({
-                'class': 'edgelabel',
-                'id': function (d, i) {return 'edgelabel' + i},
-                'font-size': 10,
-                'fill': '#aaa'
+        node.append("svg:title")
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(function(d) {
+                return d.id
             });
 
-        edgelabels.append('textPath')
-            .attr('xlink:href', function (d, i) {return '#edgepath' + i})
-            .style("text-anchor", "middle")
-            .style("pointer-events", "none")
-            .attr("startOffset", "50%")
-            .text(function (d) {return d.type});
-
-        node = svg.selectAll(".node")
-            .data(nodes)
-            .enter()
-            .append("g")
-            .attr("class", "node")
-            .call(d3.drag()
-                    .on("start", dragstarted)
-                    .on("drag", dragged)
-                    //.on("end", dragended)
-            );
-
-        node.append("circle")
-            .attr("r", 5)
-            .style("fill", function (d, i) {return colors(i);})
-
-        node.append("title")
-            .text(function (d) {return d.id;});
-
-        node.append("text")
-            .attr("dy", -3)
-            .text(function (d) {return d.name+":"+d.label;});
+        var labels = svg.append("g")
+            .attr("class", "label")
+            .selectAll("text")
+            .data(graph.nodes)
+            .enter().append("text")
+            .attr("dx", 6)
+            .attr("dy", ".35em")
+            .style("font-size", 10)
+            .text(function(d) {
+                return pwk_lookup[d.id].title.substring(0,8) + "..."
+            });
+      
 
         simulation
-            .nodes(nodes)
+            .nodes(graph.nodes)
             .on("tick", ticked);
 
         simulation.force("link")
-            .links(links);
-    }
+            .links(graph.links);
+      
+      function ticked() {
 
-    function ticked() {
-        link
-            .attr("x1", function (d) {return d.source.x;})
-            .attr("y1", function (d) {return d.source.y;})
-            .attr("x2", function (d) {return d.target.x;})
-            .attr("y2", function (d) {return d.target.y;});
+        link.attr("x1", function(d) {
+                return d.source.x;
+            })
+            .attr("y1", function(d) {
+                return d.source.y;
+            })
+            .attr("x2", function(d) {
+                return d.target.x;
+            })
+            .attr("y2", function(d) {
+                return d.target.y;
+            });
 
         node
-            .attr("transform", function (d) {return "translate(" + d.x + ", " + d.y + ")";});
-
-        edgepaths.attr('d', function (d) {
-            return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
-        });
-
-        edgelabels.attr('transform', function (d) {
-            if (d.target.x < d.source.x) {
-                var bbox = this.getBBox();
-
-                rx = bbox.x + bbox.width / 2;
-                ry = bbox.y + bbox.height / 2;
-                return 'rotate(180 ' + rx + ' ' + ry + ')';
-            }
-            else {
-                return 'rotate(0)';
-            }
-        });
+            .attr("cx", function(d) {
+                return d.x;
+            })
+            .attr("cy", function(d) {
+                return d.y;
+            });
+        labels
+            .attr("x", function(d) {
+                return d.x;
+            })
+            .attr("y", function(d) {
+                return d.y;
+            }); 
     }
+    
 
     function dragstarted(d) {
-        if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
     }
@@ -950,25 +1075,46 @@ var graph = {
         d.fy = d3.event.y;
     }
 
-//    function dragended(d) {
-//        if (!d3.event.active) simulation.alphaTarget(0);
-//        d.fx = undefined;
-//        d.fy = undefined;
-//    }
-
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
 
   }
   create_network(seeds)
 
 
   function update_selection_closeview(selection){
-    d3.select("#stack1").selectAll("*").remove()
+    //d3.select("#stack1").selectAll("*").remove()
     d3.select("#stack2").selectAll("*").remove()
+    d3.select("#stack3").selectAll("*").remove()
+    d3.select("#textc1").selectAll("*").remove()
+    d3.select("#textc2").selectAll("*").remove()
+    d3.select("#textc3").selectAll("*").remove()
     create_stacks(selection)
-    //create_radar(selection)
-    //create_network(selection)
+    create_radar(selection)
+    d3.select("#network").selectAll("*").remove()
+    create_network(selection)
   }
+
+  function table_row_click(d){
+    card_ids.push(d.paperId)
+    d3.select('.cards-container').html("");
+    update_selection(card_ids)
+  }
+  function card_click(elem,d){
+    elem.remove();
+    var index = card_ids.indexOf(d);
+    if (index !== -1) {
+      card_ids.splice(index, 1);
+    }
+    d3.select('.cards-container').html("");
+    update_selection(card_ids)
+  }
+  
 }
+
 
 
 function filter_on_search() {
