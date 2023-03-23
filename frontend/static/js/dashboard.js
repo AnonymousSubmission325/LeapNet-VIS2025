@@ -2,7 +2,6 @@ function my_Func(network, papers, seeds, keys, key_projections, pwk, paths, auth
   data = network
   papers = papers['papers']
   papers.forEach(paper => {paper["authors_name"] = authors['papers'][paper.paperId]})
-  console.log(papers)
   pwk = pwk['papers']
   seeds = seeds['seeds']
   var max_layer = Math.max(...papers.map(paper => paper.layer))
@@ -50,7 +49,7 @@ function my_Func(network, papers, seeds, keys, key_projections, pwk, paths, auth
 var rect = document.querySelector('#hex');
 var width = rect.clientWidth;
 var height = rect.clientHeight;
-var radius = 20;
+var hexradius = 20;
 // set the dimensions and margins of the graph
 var margin = {top: 50, right: 30, bottom: 30, left: 60}
 var svg = d3.select("div#hex").append("svg")
@@ -89,12 +88,13 @@ var field = svg.append("g")
 
 var card_ids = seeds
 var bin_lookup = {}
+var bins = []
 
 function createHexBins(hexbin_slider_vals){
   var hexbin = d3.hexbin()
   .size([width,height])
   .radius(hexbin_slider_vals);
-  var bins = hexbin(points)
+  bins = hexbin(points)
   var color = d3.scaleSequential(d3.interpolateLab("white", "blue"))
   .domain([0, d3.max(bins, d => d.length)/3 ]);
   var colorStroke = d3.scaleSequential(d3.interpolateLab("white", "black"))
@@ -113,33 +113,30 @@ function createHexBins(hexbin_slider_vals){
     .style('opacity', 0.5)
     .style('stroke', function(d) { return colorStroke(d.length); })
     .style('stroke-width', function(d) { return String(widthStroke(d.length))+'px'; })
-    .on('mouseover', function(d) { 
-      d3.select(this).attr("d", d => hexbin.hexagon(radius(hexbin_slider_vals)*2))
-      })
-      .on('mouseout', function(d) { 
-          d3.select(this).attr("d", d => hexbin.hexagon(radius(hexbin_slider_vals)))
-      })
-    .on("mouseover", function() {
+    .on("mouseover", function(d) {
       d3.select(this).style("stroke", "red");
+      var pubs = []
+      d.forEach(function(e){
+        pubs.push(e[2])
+      })
+      hover_pubs(pubs);
     })
     .on("mouseout", function() {
       d3.select(this).style("stroke", function(d) { return colorStroke(d.length)})
+      unhover_pub("None");
     })
     .on("click", function(arr) {
       const result = [];
       for (let i = 0; i < arr.length; i++) {
-        console.log(arr[i])
         const [, , third] = arr[i]; // extract the third value using array destructuring
         result.push(third);
       }
-      update_selection_closeview(result)
-      d3.select(this).style("stroke", function(d) {return colorStroke(d.length)})
+      clicked_pubs(result)
+      // update_selection_closeview(result)
+      // d3.select(this).style("stroke", function(d) {return colorStroke(d.length)})
     });
-bins.forEach((d,i) => d.forEach(e => bin_lookup[e[2]]= i))
+    bins.forEach((d,i) => d.forEach(e => bin_lookup[e[2]]= i))
 }
-
-
-
 
 
 var widthScale = d3.scaleLinear()
@@ -229,7 +226,8 @@ function create_keywords(keynum){
     .style("text-anchor", "middle")
     .style('font-size', function(d) {return fontsize_scale(d.index) + 'em'})
     .style('opacity', function(d) { return textopacity_scale(d.index)})
-    .style('fill', function(d) { return d.color['bremm']});
+    .style('fill', function(d) { return d.color['bremm']})
+    .on("click", function(d) {this.remove()})
   
       
   // Cycle through dedupables and dedupe them
@@ -266,76 +264,93 @@ keywordnum_slider.oninput = function() {
 
 
 create_keywords(80)
-createHexBins(10)
+createHexBins(hexradius)
 
   
 function create_stacked_bars(){
 
 
-// var svg = d3.select("div#vis")
-// .append("svg")
-// .attr("preserveAspectRatio", "xMinYMin meet")
-// .attr("viewBox", "0 0 1000 1000")
-// .classed("svg-content", true)
-// .append("g").attr("transform","translate(" + margin.left + "," + margin.top + ")");
+  // var svg = d3.select("div#vis")
+  // .append("svg")
+  // .attr("preserveAspectRatio", "xMinYMin meet")
+  // .attr("viewBox", "0 0 1000 1000")
+  // .classed("svg-content", true)
+  // .append("g").attr("transform","translate(" + margin.left + "," + margin.top + ")");
 
-  var prepared_for_stacks = prepare_data(paper_lookup,pwk_lookup,keys , key_to_sort)
-  console.log(prepared_for_stacks)
-  var data_stack = prepared_for_stacks[0]
-  var columns = prepared_for_stacks[1]
+    var prepared_for_stacks = prepare_data(paper_lookup,pwk_lookup,keys , key_to_sort)
+    console.log(prepared_for_stacks)
+    var data_stack = prepared_for_stacks[0]
+    var columns = prepared_for_stacks[1]
 
-  max_stack = 0
-  data_stack.map(d => {if(d.length > max_stack){max_stack=d.length} })
-  max_year = 0
-  min_year = 10000
-  papers.map(d => { var current_year = d.year
-                    if(current_year > max_year){ max_year=current_year} 
-                    if(current_year < min_year){ min_year=current_year}})
+    max_stack = 0
+    data_stack.map(d => {if(d.length > max_stack){max_stack=d.length} })
+    max_year = 0
+    min_year = 10000
+    papers.map(d => { var current_year = d.year
+                      if(current_year > max_year){ max_year=current_year} 
+                      if(current_year < min_year){ min_year=current_year}})
 
-    var cellSize = 5;
+    var cellSize = 4;
     // var width = data_stack.length * (cellSize + border) , height = max_stack * cellSize + border;
     // var rect = document.querySelector('#stacks');
     // var width = rect.offsetWidth;
     // var height = rect.offsetHeight;
 
+    var rect = document.querySelector('#timeline-down');
+    var styles = window.getComputedStyle(rect);
+    var height = rect.clientHeight - parseFloat(styles.paddingTop) - parseFloat(styles.paddingBottom);
+    var width = rect.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+    var axisheight = rect.clientHeight * 0.1
 
-    var rect = document.querySelector('#timeline');
-    const styles = window.getComputedStyle(rect);
-    const height = rect.clientHeight - parseFloat(styles.paddingTop) - parseFloat(styles.paddingBottom);
-    const width = rect.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+
 
     var x = d3.scaleBand()
       .range([0, width])
-      .domain(d3.range(max_stack));
+      .domain(d3.range(min_year, max_year+1));
     var y = d3.scaleBand()
-        .range([0, height])
-        .domain(d3.range(min_year, max_year+1)); //get maximum length
+        .range([0, height-axisheight])
+        .domain(d3.range(max_stack)); //get maximum length
 
-    var svg = d3.select("div#timeline")
+    var svg = d3.select("div#timeline-down")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
     .classed("svg-content", true)
     // Show the bars
-    var container = svg.append("g")
-      .selectAll("g")
+
+    
+    // const xAxisGrid = d3.axisBottom(x).tickSize(-(height-axisheight)).tickFormat('');
+
+    // svg.append('g')
+    // .attr('class', 'axis-grid')
+    // .attr('transform', 'translate(0,' + (height-axisheight) + ')')
+    // .call(xAxisGrid);
+
+
+
+    var container = 
+      svg.selectAll("stacks")
       .data(data_stack)
-      .enter().append("g")
-      .attr('transform', function(d, i) { return 'translate(0,' + y(pwk_lookup[d[0]]['year']) + ')';})
+      .enter().filter(function(d){ return pwk_lookup[d[0]]['year'] !== "undefined"})
+      .append("g")
+      .attr('transform', function(d, i) { return 'translate(' + (x(pwk_lookup[d[0]]['year']) + (cellSize/2)) + ',0)';})
       //.attr("x", function(d,i) { return x(i); })
       //.attr('transform', function(d,i) { return 'translate('+ x(i) + ', 0)';})
     var rows = container.selectAll("rect")
       // enter a second time = loop subgroup per subgroup to add all rectangles
-      .data(function(d) { return d; })
-      .enter().append("rect").attr("class", function(d) {return 's' + String(pwk_lookup[d]['year']); })
-        //.attr("class", function(d) { return "group_"+ x(d.data.group); })
-        .attr("x", function(d,i) { return x(i); })
+      .data(function(d) { return d; }).enter()
+      .append("rect").attr("class", function(d) {return 's' + String(pwk_lookup[d]['year']); })
+        .attr("y", function(d,i) { return y(i); })
         .attr("height", cellSize)
         .attr("width",cellSize)
         .attr("fill", function(d) { return pwk_lookup[d]['PCA_Bremm']; })
         //.attr("opacity", function(d) { return topics[color_map][pwk_lookup[d]['Topic_Perc_Contrib']]; })
         .style("stroke", function(d) {if(seeds.includes(d)){return "blue"} })
-//IDEA: append text to single bars
+        .on("mouseover", function(d) { hover_pub(d) })
+        .on("mouseout", function(d) { unhover_pub(d) })
+        .on("click", function(d) {clicked_pubs([d])})
+        .append("g").attr("class", function(d){return "r" + d})
+  //IDEA: append text to single bars
         // container.append("text")
     // .text(function(d) {      console.log( pwk_lookup[d[0]]['year']);          
     //          return pwk_lookup[d[0]]['year'];
@@ -350,38 +365,66 @@ function create_stacked_bars(){
     // .attr("font-family", "sans-serif")
     // .attr("font-size", "11px")
 
+
+
     // Draw the axis
-    var xAxis = d3.axisLeft(y).tickSize(0).tickValues(y.domain().filter(function(d, idx) { return idx%4==0 }))
-    var rect = document.querySelector('#timeline');
-    var rwidth = rect.offsetWidth - rect.offsetWidth*0.01;
+    var xAxis = d3.axisBottom(x).tickValues(x.domain()).tickFormat((interval,i) => {
+      return i%5 !== 0 ? " ": interval;
+     })
+    var rect = document.querySelector('#timeline-down');
+    var rheight = rect.offsetHeight - rect.offsetHeight*0.08;
 
     svg
     .append("g")
-    .attr("transform", "translate("+ rwidth + ",0)")      // This controls the vertical position of the Axis
+    .attr("transform", "translate(0," +  rheight + ")")      // This controls the vertical position of the Axis
     .call(xAxis);
     
     svg.selectAll('.tick text')
     .attr('font-size', '0.9em')
     .attr('font-family', 'Roboto')
     .attr('fill', 'darkgrey')
-    function move_bars_to_center(){
 
-      var rect = document.querySelector('#timeline');
-      var width = rect.offsetWidth;
-      var svg = d3.select("div#timeline")
-      groups = columns.map(c => '.s' + String(c) )
-      for (const group of groups){
-          stack_width = 0;
-          svg.selectAll(group).each(function(d){
-            stack_width = stack_width + parseInt(this.attributes.width.value)
-            moving_distance = width/2 - stack_width/2
-            svg.selectAll('g').selectAll(group).transition().duration(200).attr("transform", "translate(" + moving_distance + "," + 0 + ")");
-          })
-          
-      }
+    groups = columns.map(c => '.s' + String(c) )
+    for (const group of groups){
+        stack_height = 0;
+        svg.selectAll(group).each(function(d){
+          stack_height = stack_height + parseInt(this.attributes.height.value)
+          moving_distance = (height-axisheight)/2 - stack_height/2
+          svg.selectAll('g').selectAll(group).transition().duration(2000).attr("transform", "translate(" + 0 + "," + moving_distance + ")");
+    })
+        
     }
+    // Initialize the links
+    var links = svg
+    .selectAll("time_line")
+    .data(network.links)
+    .enter().filter(d => pwk_lookup[d.source] && pwk_lookup[d.target] )
+    .append("line")
+    .style("stroke", "transparent")
+    .attr("x1", function(d) { return (x(pwk_lookup[d.source]['year']) + (cellSize/2) + cellSize/2 ); })
+    .attr("y1", function(d) { 
+      var i = data_stack[columns.indexOf(pwk_lookup[d.source]['year'])].indexOf(d.source)
+      var moving_distance  = 0
+      var stack_height = 0;
+      svg.selectAll('.s' + pwk_lookup[d.source]['year']).each(function(d){
+        stack_height = stack_height + parseInt(this.attributes.height.value)
+        moving_distance = (height-axisheight)/2 - stack_height/2
+      })
+      return y(i) + moving_distance + cellSize/2; })
+    .attr("x2", function(d) { return (x(pwk_lookup[d.target]['year']) + (cellSize/2) + cellSize/2); })
+    .attr("y2", function(d) { 
+      var i = data_stack[columns.indexOf(pwk_lookup[d.target]['year'])].indexOf(d.target)
+      var moving_distance  = 0
+      var stack_height = 0;
+      svg.selectAll('.s' + pwk_lookup[d.target]['year']).each(function(d){
+        stack_height = stack_height + parseInt(this.attributes.height.value)
+        moving_distance = (height-axisheight)/2 - stack_height/2
+      })
+      return y(i) + moving_distance + cellSize/2; })
+    
 
-    move_bars_to_center()
+
+    
   }
 
   create_stacked_bars()
@@ -398,24 +441,42 @@ function create_stacked_bars(){
       if(p.layer == 1){layer2.push(p)}
       if(p.layer >= 2){layer3.push(p)}
     })
+    var el = document.getElementById('hex');
+    var style = window.getComputedStyle(el, null).getPropertyValue('font-size');
+    var fontSize = parseFloat(style); 
 
+    // Initialize the links
+    var links = field
+    .selectAll("line")
+    .data(network.links)
+    .enter().filter(d => pwk_lookup[d.source] && pwk_lookup[d.target] )
+    .append("line")
+    .style("stroke", "transparent")
+    .attr("x1", function(d) { return widthScale(pwk_lookup[d.source]['pca'][0]); })
+    .attr("y1", function(d) { return heightScale(pwk_lookup[d.source]['pca'][1]); })
+    .attr("x2", function(d) { return widthScale(pwk_lookup[d.target]['pca'][0]); })
+    .attr("y2", function(d) { return heightScale(pwk_lookup[d.target]['pca'][1]); })
 
-    field.selectAll(".seed_layer")
+    var seeds = field.selectAll(".seed_layer")
     .data(layer1)
     .enter()
     .append("g").attr("class", function(d){return "seedpoint"}) 
-    .append("text")       // Append a text element
+    .append("text").attr("class", function(d){return "seedpoint2"})        // Append a text element
     .attr("class", "fa")  // Give it the font-awesome class
     .attr('text-anchor', 'middle')
     .text(function(d){return symbolset[0]})      // Specify your icon in unicode
     .style("font-size", "0.6em")
     .attr('x', function(d){return widthScale(pwk_lookup[d.paperId]['pca'][0])})
     .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1])})
-    .attr("fill", function(d){return "#3B3B3B"})
+    // .attr("fill", function(d){return "#3B3B3B"})
+    .attr("fill", function(d){return pwk_lookup[d.paperId].PCA_Bremm})
     .attr("width", 1)
-    .attr("height", 1);
+    .attr("height", 1)
+    .on("mouseover", function(d) { hover_pub(d) })
+    .on("mouseout", function(d) { unhover_pub(d) })
+    .on("click", function(d) {clicked_pubs([d])});
 
-    field.selectAll(".relation_layer")
+    var rels = field.selectAll(".relation_layer")
     .data(layer2)
     .enter()
     .append("g").attr("class", function(d){return "relationpoint"}) 
@@ -425,13 +486,32 @@ function create_stacked_bars(){
     .text(function(d){return symbolset[1]})      // Specify your icon in unicode
     .style("font-size", "0.6em")
     .attr('x', function(d){return widthScale(pwk_lookup[d.paperId]['pca'][0])})
-    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1])})
-    .attr("fill", function(d){return "#525252"})
+    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1]) + fontSize*0.2})
+    // .attr("fill", function(d){return "#525252"})
+    .attr("fill", function(d){return pwk_lookup[d.paperId].PCA_Bremm})
     .attr("width", 1)
-    .attr("height", 1);
+    .attr("height", 1)
+    .on("mouseover", function(d) {
+      hover_pub(d.paperId) 
 
-    field.selectAll(".space_layer")
-    .data(layer2)
+      // var so = source_lookup[d.paperId]
+      // if(so == 'undefined' || so == null){so = []}
+      // var ch = children_lookup[d.paperId]
+      // if(ch == 'undefined' || ch == null){ch = []}
+
+      // links.style('stroke', function (link_d) {return link_d.source === d.paperId || link_d.target === d.paperId ? '#696969' : 'transparent';})
+      // seeds.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+      // rels.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+      // spaces.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+      // selection.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    })
+    .on("mouseout", function(d) {
+      unhover_pub(d) 
+    })
+    .on("click", function(d) {clicked_pubs([d.paperId])});
+
+    var spaces = field.selectAll(".space_layer")
+    .data(layer3)
     .enter()
     .append("g").attr("class", function(d){return "spacepoint"}) 
     .append("text")       // Append a text element
@@ -441,18 +521,35 @@ function create_stacked_bars(){
     .style("font-size", "0.6em")
     .attr('x', function(d){return widthScale(pwk_lookup[d.paperId]['pca'][0])})
     .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1])})
-    .attr("fill", function(d){return "#696969"})
+    // .attr("fill", function(d){return "#696969"})
+    .attr("fill", function(d){return pwk_lookup[d.paperId].PCA_Bremm})
     .attr("width", 1)
-    .attr("height", 1);
+    .attr("height", 1)
+    .on("mouseover", function(d) { hover_pub(d) })
+    .on("mouseout", function(d) { unhover_pub(d) })
+    .on("click", function(d) {clicked_pubs([d])});
+
   }
 
   insert_all_points(pwk_lookup)
 
   function insert_seedselection(card_ids, point_color_lookup){
+    
+    function getHexagonVertices(cx, cy, r) {
+      const vertices = [];
+      const angle = Math.PI / 3; // 60 degrees in radians
+      const angled = Math.PI / 6; // 30 degrees in radians
+      for (let i = 0; i < 6; i++) {
+        const x =  cx + r * Math.cos(angle * i - angled );
+        const y = cy + r * Math.sin(angle * i - angled );
+        vertices.push([x, y]);
+      }
+      return vertices;
+    }
 
     var symbolset = ["\uf02e", "\uf0c8", "\uf111"]
 
-    field.selectAll(".selection_points")
+    var selection = field.selectAll(".selection_points")
     .data(card_ids)
     .enter()
     .append("g").attr("class", function(d){return "seedp"}) 
@@ -463,38 +560,44 @@ function create_stacked_bars(){
     .style("font-size", "0.8em")
     .attr('x', function(d){return widthScale(pwk_lookup[d]['pca'][0])})
     .attr('y', function(d){return heightScale(pwk_lookup[d]['pca'][1])})
-    .attr("fill", function(d){return point_color_lookup[d]})
+    // .attr("fill", function(d){return point_color_lookup[d]})
+    .attr("fill", function(d){return pwk_lookup[d].PCA_Bremm})
     .attr("width", 1)
-    .attr("height", 1);
+    .attr("height", 1)
+    .on("mouseover", function(d) { hover_pub(d) })
+    .on("mouseout", function(d) { unhover_pub(d) })
+    .on("click", function(d) {clicked_pubs([d])});
 
     //var icons = ["fa fa-tint fa-2x", "fa fa-square", "fa fa-circle"]
     // Set the width of each td element to match its corresponding th element
     // Append a cell for each piece of data in the row
 
-
-    var marked_seeds = card_ids.map( d => bin_lookup[d])
-    marked_seeds.forEach(m =>{
-      d3.select('#hex' + String(m)).style('stroke',point_color_lookup[m]).style('stroke-width','8px')
-    })
+    //mark the seed rectangles
+    // var marked_seeds = card_ids.map( d => bin_lookup[d])
+    // marked_seeds.forEach(m =>{
+    //   d3.select('#hex' + String(m)).style('stroke',point_color_lookup[m]).style('stroke-width','8px')
+    // })
     var relevant_bins = {}
-    var bin_colors={}
     var paper_to_seed_lookup = {}
     var bin = '';
 
     card_ids.forEach(s => {
       if(source_lookup[s]){
         source_lookup[s].forEach( p => {
-          paper_to_seed_lookup[p] = s
+          if(paper_to_seed_lookup[p]){ paper_to_seed_lookup[p].push(s);}
+          else {paper_to_seed_lookup[p] = [s]; }
           bin = bin_lookup[p]
           if(relevant_bins[bin]){ relevant_bins[bin].push(p);}
           else {relevant_bins[bin] = [p]; }
-          seed_color = point_color_lookup[s]
-
-          if(bin_colors[bin]){ 
-            if(!bin_colors[bin].includes(seed_color)){
-              bin_colors[bin].push(seed_color);}
-            }
-          else {bin_colors[bin] = [seed_color]; }
+        })
+      }
+      if(children_lookup[s]){
+        children_lookup[s].forEach( p => {
+          if(paper_to_seed_lookup[p]){ paper_to_seed_lookup[p].push(s);}
+          else {paper_to_seed_lookup[p] = [s]; }
+          bin = bin_lookup[p]
+          if(relevant_bins[bin]){ relevant_bins[bin].push(p);}
+          else {relevant_bins[bin] = [p]; }
         })
       }
     })
@@ -504,38 +607,108 @@ function create_stacked_bars(){
     var fillopacity_scale = d3.scaleLinear()
     .domain([0, max_pinbin])
     .range([0.2, 0.7]);
-    console.log(relevant_bins)
     svg.selectAll("#cdefs").selectAll("*").remove()
     svg.selectAll(".cdefs").selectAll("*").remove()
-    var defs = svg.append("defs").attr("class", "cdefs");
+    // var defs = svg.append("defs").attr("class", "cdefs");
+    console.log(relevant_bins)
     Object.keys(relevant_bins).forEach(b =>{
-      //create color gradient
-      var gradient = defs.append("linearGradient")
-      .attr("id", "svgGradient_bin" + String(b))
-      .attr("x1", "0%")
-      .attr("x2", "100%")
-      .attr("y1", "50%")
-      .attr("y2", "50%");
-      bin_colors[b].forEach( (c,i) =>{
-        gradient.append("stop")
-          .attr('class', 'end')
-          .attr("offset", 100/(bin_colors[b].length+1)*i+"%")
-          .attr("stop-color", c)
-          .attr("stop-opacity", 1)
-        gradient.append("stop")
-          .attr('class', 'end')
-          .attr("offset", 100/(bin_colors[b].length)*(i+1)+"%")
-          .attr("stop-color", c)
-          .attr("stop-opacity", 1);
+      var relevant_bins_p_hex = relevant_bins[b]
+      //checkbox
+      var count = {}
+      var andorbox = document.getElementById("andorbox").checked;
+      if(andorbox){
+        var count = {};
+          for (var num of relevant_bins_p_hex) {
+            count[num] = count[num] ? count[num] + 1 : 1;
+        }
+        console.log(count)
+        var relevant_bins_t = []
+        Object.keys(count).forEach(i =>{
+          console.log(bins)
+          console.log(bin_lookup[i])
+          console.log(bins[bin_lookup[i]].length)
+          console.log(count[i])
+          if(count[i]>=bins[bin_lookup[i]].length){
+            relevant_bins_t.push(i)
+          }
+        })
+        console.log(relevant_bins_t)
+        
+        relevant_bins_p_hex = relevant_bins_t
+        console.log(relevant_bins_p_hex)
+      }
+
+
+
+
+
+      var hex = d3.select('#hex' + String(b)).datum()
+      var verticesh = getHexagonVertices(hex.x,hex.y, hexradius)
+      
+      var relevant_selection = []
+      relevant_bins_p_hex.forEach( function(c){
+        paper_to_seed_lookup[c].forEach( function(d){
+          if(!(relevant_selection.includes(d))){
+            relevant_selection.push(d)
+          }
+        })
+
       })
-      //d3.select('#hex' + String(b)).style('fill',color_points(paper_to_seed_lookup[relevant_bins[b][0]])).style('opacity',fillopacity_scale(relevant_bins[b].length))
-      d3.select('#hex' + String(b)).style('fill',"url(#svgGradient_bin"+String(b) +")").style('opacity',fillopacity_scale(relevant_bins[b].length))
+      relevant_selection.forEach(function(s) {
+        var i = card_ids.indexOf(s)
+        var next = i+1
+        if(next == 6){next=0}
+
+                // Define the points of the triangle
+        var points = hex.x + ',' + hex.y + ' ' + verticesh[i][0] + ',' + verticesh[i][1] + ' ' + verticesh[next][0] + ',' + verticesh[next][1] 
+        // Add a path element to the SVG element and set its d attribute to the points
+        svg.append("g").attr("class", "triangle").append("path")
+          .attr("d", "M " + points + " Z")
+          // .attr('stroke', 'black')
+          .attr("fill", pwk_lookup[s].PCA_Bremm)
+          .style('opacity',fillopacity_scale(relevant_bins[b].length));
+        })
+
+      //create color gradient
+      // var gradient = defs.append("linearGradient")
+      // .attr("id", "svgGradient_bin" + String(b))
+      // .attr("x1", "0%")
+      // .attr("x2", "100%")
+      // .attr("y1", "50%")
+      // .attr("y2", "50%");
+      // bin_colors[b].forEach( (c,i) =>{
+      //   gradient.append("stop")
+      //     .attr('class', 'end')
+      //     .attr("offset", 100/(bin_colors[b].length+1)*i+"%")
+      //     .attr("stop-color", c)
+      //     .attr("stop-opacity", 1)
+      //   gradient.append("stop")
+      //     .attr('class', 'end')
+      //     .attr("offset", 100/(bin_colors[b].length)*(i+1)+"%")
+      //     .attr("stop-color", c)
+      //     .attr("stop-opacity", 1);
+      // })
+      // //d3.select('#hex' + String(b)).style('fill',color_points(paper_to_seed_lookup[relevant_bins[b][0]])).style('opacity',fillopacity_scale(relevant_bins[b].length))
+      // d3.select('#hex' + String(b)).style('fill',"url(#svgGradient_bin"+String(b) +")").style('opacity',fillopacity_scale(relevant_bins[b].length))
     })
     
   }
 
 
   function update_selection(card_ids){
+
+    function getHexagonVertices(cx, cy, r) {
+      const vertices = [];
+      const angle = Math.PI / 3; // 60 degrees in radians
+      const angled = Math.PI / 6; // 30 degrees in radians
+      for (let i = 0; i < 6; i++) {
+        const x =  cx + r * Math.cos(angle * i - angled );
+        const y = cy + r * Math.sin(angle * i - angled );
+        vertices.push([x, y]);
+      }
+      return vertices;
+    }
+    if(card_ids.length>0){
     var color_points = d3.scaleOrdinal(d3.schemeCategory10)
     // Option 2: use a palette:
     // Include <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script> in your code!
@@ -551,14 +724,51 @@ function create_stacked_bars(){
     var cards = cardscontainer.selectAll('card')
       .data(card_ids)
       .enter()
-    var card = cards.append('div').attr("class","card").on("click", function(d) { card_click(d3.select(this),d) });
+    var card = cards.append('div').attr("class","card")
+                    .on("click", function(d) { card_click(d3.select(this),d) })
+                    .on("mouseover", function(d) { hover_pub(d) })
+                    .on("mouseout", function(d) { unhover_pub(d) });
     var icondiv = card.append('div').attr("class","card-icon")
-          .append("text")       // Append a text element
-          .attr("class", "fa")  // Give it the font-awesome class
-          .style("color", function(d){ point_color_lookup[d] = color_points(d); return color_points(d)})
-          .attr("width", 12)
-          .attr("height", 12)
-          .text(function(d){return symbolset[parseInt(pwk_lookup[d]['layer'])]})
+    var element = document.getElementsByClassName('card-icon')[0];
+
+    var clienth = element.clientHeight
+    var clientw = element.clientWidth
+    var size = 0
+    if(clienth<clientw){size = clienth}
+    else{size=clientw}
+
+    var icondiv_svg = icondiv.append("svg")
+    .attr("width", clientw)
+    .attr("height", clienth)
+
+
+    var localhexradius = size*0.3
+    var width = size
+    var height = size
+
+    var verticesh = getHexagonVertices(clientw/2,clienth/2, localhexradius)
+    var hexverticesh = verticesh.push(verticesh[0])
+
+    var enterElements = icondiv_svg.selectAll("path.area") //draw elements
+            .data([verticesh]).enter().append("path")
+            .style("fill", "transparent")
+            .style("stroke", "black")
+            .attr("d", d3.line())
+            .attr("transform", "translate(" + 0 + "," + 0 + ")");
+
+    // Define the points of the triangle
+    //var points = clientw/2 + ',' + clienth/2 + ' ' + verticesh[0][0] + ',' + verticesh[0][1] + ' ' + verticesh[1][0] + ',' + verticesh[1][1] 
+    // Add a path element to the SVG element and set its d attribute to the points
+    icondiv_svg.append("path")
+      .attr("d", function(d,i){
+        var j=0
+        if(i==5){j=0}
+        else{j=i+1}
+        var points = clientw/2 + ',' + clienth/2 + ' ' + verticesh[i][0] + ',' + verticesh[i][1] + ' ' + verticesh[j][0] + ',' + verticesh[j][1] 
+        return "M " + points + " Z"})
+      //.attr("d", "M " + points + " Z")
+      .attr("fill", function(d,i){return pwk_lookup[d].PCA_Bremm})
+      // .style('opacity',fillopacity_scale(relevant_bins[b].length));
     
     card.append('div')
     .attr("class","card-text")
@@ -574,21 +784,21 @@ function create_stacked_bars(){
     .attr("class","card-author")
     .append('p')
     .text(function(d) { return paper_lookup[d].authors_name; })
-
+    
+    }
 
 
           // .attr("width",  10).append("circle").attr("cx", 5).attr("cy", 5).attr("r", 5).attr("fill", function(d){console.log(d); return color_points(d)})
       // icondiv.append("svg").attr("height", 10).attr("width",  10).append("circle").attr("cx", 5).attr("cy", 5).attr("r", 5).attr("fill", function(d){console.log(d); return color_points(d)})
       // .style('stroke', function(d) { return "grey"; })
       // .style('stroke-width', function(d) { return '1px'; })
-    var hexbin_slider = document.getElementById("binsizeslider");
     field.selectAll(".selection_point").remove()
     field.selectAll(".seedp").remove()
     field.selectAll(".hexagon_path").remove()
-    
-    createHexBins(hexbin_slider.value)
+    d3.selectAll(".triangle").remove()
+    createHexBins(hexradius)
     insert_seedselection(card_ids, point_color_lookup)
-  }
+    }
   
   update_selection(card_ids)
 
@@ -597,7 +807,9 @@ function create_stacked_bars(){
 
   function update_by_binsizeslider(){
     field.selectAll(".hexagon_path").remove()
-    createHexBins(hexbin_slider.value)
+    d3.select('.cards-container').html("");
+    hexradius = hexbin_slider.value
+    createHexBins(hexradius)
     update_selection(card_ids)
   }
   // Update the current slider value (each time you drag the slider handle)
@@ -629,7 +841,6 @@ function create_stacked_bars(){
 
     var conceptbox = document.getElementById("conceptbox");
   function update_by_conceptbox(){
-    console.log(conceptbox.checked)
     const element = d3.selectAll(".keytext")
     element.style('display', 'none');
     if(conceptbox.checked){
@@ -639,20 +850,26 @@ function create_stacked_bars(){
   conceptbox.oninput = update_by_conceptbox
 
     var binningbox = document.getElementById("binningbox");
+
   function update_by_binningbox(){
-    console.log(binningbox.checked)
     const element = field.selectAll(".hexagon_path")
-    element.style('display', 'none');
+    const element2 = d3.selectAll(".triangle")
+    // element.style('display', 'none');
+    // element2.style('display', 'none');
     if(binningbox.checked){
-      element.style('display', 'block');}
-    else{element.style('display', 'none'); }
+      element.style('display', 'block');
+      element2.style('display', 'block');
+    }
+    else{
+      element.style('display', 'none'); 
+      element2.style('display', 'none'); 
+    }
   }
   binningbox.oninput = update_by_binningbox
 
 
   var researchbox = document.getElementById("researchbox");
   function update_by_researchbox(){
-    console.log(researchbox.checked)
     const element = d3.selectAll(".spacepoint")
     element.style('display', 'none');
     if(researchbox.checked){
@@ -663,7 +880,6 @@ function create_stacked_bars(){
 
   var relatedbox = document.getElementById("relatedbox");
   function update_by_relatedbox(){
-    console.log(relatedbox.checked)
     const element = d3.selectAll(".relationpoint")
     element.style('display', 'none');
     if(relatedbox.checked){
@@ -674,7 +890,6 @@ function create_stacked_bars(){
 
   var seedbox = document.getElementById("seedbox");
   function update_by_seedbox(){
-    console.log(seedbox.checked)
     const element = d3.selectAll(".seedpoint")
     element.style('display', 'none');
     if(seedbox.checked){
@@ -684,7 +899,16 @@ function create_stacked_bars(){
   seedbox.oninput = update_by_seedbox
 
 
+  var andorbox = document.getElementById("andorbox");
 
+  function update_by_andorbox(){
+    field.selectAll(".hexagon_path").remove()
+    d3.select('.cards-container').html("");
+    hexradius = hexbin_slider.value
+    createHexBins(hexradius)
+    update_selection(card_ids)
+  }
+  andorbox.oninput = update_by_andorbox
 
 
 
@@ -697,25 +921,31 @@ function create_stacked_bars(){
 
   function create_corpus_table(){
 
+    var corp_papers = papers.filter(p => !(card_ids.includes(p.paperId)))
+
     // Select the table element
     var table = d3.select('#myTable tbody');
     // Bind the data to the table
 
+    
     var rows = table.selectAll('tr')
-      .data(papers)
+      .data(corp_papers)
       .enter()
       .append('tr')
-      .on("click", function(d) { table_row_click(d) });
+      .on("click", function(d) { table_row_click(d) })
+      .on("mouseover", function(d) { hover_pub(d.paperId) })
+      .on("mouseout", function(d) { unhover_pub(d) });
 
     var icons = ["fa fa-bookmark", "fa fa-square", "fa fa-circle"]
     // Set the width of each td element to match its corresponding th element
     // Append a cell for each piece of data in the row
     var cells = rows.selectAll('td')
-      .data(function(d) { return [d.layer]; })
+      .data(function(d) { return [d]; })
       .enter()
-      .append('td')
+    cells.append('td')
       .append("i")
-      .attr("class", function(d){return icons[parseInt(d)]});
+      .attr("class", function(d){return icons[parseInt(d.layer)]})
+      .style('color', function(d){return pwk_lookup[d.paperId].PCA_Bremm})
 
     var cells = rows.selectAll('td')
       .data(function(d) { return [d.title, d.title, d.authors_name, d.year, d.venue]; })
@@ -730,7 +960,10 @@ function create_stacked_bars(){
     var rows = table.selectAll('tr')
       .data(author_ls)
       .enter()
-      .append('tr');
+      .append('tr')
+      .on("mouseover", function(d) { hover_pubs(authors['authors'][d[0]]) })
+      .on("mouseout", function(d) { unhover_pub(d) })
+      .on("click", function(d) {clicked_pubs(authors['authors'][d[0]])});
     // Set the width of each td element to match its corresponding th element
     // Append a cell for each piece of data in the row
 
@@ -863,8 +1096,7 @@ function create_stacked_bars(){
     }
     //var gen_info  = prep_geninfo(selection, pwk_lookup,authors)
 
-    console.log(dataA)
-    console.log(dataV)
+  
     var svg = d3.select("#textc1")
               .append('h1')
                 .text(function() { return String(selection.length); })
@@ -893,7 +1125,93 @@ function create_stacked_bars(){
                     .attr('class', 'textcdescribtion')
 
   }
-  create_stacks(seeds)
+  //create_stacks(seeds)
+
+  function update_info(card_ids){
+
+    if(card_ids.length>0){
+
+    // Select the table element
+    var cardscontainer = d3.select('.infoinner-container');
+    // Bind the data to the table
+    var point_color_lookup = {}
+
+    var cards = cardscontainer.selectAll('info')
+      .data(card_ids)
+      .enter()
+    var card = cards.append('div').attr("class","info")
+    //implement info_click from HERE
+                    .on("click", function(d) { card_click(d3.select(this),d) })
+                    .on("mouseover", function(d) { hover_pub(d) })
+                    .on("mouseout", function(d) { unhover_pub(d) });
+    // var icondiv = card.append('div').attr("class","card-icon")
+    // var element = document.getElementsByClassName('card-icon')[0];
+
+    // var clienth = element.clientHeight
+    // var clientw = element.clientWidth    
+
+    // var group = d3.select(document.createElement("div")).append('div').attr("class", "btngroup")
+    // group.append('div')
+    // .attr("class", "btn")
+    // .append('i')
+    // .attr("class", "fa fa-trash")
+    // group.append('div')
+    // .attr("class", "btn")
+    // .append('i')
+    // .attr("class", "fa fa-trash")
+    // group.append('div')
+    // .attr("class", "btn")
+    // .append('i')
+    // .attr("class", "fa fa-trash")
+    var card_text = card.append('div').attr("class","info-text-container")
+
+    card_text.append('div')
+    .attr("class","info-title")
+    .append('p')
+    .text(function(d) { return paper_lookup[d].title; })
+    .append('div')
+    .attr("class","info-info")
+    .append('p')
+    .text(function(d) { return paper_lookup[d].year+ ' , ' + paper_lookup[d].venue; })
+    .append('div')
+    .attr("class","info-author")
+    .append('p')
+    .text(function(d) { return paper_lookup[d].authors_name; })
+    .append('div')
+    .attr("class","info-author")
+    .append('p')
+    .text(function(d) { 
+      var summary = ''
+      if(paper_lookup[d].abstract != 'none'){summary=paper_lookup[d].abstract}
+      else if(paper_lookup[d].tldr != 'none'){summary=paper_lookup[d].tldr}
+      return summary; })
+
+
+    var card_text = card.append('div').attr("class","info-button-container")
+    card_text//.append('div').attr("class", "btngroup")
+    .append('div')
+    .attr("class", "btn")
+    .append('i')
+    .attr("class", "fa fa-mouse-pointer")
+    card_text
+    .append('div')
+    .attr("class", "btn")
+    .append('i')
+    .attr("class", "fa fa-link")
+    card_text
+    .append('div')
+    .attr("class", "btn")
+    .append('i')
+    .attr("class", "fa fa-bookmark")
+    card_text
+    .append('div')
+    .attr("class", "btn")
+    .append('i')
+    .attr("class", "fa fa-close")
+    
+    }
+  }
+
 
   function create_radar(selection){
     dataAcolor = prep_influ(selection, pwk_lookup)
@@ -924,7 +1242,7 @@ function create_stacked_bars(){
 			//Call function to draw the Radar chart
 			RadarChart(".radarChart", data, radarChartOptions, maxistr);
   }
-  create_radar(seeds)
+  //create_radar(seeds)
 
   function create_network(selection){
     var graph  = prep_network(selection, pwk_lookup, source_lookup, children_lookup)
@@ -1082,7 +1400,7 @@ function create_stacked_bars(){
     }
 
   }
-  create_network(seeds)
+  //create_network(seeds)
 
 
   function update_selection_closeview(selection){
@@ -1099,9 +1417,11 @@ function create_stacked_bars(){
   }
 
   function table_row_click(d){
+    if(card_ids.length<6){
     card_ids.push(d.paperId)
     d3.select('.cards-container').html("");
     update_selection(card_ids)
+    }
   }
   function card_click(elem,d){
     elem.remove();
@@ -1112,6 +1432,59 @@ function create_stacked_bars(){
     d3.select('.cards-container').html("");
     update_selection(card_ids)
   }
+  //HERE!
+  // function x_click(d){
+  //   if(card_ids.length<6){
+  //   card_ids.push(d.paperId)
+  //   d3.select('.cards-container').html("");
+  //   update_selection(card_ids)
+  //   }
+  // }
+
+  function hover_pub(pubId){
+    var so = source_lookup[pubId]
+    if(so == 'undefined' || so == null){so = []}
+    var ch = children_lookup[pubId]
+    if(ch == 'undefined' || ch == null){ch = []}
+  
+    d3.selectAll("line").style('stroke', function (link_d) {return link_d.source === pubId || link_d.target === pubId ? '#696969' : 'transparent';})
+                        .style("stroke-dasharray", function (link_d) { return link_d.source === pubId ? ("3, 3") : ("10,10")})
+    d3.selectAll(".seedpoint").attr('opacity', function (e) { return e.paperId === pubId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    d3.selectAll(".relationpoint").attr('opacity', function (e) { return e.paperId === pubId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    d3.selectAll(".spacepoint").attr('opacity', function (e) { return e.paperId === pubId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    d3.selectAll(".selection").attr('opacity', function (e) { return e.paperId === pubId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})  
+    d3.selectAll("rect").attr('opacity', function (e) { return e === pubId || so.includes(e) || ch.includes(e) ? 1 : 0.2;})  
+  }
+
+  function hover_pubs(pubIds){
+    var so = []
+    pubIds.forEach(p => {s = source_lookup[p]; if(s != 'undefined' && s != null){so.push(...s)}})
+    var ch = []
+    pubIds.forEach(p => {c = children_lookup[p]; if(c != 'undefined' && c != null){ch.push(...c)}})
+  
+    d3.selectAll("line").style('stroke', function (link_d) {return pubIds.includes(link_d.source) || pubIds.includes(link_d.target) ? '#696969' : 'transparent';})
+    .style("stroke-dasharray", function (link_d) { return pubIds.includes(link_d.source) ? ("1, 1") : ("10,10")})
+    d3.selectAll(".seedpoint").attr('opacity', function (e) { return pubIds.includes(e.paperId) || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    d3.selectAll(".relationpoint").attr('opacity', function (e) { return pubIds.includes(e.paperId) || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    d3.selectAll(".spacepoint").attr('opacity', function (e) { return pubIds.includes(e.paperId) || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    d3.selectAll(".selection").attr('opacity', function (e) { return pubIds.includes(e.paperId) || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})  
+    d3.selectAll("rect").attr('opacity', function (e) { return pubIds.includes(e) || so.includes(e) || ch.includes(e) ? 1 : 0.2;}) 
+  }
+
+  function unhover_pub(pubId){
+    d3.selectAll("line").style('stroke', function () { 'transparent';})
+    d3.selectAll(".seedpoint").attr('opacity', 1)
+    d3.selectAll(".relationpoint").attr('opacity', 1)
+    d3.selectAll(".spacepoint").attr('opacity', 1)
+    d3.selectAll(".selection").attr('opacity', 1)
+    d3.selectAll("rect").attr('opacity', 1)
+  }
+
+  function clicked_pubs(pubIds){
+    update_info(pubIds)
+  }
+
+
   
 }
 

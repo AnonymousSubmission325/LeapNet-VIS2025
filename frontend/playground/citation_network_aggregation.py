@@ -197,20 +197,25 @@ def append_child_and_parents(paper_objects, paper_hierarchies, paper_lookup, pap
 def aggregate_network(paper_objects, paper_limit):
     layers = {}
     seed_first_results = []
-    for x in paper_objects:
+    try:
+      for x in paper_objects:
         if(len(sch.search_paper(x))>0):
             seed_first_results.append(sch.search_paper(x)[0])
-        else:
-            print("Paper " + x + " not found" )
+    except:
+        print("Paper " + x + " not found" )
 
     layer = 0
 
     paper_objects = {}
     for x in seed_first_results: 
-        p = sch.get_paper(x.paperId)
-        paper_objects[x.paperId] = p
-        layers[x.paperId] = layer
+        try:
+            p = sch.get_paper(x.paperId)
+            paper_objects[x.paperId] = p
+            layers[x.paperId] = layer
+        except:
+            print("Paper " + x + " not found" )
 
+            
     seeds = { "seeds": [] }
     for s in seed_first_results:
         seeds['seeds'].append(s.paperId)

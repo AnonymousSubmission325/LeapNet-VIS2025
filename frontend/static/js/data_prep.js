@@ -16,12 +16,7 @@ function sortPointsClockwise(points) {
   }
 
 function prepare_data(paper_lookup, pwt_lookup, key_to_sort){
-    // 
-    //  following format is given:
-    //      data = [
-    //     ["id1", "id2", "id3","id4", "id5", "id12"],
-    //     ["id7", "id8", "id9","id10", "id11"]
-    // ]
+
     slices_unsorted = []
 
     var all_years = Object.entries(paper_lookup).map(p => p[1]['year'])
@@ -33,6 +28,7 @@ function prepare_data(paper_lookup, pwt_lookup, key_to_sort){
     sortedYears.map(year => year_dic[year] = [])
     
     Object.entries(paper_lookup).map( p => year_dic[p[1]['year']].push(p[0]));
+
     var all_years = Object.entries(year_dic).map(p => slices_unsorted.push(p[1]));
     data = []
     function sort_by_topic(slice){
@@ -43,7 +39,8 @@ function prepare_data(paper_lookup, pwt_lookup, key_to_sort){
     }
     slices_unsorted.map(s => data.push(sort_by_topic(s)))
     //slices_unsorted.map(s => data.push(s))
-
+    console.log(data)
+    console.log(columns)
     return [data, columns]
 }
 

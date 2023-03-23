@@ -24,7 +24,13 @@ tt1 {
   overflow-x: hidden;
   table-layout: fixed;
 }
-
+.downloadtb {
+  display:block;
+  height: 28%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  table-layout: fixed;
+}
 table {
   border-collapse: collapse; 
   width: 100%; 
@@ -118,7 +124,7 @@ body {
   line-height: 0.4;
   text-align: left;
   width: 100%;
-  height: auto;
+  height: 16%;
   margin: 1 auto;
   border-collapse: collapse;
   overflow: hidden; 
@@ -156,8 +162,161 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2%;
+  width: 15%;
+  height:100%;
 }
+
+
+
+.info-container {
+  height: 68%;
+  background-color: #fff;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  padding: 2px;
+}
+
+
+.info {
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  line-height: 0.4;
+  text-align: left;
+  width: 100%;
+  margin: 1 auto;
+  border-collapse: collapse;
+  overflow: hidden; 
+  display: flex;
+  cursor: pointer;
+}
+.info-text-container {
+width: 90%;
+padding: 2% ;
+}
+.info-button-container {
+  text-align: center;
+  width: 10%;
+  margin: 1 auto;
+  border-collapse: collapse;
+  overflow: hidden; 
+  display: block;
+}
+/* .info:hover {
+  background-color: rgb(255, 173, 144);
+} */
+
+
+.info-title {
+  font-weight: bold;
+  font-size: 10px;
+  white-space: initial;
+  line-height: 1.2;
+}
+.info-author {
+  border-radius: 0px;
+  font-weight: lighter;
+  font-size: 10px;
+  white-space: normal;
+  line-height: 1.2;
+}
+.info-info {
+  border-radius: 0px;
+  font-weight: normal;
+  font-size: 8px;
+}
+.info-text {
+  overflow: hidden;
+  white-space: normal;
+  text-overflow: ellipsis;
+  width:90%;
+  margin: 6px;
+}
+.info-icon {
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  padding: 5%;
+  width: 20%;
+}
+
+.bib-container {
+  height: 26%;
+  background-color: #fff;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  padding: 2px;
+}
+
+
+.bibcard {
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  line-height: 0.4;
+  text-align: left;
+  width: 100%;
+  height: 16%;
+  margin: 1 auto;
+  border-collapse: collapse;
+  overflow: hidden; 
+  display: flex;
+  cursor: pointer;
+}
+.bibcard:hover {
+  background-color: rgb(255, 173, 144);
+}
+
+
+.bibcard-title {
+  border-radius: 0px;
+  font-weight: bold;
+  font-size: 10px;
+}
+.bibcard-author {
+  border-radius: 0px;
+  font-weight: lighter;
+  font-size: 10px;
+}
+.bibcard-info {
+  border-radius: 0px;
+  font-weight: normal;
+  font-size: 8px;
+}
+.bibcard-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width:90%;
+  margin: 6px;
+}
+.bibcard-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 15%;
+  height:100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .point {
   margin: 0;
 }
@@ -251,9 +410,27 @@ form.example::after {
 }
 
 .timelineinner-container{
-  width: 80%;
+  width: 100%;
   float: left;
 }
+
+
+.info-container{
+  width: 100%;
+  float: left;
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.infoinner-container{
+  width: 100%;
+  float: left;
+  height: 96%;
+}
+
+
 
 .overlay {
   z-index: 9;
@@ -314,18 +491,33 @@ form.example::after {
 
   .center {
     width: 100%;
-    height: 60%;
+    height: 68%;
   }
   .sub {
     border-style: solid;
     border-color: lightgray;
     float: left;
-    height: 40%;
+    height: 30%;
+    width: 100%;
     border: 1px solid #ccc;
     border-radius: 2px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
     padding: 2px;
   }
+  .full {
+    border-style: solid;
+    border-color: lightgray;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* .timeline-full-axis {
+    border-style: solid;
+    border-color: lightgray;
+    width: 100%;
+    height:5%;
+  } */
+
   .sub.left {
     border-style: solid;
     border-color: lightgray;
@@ -336,6 +528,10 @@ form.example::after {
   }
   .sub.right {
     width: 34%;
+  }
+  .axisd {
+    width: 100%;
+    height: 5%;
   }
   .stack {
     border-style: solid;
@@ -390,6 +586,31 @@ form.example::after {
   #keywordnumslider {
     width: 100%; /* Width of the outside container */
   }
+  
+  #otrackingslider {
+    width: 100%; /* Width of the outside container */
+  }
+  #okeyslider {
+    width: 100%; /* Width of the outside container */
+  }
+  #obinningslider {
+    width: 100%; /* Width of the outside container */
+  }
+  #oselectionslider {
+    width: 100%; /* Width of the outside container */
+  }
+  #oseedslider {
+    width: 100%; /* Width of the outside container */
+  }
+  #orelatedslider {
+    width: 100%; /* Width of the outside container */
+  }
+  #oconceptslider {
+    width: 100%; /* Width of the outside container */
+  }
+  #oresearchslider {
+    width: 100%; /* Width of the outside container */
+  }
 
   .dropdown {
     display: inline-block;
@@ -439,6 +660,9 @@ form.example::after {
   #axistext {
     font-family: 'Roboto', sans-serif;
   }
+  .axis-grid line {
+    stroke: rgb(161, 161, 161);
+  }
 
   .textc {
     display: flex;
@@ -459,10 +683,17 @@ form.example::after {
 
   
   .toggle {
+    text-align: center;
     cursor: pointer;
     display: inline-block;
     align-items: center;
     padding: 2px;
+    justify-content: space-between;
+  }
+  .toggle-label {
+    font-weight: bold;
+    font-size: 1.4em; /* 30px/16=1.875em */
+    text-align: center;
   }
   
   .toggle-switch {
@@ -505,3 +736,24 @@ form.example::after {
     position: absolute;
     visibility: hidden;
   }
+
+  /* Style buttons */
+.btngroup{
+  width:100%;
+}
+
+.btn {
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #8a8a8a;
+  color: rgb(94, 94, 94);
+  padding: 5% ;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: rgb(255, 209, 209);
+}
+

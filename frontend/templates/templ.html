@@ -65,84 +65,120 @@
         <tt1>Layered Projection </tt1>
         <div id="hex" class="center"> </div>
         <div class="topRightHex overlay">
-          <label>Layer Toggles</label>
+          <!-- <label>Layer Toggles</label> -->
           <div class="toogle-container">
+            
           <label class="toggle">
             <input class="toggle-checkbox" type="checkbox" id="trackingbox">
             <div class="toggle-switch"></div>
             <span class="toggle-label">Tracking</span>
           </label>
+          <div class="slidecontainer">
+            <input type="range" id="otrackingslider" name="volume" min="0" max="100" step="1">
+            <label for="volume">Opacity</label>
+          </div>
+
+          <hr>
 
           <label class="toggle">
             <input class="toggle-checkbox" type="checkbox" id="selectionbox" checked>
             <div class="toggle-switch"></div>
             <span class="toggle-label">Selection</span>
           </label>
+          <div class="slidecontainer">
+            <input type="range" id="oselectionslider" name="volume" min="0" max="100" step="1">
+            <label for="volume">Opacity</label>
+          </div>
 
+          <hr>
+          
           <label class="toggle">
             <input class="toggle-checkbox" type="checkbox" id="conceptbox" checked>
             <div class="toggle-switch"></div>
             <span class="toggle-label">Concept</span>
           </label>
 
+          <div>
+            <input type="range" id="keywordnumslider" name="cowbell" min="1" max="500" value="20" step="20">
+            <label for="cowbell">Number of Keys</label>
+          </div>
+          <div class="slidecontainer">
+            <input type="range" id="oconceptslider" name="volume" min="0" max="100" step="1">
+            <label for="volume">Opacity</label>
+          </div>
+
+          <hr>
           <label class="toggle">
             <input class="toggle-checkbox" type="checkbox" id="binningbox" checked>
             <div class="toggle-switch"></div>
             <span class="toggle-label">Binning</span>
           </label>
-
+          <div class="slidecontainer">
+            <input type="range" id="obinningslider" name="volume" min="0" max="100" step="1">
+            <label for="volume">Opacity</label>
+          </div>
+          <label class="toggle">
+            <label >OR</label>
+            <input class="toggle-checkbox" type="checkbox" id="andorbox">
+            <div class="toggle-switch"></div>
+            <label >AND</label>
+          </label>
+          <div class="slidecontainer">
+            <input type="range" id="binsizeslider" name="volume" min="0" max="40" step="1">
+            <label for="volume">Hexagon Radius</label>
+          </div>
+          <hr>
           <label class="toggle">
             <input class="toggle-checkbox" type="checkbox" id="researchbox" checked>
             <div class="toggle-switch"></div>
             <span class="toggle-label">Research</span>
           </label>
+          <div class="slidecontainer">
+            <input type="range" id="oresearchslider" name="volume" min="0" max="100" step="1">
+            <label for="volume">Opacity</label>
+          </div>
 
+          <hr>
           <label class="toggle">
             <input class="toggle-checkbox" type="checkbox" id="relatedbox"checked>
             <div class="toggle-switch"></div>
             <span class="toggle-label">Related</span>
           </label>
-
+          <div class="slidecontainer">
+            <input type="range" id="orelatedslider" name="volume" min="0" max="100" step="1">
+            <label for="volume">Opacity</label>
+          </div>
+          
+          <hr>
           <label class="toggle">
             <input class="toggle-checkbox" type="checkbox" id="seedbox" checked>
             <div class="toggle-switch"></div>
             <span class="toggle-label">Seed</span>
           </label>
+          <div class="slidecontainer">
+            <input type="range" id="oseedslider" name="volume" min="0" max="100" step="1">
+            <label for="volume">Opacity</label>
+          </div>
 
-          <label class="toggle">
+          <hr>
             <input class="toggle-checkbox" type="checkbox" id="inputbox" >
             <div class="toggle-switch"></div>
             <span class="toggle-label">Input</span>
           </label>
-
-          <hr>
-
-          <p>Space Navigation</p>
-          <div>
-            <div class="slidecontainer">
-              <input type="range" id="binsizeslider" name="volume" min="0" max="40" step="1">
-              <label for="volume">Scale</label>
-            </div>
-          </div>
-          
-          <div>
-            <input type="range" id="keywordnumslider" name="cowbell" min="1" max="500" value="20" step="20">
-            <label for="cowbell">Number of Keys</label>
-          </div>
-
-
         </div>
 
         </div>
       </div>
-      <div id="stacks" class="sub left">
+      <div id="timeline-down-scale" class="sub">
+        <div id="timeline-down" class="full">
+         </div>
+      </div>
+      <!-- <div id="stacks" class="sub left">
         <div id="stack1" class="stack">
           <tt1>Summary </tt1>
           <div style = "width:100%">
 		
             <div id="textc1" class="textc" style = "height:50%; width:100%">
-              <!-- <div id="textc11" class="textc" style = "height:50%";></div>
-              <div id="textc12" class="textc" style = "height:50%";></div> -->
             </div>
          
             <div id= "textc2" class="textc" style = "height:50%; width:50%; float:left;">
@@ -164,48 +200,21 @@
       </div>  
       <div id="network" class="sub right">
         <tt1>Local Network</tt1>
-      </div>  
+      </div>   -->
     </div>
     
     <div class="column rightside">
-      <div class="timeline-container">
+      <div class="info-container">
 
-        <div class="timelineinner-container">
-
-          <!-- <div class="topRightTime overlay">
-            <p>Timeline Properties</p>
-            <div>
-              <div class="dropdowncontainer">
-                <select name="scaling" id="scalingdropdown">
-                  <option value="linear">linear</option>
-                  <option value="logarithmic">logarithmic</option>
-                </select>
-                <br>
-                <label for="volume">Scaling</label>
-              </div>
-              <div class="dropdowncontainer">
-                <select name="scaling" id="scalingdropdown">
-                  <option value="linear">Year</option>
-                  <option value="logarithmic">Month</option>
-                </select>
-                <br>
-                <label for="volume">Grouped by</label>
-              </div>
-            </div> 
-          </div> -->
-          <div id="timeline" class="outer left">
-            <tt1>Timeline </tt1>
-          </div>
-          <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p> -->
+        <div class="infoinner-container">
+          <tt1>Information</tt1>
         </div>
-        <div class="axisselection-container"></div>
       </div>
-      <table id="myTable" class="corpustb">
-        <tr class="header">
-          <th width="10%"></th>
-          <th width="10%">Tracked Papers</th>
-        </tr>
-    </table>
+      <div class="bib-container">
+          <tt1>Collection</tt1>
+      </div> 
+      <button class="btn" style="width:100%"><i class="fa fa-download"></i> Download</button>
+
     </div>
   </div>
 

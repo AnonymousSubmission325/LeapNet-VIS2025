@@ -5,9 +5,9 @@ import networkx_extension
 
 
 
-seedset = ["A nested model for visualization design and validation","Design study methodology: Reflections from the trenches and the stacks", "A multi-level typology of abstract visualization tasks", "Squarified Treemaps Wijk", "Visual analysis of large graphs: state‐of‐the‐art and future research challenges", "Force‐directed edge bundling for graph visualization"]
-#seedset = ["Information visualization and visual data mining", "Visualization of Time-Oriented Data","Standards for Internet-based experimenting"]
-paper_num = 2000
+#seedset = ["PersonaSAGE: A Multi-Persona Graph Neural Network","PersonaSAGE: A Multi-Persona Graph Neural Network", "Learning holistic interactions in LBSNs with high-order, dynamic, and multi-role contexts"]
+seedset = ["Visualization of Time-Oriented Data","Standards for Internet-based experimenting"]
+paper_num = 1000
 citation_network_aggregation.main(seedset, paper_num)
 
 # TODO: extract keywords
