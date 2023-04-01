@@ -59,6 +59,7 @@ var svg = d3.select("div#hex").append("svg")
 .attr("height", height)
 .classed("svg-content", true)
 .append("g")
+// .on("click", function() { unhover_pub("None")})
  //.attr("transform","translate(" + margin.left + "," + margin.top + ")");
 PROJECTION = 'pca' 
 PROJECTION_KEYCLUSTERCENTERS = 'pca_biggestcluster_center' 
@@ -86,10 +87,60 @@ keys.forEach(element => {keyword_points.push([element[PROJECTION_KEYCLUSTERCENTE
 
 var field = svg.append("g")
 
-var card_ids = seeds
+var card_ids = []
+var bib_ids = []
 var bin_lookup = {}
 var bins = []
+var click_ids = []
 
+var tlayer = false
+var hlayer = false
+var clayer = false
+var blayer = false
+var nlayer = false
+var alayer = false
+var rlayer = false
+var slayer = false
+var ilayer = false
+
+function createTrackBins(){
+
+  var color = d3.scaleSequential(d3.interpolateLab("transparent","yellow", "blue"))
+  .domain([0, 100 ]);
+
+  const hexSize = 30;
+
+  const hexWidth = Math.sqrt(3) * hexSize;
+  const hexHeight = 2 * hexSize;
+  const numCols = Math.floor((width - margin.left - margin.right) / hexWidth);
+  const numRows = Math.floor((height - margin.top - margin.bottom) / hexHeight);
+  const xSpacing = hexWidth;
+  const ySpacing = 1.5 * hexHeight;
+  const data = [];
+  for (let i = 0; i < numRows; i++) {
+    const y = margin.top + i * ySpacing;
+    const offset = i % 2 === 0 ? 0 : hexWidth / 2;
+    for (let j = 0; j < numCols; j++) {
+      const x = margin.left + j * xSpacing + offset;
+      data.push({ x, y });
+    }
+  }
+  const hexagons = field.append("g")
+    .selectAll("path")
+    .data(data)
+    .enter()
+    .append("path")
+    .attr("d", d3.hexbin())
+    .attr("transform", d => `translate(${d.x},${d.y})`)
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("stroke-width", 1);
+}
+createTrackBins()
+
+var colorStroke = d3.scaleSequential(d3.interpolateLab("white", "black"))
+.domain([0, d3.max(bins, d => d.length)/3 ]);
+//HEXBINS
 function createHexBins(hexbin_slider_vals){
   var hexbin = d3.hexbin()
   .size([width,height])
@@ -97,8 +148,7 @@ function createHexBins(hexbin_slider_vals){
   bins = hexbin(points)
   var color = d3.scaleSequential(d3.interpolateLab("white", "blue"))
   .domain([0, d3.max(bins, d => d.length)/3 ]);
-  var colorStroke = d3.scaleSequential(d3.interpolateLab("white", "black"))
-  .domain([0, d3.max(bins, d => d.length)/3 ]);
+
   var widthStroke = d3.scaleLinear(1,70)
   .domain([0, d3.max(bins, d => d.length)/3 ]);
   
@@ -115,25 +165,33 @@ function createHexBins(hexbin_slider_vals){
     .style('stroke-width', function(d) { return String(widthStroke(d.length))+'px'; })
     .on("mouseover", function(d) {
       d3.select(this).style("stroke", "red");
-      var pubs = []
-      d.forEach(function(e){
-        pubs.push(e[2])
-      })
-      hover_pubs(pubs);
+      // var pubs = []
+      // d.forEach(function(e){
+      //   pubs.push(e[2])
+      // })
+      // hover_pubs(pubs);
     })
     .on("mouseout", function() {
       d3.select(this).style("stroke", function(d) { return colorStroke(d.length)})
-      unhover_pub("None");
+      // unhover_pub("None");
     })
     .on("click", function(arr) {
-      const result = [];
+
+      var result = [];
       for (let i = 0; i < arr.length; i++) {
-        const [, , third] = arr[i]; // extract the third value using array destructuring
+        const [, , third] = arr[i]; 
         result.push(third);
       }
-      clicked_pubs(result)
-      // update_selection_closeview(result)
-      // d3.select(this).style("stroke", function(d) {return colorStroke(d.length)})
+      unhover_pub("None")
+      if(d3.event.ctrlKey){
+        click_ids.push(...result)
+      }
+      else{
+        click_ids = result
+      }
+      hover_pubs(click_ids);
+      clicked_pubs(click_ids)
+
     });
     bins.forEach((d,i) => d.forEach(e => bin_lookup[e[2]]= i))
 }
@@ -290,7 +348,7 @@ function create_stacked_bars(){
                       if(current_year > max_year){ max_year=current_year} 
                       if(current_year < min_year){ min_year=current_year}})
 
-    var cellSize = 4;
+    var cellSize = 4.3;
     // var width = data_stack.length * (cellSize + border) , height = max_stack * cellSize + border;
     // var rect = document.querySelector('#stacks');
     // var width = rect.offsetWidth;
@@ -311,11 +369,13 @@ function create_stacked_bars(){
         .range([0, height-axisheight])
         .domain(d3.range(max_stack)); //get maximum length
 
-    var svg = d3.select("div#timeline-down")
+    var svg = d3.select("div#timeline-down") 
     .append("svg")
     .attr("width", width)
     .attr("height", height)
     .classed("svg-content", true)
+    
+
     // Show the bars
 
     
@@ -346,9 +406,11 @@ function create_stacked_bars(){
         .attr("fill", function(d) { return pwk_lookup[d]['PCA_Bremm']; })
         //.attr("opacity", function(d) { return topics[color_map][pwk_lookup[d]['Topic_Perc_Contrib']]; })
         .style("stroke", function(d) {if(seeds.includes(d)){return "blue"} })
-        .on("mouseover", function(d) { hover_pub(d) })
-        .on("mouseout", function(d) { unhover_pub(d) })
-        .on("click", function(d) {clicked_pubs([d])})
+        // .on("mouseover", function(d) { hover_pub(d) })
+        // .on("mouseout", function(d) { unhover_pub(d) })
+        .on("click", function(d) {
+          hover_pub(d)
+          clicked_pubs([d])})
         .append("g").attr("class", function(d){return "r" + d})
   //IDEA: append text to single bars
         // container.append("text")
@@ -430,21 +492,24 @@ function create_stacked_bars(){
   create_stacked_bars()
 
   function insert_all_points(pwk_lookup){
-     var symbolset = ["\uf02e", "\uf0c8", "\uf111"]
+     var symbolset = ["\u2605", "\u2B29", "\uf111"]
 
 
     var layer1 = []
     var layer2 = []
     var layer3 = []
     pwk.forEach(p=>{
-      if(p.layer == 0){layer1.push(p)}
-      if(p.layer == 1){layer2.push(p)}
-      if(p.layer >= 2){layer3.push(p)}
+      if(!(card_ids.includes(p.paperId))){
+        if(p.layer == 0){layer1.push(p)}
+        if(p.layer == 1){layer2.push(p)}
+        if(p.layer >= 2){layer3.push(p)}
+      }
     })
     var el = document.getElementById('hex');
     var style = window.getComputedStyle(el, null).getPropertyValue('font-size');
     var fontSize = parseFloat(style); 
 
+    var curr_stroke = "transparent"
     // Initialize the links
     var links = field
     .selectAll("line")
@@ -456,6 +521,31 @@ function create_stacked_bars(){
     .attr("y1", function(d) { return heightScale(pwk_lookup[d.source]['pca'][1]); })
     .attr("x2", function(d) { return widthScale(pwk_lookup[d.target]['pca'][0]); })
     .attr("y2", function(d) { return heightScale(pwk_lookup[d.target]['pca'][1]); })
+    // .on("mouseover", function(d) {
+    //   curr_stroke = window.getComputedStyle(this).getPropertyValue("stroke");
+    //   if(!(curr_stroke=="transparent")){
+    //   d3.select(this).style("stroke", "red");
+    //   }
+    // })
+    // .on("mouseout", function() {
+    //   d3.select(this).style("stroke", curr_stroke)
+    // })
+    .on("click", function(d) {
+      var linked = []
+      linked.push(d.source)
+      linked.push(d.target)
+      unhover_pub("None")
+      if(d3.event.ctrlKey){
+        click_ids.push(...linked)
+      }
+      else{
+        click_ids = linked
+      }
+      console.log(linked)
+
+      hover_pubs(click_ids) 
+      clicked_pubs([click_ids])});
+
 
     var seeds = field.selectAll(".seed_layer")
     .data(layer1)
@@ -465,16 +555,18 @@ function create_stacked_bars(){
     .attr("class", "fa")  // Give it the font-awesome class
     .attr('text-anchor', 'middle')
     .text(function(d){return symbolset[0]})      // Specify your icon in unicode
-    .style("font-size", "0.6em")
+    .style("font-size", "1.2em")
     .attr('x', function(d){return widthScale(pwk_lookup[d.paperId]['pca'][0])})
-    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1])})
+    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1]) + fontSize*0.2})
     // .attr("fill", function(d){return "#3B3B3B"})
     .attr("fill", function(d){return pwk_lookup[d.paperId].PCA_Bremm})
     .attr("width", 1)
     .attr("height", 1)
-    .on("mouseover", function(d) { hover_pub(d) })
-    .on("mouseout", function(d) { unhover_pub(d) })
-    .on("click", function(d) {clicked_pubs([d])});
+    // .on("mouseover", function(d) { hover_pub(d) })
+    // .on("mouseout", function(d) { unhover_pub(d) })
+    .on("click", function(d) {
+      hover_pub(d.paperId) 
+      clicked_pubs([d.paperId])});
 
     var rels = field.selectAll(".relation_layer")
     .data(layer2)
@@ -484,31 +576,33 @@ function create_stacked_bars(){
     .attr("class", "fa")  // Give it the font-awesome class
     .attr('text-anchor', 'middle')
     .text(function(d){return symbolset[1]})      // Specify your icon in unicode
-    .style("font-size", "0.6em")
+    .style("font-size", "2em")
     .attr('x', function(d){return widthScale(pwk_lookup[d.paperId]['pca'][0])})
-    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1]) + fontSize*0.2})
+    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1]) + fontSize*0.75})
     // .attr("fill", function(d){return "#525252"})
     .attr("fill", function(d){return pwk_lookup[d.paperId].PCA_Bremm})
     .attr("width", 1)
     .attr("height", 1)
-    .on("mouseover", function(d) {
+    // .on("mouseover", function(d) {
+    //   hover_pub(d.paperId) 
+
+    //   // var so = source_lookup[d.paperId]
+    //   // if(so == 'undefined' || so == null){so = []}
+    //   // var ch = children_lookup[d.paperId]
+    //   // if(ch == 'undefined' || ch == null){ch = []}
+
+    //   // links.style('stroke', function (link_d) {return link_d.source === d.paperId || link_d.target === d.paperId ? '#696969' : 'transparent';})
+    //   // seeds.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    //   // rels.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    //   // spaces.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    //   // selection.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
+    // })
+    // .on("mouseout", function(d) {
+    //   unhover_pub(d) 
+    // })
+    .on("click", function(d) {
       hover_pub(d.paperId) 
-
-      // var so = source_lookup[d.paperId]
-      // if(so == 'undefined' || so == null){so = []}
-      // var ch = children_lookup[d.paperId]
-      // if(ch == 'undefined' || ch == null){ch = []}
-
-      // links.style('stroke', function (link_d) {return link_d.source === d.paperId || link_d.target === d.paperId ? '#696969' : 'transparent';})
-      // seeds.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
-      // rels.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
-      // spaces.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
-      // selection.attr('opacity', function (e) { return e.paperId === d.paperId || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
-    })
-    .on("mouseout", function(d) {
-      unhover_pub(d) 
-    })
-    .on("click", function(d) {clicked_pubs([d.paperId])});
+      clicked_pubs([d.paperId])});
 
     var spaces = field.selectAll(".space_layer")
     .data(layer3)
@@ -520,14 +614,16 @@ function create_stacked_bars(){
     .text(function(d){return symbolset[2]})      // Specify your icon in unicode
     .style("font-size", "0.6em")
     .attr('x', function(d){return widthScale(pwk_lookup[d.paperId]['pca'][0])})
-    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1])})
+    .attr('y', function(d){return heightScale(pwk_lookup[d.paperId]['pca'][1]) + fontSize*0.2})
     // .attr("fill", function(d){return "#696969"})
     .attr("fill", function(d){return pwk_lookup[d.paperId].PCA_Bremm})
     .attr("width", 1)
     .attr("height", 1)
-    .on("mouseover", function(d) { hover_pub(d) })
-    .on("mouseout", function(d) { unhover_pub(d) })
-    .on("click", function(d) {clicked_pubs([d])});
+    // .on("mouseover", function(d) { hover_pub(d) })
+    // .on("mouseout", function(d) { unhover_pub(d) })
+    .on("click", function(d) {
+      hover_pub(d.paperId) 
+      clicked_pubs([d.paperId])});
 
   }
 
@@ -546,8 +642,19 @@ function create_stacked_bars(){
       }
       return vertices;
     }
-
     var symbolset = ["\uf02e", "\uf0c8", "\uf111"]
+
+    var clienth = 100
+    var clientw = 100
+    var size = 0
+    if(clienth<clientw){size = clienth}
+    else{size=clientw}
+
+    var localhexradius = size
+    var verticesh = getHexagonVertices(0,0, localhexradius)
+    var el = document.getElementById('hex');
+    var style = window.getComputedStyle(el, null).getPropertyValue('font-size');
+    var fontSize = parseFloat(style); 
 
     var selection = field.selectAll(".selection_points")
     .data(card_ids)
@@ -556,27 +663,21 @@ function create_stacked_bars(){
     .append("text")       // Append a text element
     .attr("class", "fa")  // Give it the font-awesome class
     .attr('text-anchor', 'middle')
-    .text(function(d){return symbolset[parseInt(pwk_lookup[d]['layer'])]})      // Specify your icon in unicode
-    .style("font-size", "0.8em")
+    // .text(function(d){return symbolset[parseInt(pwk_lookup[d]['layer'])]})      // Specify your icon in unicode
+    .text(function(d){return '⬢'})      // Specify your icon in unicode
+    .style("font-size", "1em")
     .attr('x', function(d){return widthScale(pwk_lookup[d]['pca'][0])})
-    .attr('y', function(d){return heightScale(pwk_lookup[d]['pca'][1])})
+    .attr('y', function(d){return heightScale(pwk_lookup[d]['pca'][1])+ fontSize*0.2})
     // .attr("fill", function(d){return point_color_lookup[d]})
     .attr("fill", function(d){return pwk_lookup[d].PCA_Bremm})
     .attr("width", 1)
     .attr("height", 1)
-    .on("mouseover", function(d) { hover_pub(d) })
-    .on("mouseout", function(d) { unhover_pub(d) })
-    .on("click", function(d) {clicked_pubs([d])});
+    // .on("mouseover", function(d) { hover_pub(d) })
+    // .on("mouseout", function(d) { unhover_pub(d) })
+    .on("click", function(d) {
+      hover_pubs([d])
+      clicked_pubs([d])});
 
-    //var icons = ["fa fa-tint fa-2x", "fa fa-square", "fa fa-circle"]
-    // Set the width of each td element to match its corresponding th element
-    // Append a cell for each piece of data in the row
-
-    //mark the seed rectangles
-    // var marked_seeds = card_ids.map( d => bin_lookup[d])
-    // marked_seeds.forEach(m =>{
-    //   d3.select('#hex' + String(m)).style('stroke',point_color_lookup[m]).style('stroke-width','8px')
-    // })
     var relevant_bins = {}
     var paper_to_seed_lookup = {}
     var bin = '';
@@ -613,6 +714,7 @@ function create_stacked_bars(){
     console.log(relevant_bins)
     Object.keys(relevant_bins).forEach(b =>{
       var relevant_bins_p_hex = relevant_bins[b]
+      console.log(relevant_bins_p_hex)
       //checkbox
       var count = {}
       var andorbox = document.getElementById("andorbox").checked;
@@ -621,26 +723,15 @@ function create_stacked_bars(){
           for (var num of relevant_bins_p_hex) {
             count[num] = count[num] ? count[num] + 1 : 1;
         }
-        console.log(count)
         var relevant_bins_t = []
         Object.keys(count).forEach(i =>{
-          console.log(bins)
-          console.log(bin_lookup[i])
-          console.log(bins[bin_lookup[i]].length)
-          console.log(count[i])
           if(count[i]>=bins[bin_lookup[i]].length){
             relevant_bins_t.push(i)
           }
         })
-        console.log(relevant_bins_t)
         
         relevant_bins_p_hex = relevant_bins_t
-        console.log(relevant_bins_p_hex)
       }
-
-
-
-
 
       var hex = d3.select('#hex' + String(b)).datum()
       var verticesh = getHexagonVertices(hex.x,hex.y, hexradius)
@@ -666,7 +757,39 @@ function create_stacked_bars(){
           .attr("d", "M " + points + " Z")
           // .attr('stroke', 'black')
           .attr("fill", pwk_lookup[s].PCA_Bremm)
-          .style('opacity',fillopacity_scale(relevant_bins[b].length));
+          .style('opacity',fillopacity_scale(relevant_bins[b].length))
+          .on("mouseover", function(d) {
+            d3.select('#hex' + String(b)).style("stroke", "red");
+            // var pubs = []
+            // d.forEach(function(e){
+            //   pubs.push(e[2])
+            // })
+            // hover_pubs(pubs);
+            // hover_pubs(pubs);
+          })
+          .on("mouseout", function() {
+            d3.select('#hex' + String(b)).style("stroke", function(d) { return colorStroke(d.length)})
+            // unhover_pub("None");
+          })
+          .on("click", function() {
+      
+            unhover_pub("None")
+            if(d3.event.ctrlKey){
+              click_ids.push(...relevant_bins_p_hex)
+            }
+            else{
+              click_ids = relevant_bins_p_hex
+            }
+            // var pubs = []
+            // d.forEach(function(e){
+            //   pubs.push(e[2])
+            // })
+            hover_pubs(click_ids);
+            clicked_pubs(click_ids)
+            // update_selection_closeview(result)
+            // d3.select(this).style("stroke", function(d) {return colorStroke(d.length)})
+            //HERE
+          });
         })
 
       //create color gradient
@@ -725,6 +848,7 @@ function create_stacked_bars(){
       .data(card_ids)
       .enter()
     var card = cards.append('div').attr("class","card")
+                    .style('background-color', function (d) {return bib_ids.includes(d.paperId) ? "#d1d1d1":"white";})
                     .on("click", function(d) { card_click(d3.select(this),d) })
                     .on("mouseover", function(d) { hover_pub(d) })
                     .on("mouseout", function(d) { unhover_pub(d) });
@@ -762,8 +886,9 @@ function create_stacked_bars(){
     icondiv_svg.append("path")
       .attr("d", function(d,i){
         var j=0
-        if(i==5){j=0}
+        if(i==6){j=0} //to 5??
         else{j=i+1}
+
         var points = clientw/2 + ',' + clienth/2 + ' ' + verticesh[i][0] + ',' + verticesh[i][1] + ' ' + verticesh[j][0] + ',' + verticesh[j][1] 
         return "M " + points + " Z"})
       //.attr("d", "M " + points + " Z")
@@ -800,7 +925,8 @@ function create_stacked_bars(){
     insert_seedselection(card_ids, point_color_lookup)
     }
   
-  update_selection(card_ids)
+  //update_selection(card_ids)
+
 
 
   var hexbin_slider = document.getElementById("binsizeslider");
@@ -815,9 +941,20 @@ function create_stacked_bars(){
   // Update the current slider value (each time you drag the slider handle)
   hexbin_slider.oninput = update_by_binsizeslider
 
+  d3.select('#tlayer').style("background", "darkgrey").style("opacity",0.6);
+  const myDivt = document.getElementById('tlayer');
+  myDivt.addEventListener('click', () => {
+    console.log(tlayer)
+    if(!(tlayer)){
+      tlayer=true
+      d3.select('#tlayer').style("background", "white").style("opacity",1);}
+    else{
+      tlayer=false
+      d3.select('#tlayer').style("background", "darkgrey").style("opacity",0.6);}
 
-//TODO
-  var trackingbox = document.getElementById("trackingbox");
+    update_by_trackingbox()
+  });
+
   function update_by_trackingbox(){
     // const element = field.selectAll(".hexagon_path")
     // element.style('display', 'none');
@@ -825,78 +962,191 @@ function create_stacked_bars(){
     //   element.style('display', 'block');}
     // else{element.style('display', 'none'); }
   }
-  trackingbox.oninput = update_by_trackingbox
 
-//TODO
-  var selectionbox = document.getElementById("selectionbox");
-  function update_by_selectionbox(){
+  d3.select('#hlayer').style("background", "darkgrey").style("opacity",0.6);
+  const myDivh = document.getElementById('hlayer');
+  myDivh.addEventListener('click', () => {
+    if(!(hlayer)){
+      hlayer=true
+      d3.select('#hlayer').style("background", "white").style("opacity",1);
+      set_selection()}
+    else{
+      hlayer=false
+      d3.select('#hlayer').style("background", "darkgrey").style("opacity",0.6);
+      unset_selection()}
+  });
+
+  function set_selection(){
+    const element = field.selectAll(".seedp")
+      element.style('display', 'block');
+  }
+  function unset_selection(){
     const element = field.selectAll(".seedp")
     element.style('display', 'none');
-    if(selectionbox.checked){
-      element.style('display', 'block');}
-    else{element.style('display', 'none'); }
   }
-  selectionbox.oninput = update_by_selectionbox
 
-
-    var conceptbox = document.getElementById("conceptbox");
-  function update_by_conceptbox(){
-    const element = d3.selectAll(".keytext")
+  d3.select('#clayer').style("background", "darkgrey").style("opacity",0.6);
+  const myDivc = document.getElementById('clayer');
+  myDivc.addEventListener('click', () => {
+    if(!(clayer)){
+      clayer=true
+      d3.select('#clayer').style("background", "white").style("opacity",1);
+      set_c()}
+    else{
+      clayer=false
+      d3.select('#clayer').style("background", "darkgrey").style("opacity",0.6);
+      unset_c()}
+  });
+  
+  function set_c(){
+    const element = field.selectAll(".keytext")
+      element.style('display', 'block');
+  }
+  function unset_c(){
+    const element = field.selectAll(".keytext")
     element.style('display', 'none');
-    if(conceptbox.checked){
-      element.style('display', 'block');}
-    else{element.style('display', 'none'); }
   }
-  conceptbox.oninput = update_by_conceptbox
 
-    var binningbox = document.getElementById("binningbox");
-
-  function update_by_binningbox(){
+  d3.select('#blayer').style("background", "darkgrey").style("opacity",0.6);
+  const myDivb = document.getElementById('blayer');
+  myDivb.addEventListener('click', () => {
+    if(!(blayer)){
+      blayer=true
+      d3.select('#blayer').style("background", "white").style("opacity",1);
+      set_b()}
+    else{
+      blayer=false
+      d3.select('#blayer').style("background", "darkgrey").style("opacity",0.6);
+      unset_b()}
+  });
+  
+  function set_b(){
     const element = field.selectAll(".hexagon_path")
     const element2 = d3.selectAll(".triangle")
-    // element.style('display', 'none');
-    // element2.style('display', 'none');
-    if(binningbox.checked){
       element.style('display', 'block');
       element2.style('display', 'block');
-    }
+  }
+  function unset_b(){
+    const element = field.selectAll(".hexagon_path")
+    const element2 = d3.selectAll(".triangle")
+    element.style('display', 'none'); 
+    element2.style('display', 'none'); 
+  }
+
+
+  d3.select('#nlayer').style("background", "darkgrey").style("opacity",0.6);
+  const myDivn = document.getElementById('nlayer');
+  myDivn.addEventListener('click', () => {
+    if(!(nlayer)){
+      nlayer=true
+      d3.select('#nlayer').style("background", "white").style("opacity",1);
+      set_n()}
     else{
-      element.style('display', 'none'); 
-      element2.style('display', 'none'); 
-    }
+      nlayer=false
+      d3.select('#nlayer').style("background", "darkgrey").style("opacity",0.6);
+      unset_n()}
+  });
+  
+  function set_n(){
+    const element = field.selectAll("line")
+    const element2 = field.selectAll("timeline")
+      element.style('display', 'block');
+      element2.style('display', 'block');
   }
-  binningbox.oninput = update_by_binningbox
+  function unset_n(){
+    const element = field.selectAll("line")
+    const element2 = field.selectAll("timeline")
+    element.style('display', 'none'); 
+    element2.style('display', 'none'); 
+  }
 
-
-  var researchbox = document.getElementById("researchbox");
-  function update_by_researchbox(){
+  d3.select('#alayer').style("background", "darkgrey").style("opacity",0.6);
+  const myDiva = document.getElementById('alayer');
+  myDiva.addEventListener('click', () => {
+    if(!(alayer)){
+      alayer=true
+      d3.select('#alayer').style("background", "white").style("opacity",1);
+      set_a()}
+    else{
+      alayer=false
+      d3.select('#alayer').style("background", "darkgrey").style("opacity",0.6);
+      unset_a()}
+  });
+  
+  function set_a(){
     const element = d3.selectAll(".spacepoint")
-    element.style('display', 'none');
-    if(researchbox.checked){
-      element.style('display', 'block');}
-    else{element.style('display', 'none'); }
+    element.style('display', 'block');
   }
-  researchbox.oninput = update_by_researchbox
+  function unset_a(){
+    const element = d3.selectAll(".spacepoint")
+    element.style('display', 'none'); 
+  }
 
-  var relatedbox = document.getElementById("relatedbox");
-  function update_by_relatedbox(){
+  d3.select('#rlayer').style("background", "darkgrey").style("opacity",0.6);
+  const myDivr = document.getElementById('rlayer');
+  myDivr.addEventListener('click', () => {
+    if(!(rlayer)){
+      rlayer=true
+      d3.select('#rlayer').style("background", "white").style("opacity",1);
+      set_r()}
+    else{
+      rlayer=false
+      d3.select('#rlayer').style("background", "darkgrey").style("opacity",0.6);
+      unset_r()}
+  });
+  
+  function set_r(){
     const element = d3.selectAll(".relationpoint")
-    element.style('display', 'none');
-    if(relatedbox.checked){
-      element.style('display', 'block');}
-    else{element.style('display', 'none'); }
+    element.style('display', 'block');
   }
-  relatedbox.oninput = update_by_relatedbox
+  function unset_r(){
+    const element = d3.selectAll(".relationpoint")
+    element.style('display', 'none'); 
+  }
 
-  var seedbox = document.getElementById("seedbox");
-  function update_by_seedbox(){
+  d3.select('#slayer').style("background", "darkgrey").style("opacity",0.6);
+  const myDivs = document.getElementById('slayer');
+  myDivs.addEventListener('click', () => {
+    if(!(slayer)){
+      slayer=true
+      d3.select('#slayer').style("background", "white").style("opacity",1);
+      set_s()}
+    else{
+      slayer=false
+      d3.select('#slayer').style("background", "darkgrey").style("opacity",0.6);
+      unset_s()}
+  });
+  
+  function set_s(){
     const element = d3.selectAll(".seedpoint")
-    element.style('display', 'none');
-    if(seedbox.checked){
-      element.style('display', 'block');}
-    else{element.style('display', 'none'); }
+    element.style('display', 'block');
   }
-  seedbox.oninput = update_by_seedbox
+  function unset_s(){
+    const element = d3.selectAll(".seedpoint")
+    element.style('display', 'none'); 
+  }
+
+  d3.select('#ilayer').style("background", "darkgrey").style("opacity",0.6);
+  const myDivi = document.getElementById('ilayer');
+  myDivi.addEventListener('click', () => {
+    if(!(ilayer)){
+      ilayer=true
+      d3.select('#ilayer').style("background", "white").style("opacity",1);
+      set_i()}
+    else{
+      ilayer=false
+      d3.select('#ilayer').style("background", "darkgrey").style("opacity",0.6);
+      unset_i()}
+  });
+  
+  function set_i(){
+    // const element = d3.selectAll(".seedpoint")
+    // element.style('display', 'block');
+  }
+  function unset_i(){
+    // const element = d3.selectAll(".seedpoint")
+    // element.style('display', 'none'); 
+  }
 
 
   var andorbox = document.getElementById("andorbox");
@@ -912,15 +1162,8 @@ function create_stacked_bars(){
 
 
 
-
-
-
-
-
-
-
   function create_corpus_table(){
-
+    d3.select('#myTable tbody').html("")
     var corp_papers = papers.filter(p => !(card_ids.includes(p.paperId)))
 
     // Select the table element
@@ -932,11 +1175,21 @@ function create_stacked_bars(){
       .data(corp_papers)
       .enter()
       .append('tr')
-      .on("click", function(d) { table_row_click(d) })
-      .on("mouseover", function(d) { hover_pub(d.paperId) })
-      .on("mouseout", function(d) { unhover_pub(d) });
+      .on("click", function(d) {
+        unhover_pub("None")
+        if(d3.event.ctrlKey){
+          click_ids.push(d.paperId)
+        }
+        else{
+          click_ids = [d.paperId]
+        }
 
-    var icons = ["fa fa-bookmark", "fa fa-square", "fa fa-circle"]
+        d3.select(this).style('background-color',"rgb(255, 173, 144)"); hover_pubs(click_ids); table_row_click(d) })
+      // .on("mouseover", function(d) { hover_pub(d.paperId) })
+      // .on("mouseout", function(d) { unhover_pub(d) })
+      .style('background-color', function (d) {return bib_ids.includes(d.paperId) ? "#d1d1d1":"white";});
+
+    var icons = ["fa fa-star", "fa fa-square fa-rotate-45", "fa fa-circle"]
     // Set the width of each td element to match its corresponding th element
     // Append a cell for each piece of data in the row
     var cells = rows.selectAll('td')
@@ -961,9 +1214,19 @@ function create_stacked_bars(){
       .data(author_ls)
       .enter()
       .append('tr')
-      .on("mouseover", function(d) { hover_pubs(authors['authors'][d[0]]) })
-      .on("mouseout", function(d) { unhover_pub(d) })
-      .on("click", function(d) {clicked_pubs(authors['authors'][d[0]])});
+      // .on("mouseover", function(d) { hover_pubs(authors['authors'][d[0]]) })
+      // .on("mouseout", function(d) { unhover_pub(d) })
+      .on("click", function(d) {
+        unhover_pub("None")
+        if(d3.event.ctrlKey){
+          click_ids.push(...authors['authors'][d[0]])
+        }
+        else{
+          click_ids = authors['authors'][d[0]]
+        }
+        d3.select(this).style('background-color',"rgb(255, 173, 144)");
+        hover_pubs(click_ids)
+        clicked_pubs(click_ids)});
     // Set the width of each td element to match its corresponding th element
     // Append a cell for each piece of data in the row
 
@@ -1127,8 +1390,22 @@ function create_stacked_bars(){
   }
   //create_stacks(seeds)
 
-  function update_info(card_ids){
+//   node.addEventListener("keyup", ({key}) => {
+//     if (key === "Enter") {
+//         // Do work
+//     }
+// })
+//   const node = document.getElementsByClassName("#myInput")[0];
+//   node.addEventListener("keyup", ({key}) => {
+//     if (key === "Enter") {
+//       console.log("nope")
+//     }
+//   })
 
+
+
+  function update_info(card_ids){
+    d3.select('.infoinner-container').html("");
     if(card_ids.length>0){
 
     // Select the table element
@@ -1140,10 +1417,11 @@ function create_stacked_bars(){
       .data(card_ids)
       .enter()
     var card = cards.append('div').attr("class","info")
-    //implement info_click from HERE
-                    .on("click", function(d) { card_click(d3.select(this),d) })
+                    .style('background-color', function (d) {return bib_ids.includes(d.paperId) ? "#d1d1d1":"white";})
+                // .on("click", function(d) { this.remove()})
                     .on("mouseover", function(d) { hover_pub(d) })
-                    .on("mouseout", function(d) { unhover_pub(d) });
+                    .on("mouseout", function(d) { unhover_pub(d) })
+                    
     // var icondiv = card.append('div').attr("class","card-icon")
     // var element = document.getElementsByClassName('card-icon')[0];
 
@@ -1193,55 +1471,92 @@ function create_stacked_bars(){
     .attr("class", "btn")
     .append('i')
     .attr("class", "fa fa-mouse-pointer")
+    .on("click", function(d) { infoselect_click(d) })
     card_text
     .append('div')
     .attr("class", "btn")
     .append('i')
     .attr("class", "fa fa-link")
+    .on("click", function(d) { infolink_click(d) })
     card_text
     .append('div')
     .attr("class", "btn")
     .append('i')
     .attr("class", "fa fa-bookmark")
-    card_text
-    .append('div')
-    .attr("class", "btn")
-    .append('i')
-    .attr("class", "fa fa-close")
-    
+    .on("click", function(d) { infobookmark_click(d) })
     }
   }
 
 
-  function create_radar(selection){
-    dataAcolor = prep_influ(selection, pwk_lookup)
-    data = dataAcolor[0]
-    colors = dataAcolor[1]
-    maxistr = dataAcolor[2]
 
-    var rect = document.querySelector('.radarChart');
-    var width = rect.clientWidth;
-    var height = rect.clientHeight;
+  function update_bib(info_ids){
+    
+      // Select the table element
+      var cardscontainer = d3.select('.bibcardinner-container');
+      // Bind the data to the table
+      var point_color_lookup = {}
+  
+      var cards = cardscontainer.selectAll('bibcard')
+        .data(info_ids)
+        .enter()
+      var card = cards.append('div').attr("class","bibcard")
+                      .on("click", function(d) { bibcard_click(elem, d)})
+                      .on("mouseover", function(d) { hover_pub(d) })
+                      .on("mouseout", function(d) { unhover_pub(d) });
 
-    var margin = {top: 50, right: 50, bottom: 50, left: 50},
-				width = Math.min(width, window.innerWidth - 10) - margin.left - margin.right,
-				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
-					
-			var color = d3.scaleOrdinal(d3.schemeCategory10)
-				.range(colors);
-				
-			var radarChartOptions = {
-			  w: width,
-			  h: height,
-			  margin: margin,
-			  maxValue: 0.5,
-			  levels: 1,
-			  roundStrokes: false,
-			  color: color
-			};
-			//Call function to draw the Radar chart
-			RadarChart(".radarChart", data, radarChartOptions, maxistr);
+      var card_text = card.append('div').attr("class","bibcard-text-container")
+  
+      card_text.append('div')
+      .attr("class","bibcard-title")
+      .append('p')
+      .text(function(d) { return paper_lookup[d].title; })
+      .append('div')
+      .attr("class","bibcard-info")
+      .append('p')
+      .text(function(d) { return paper_lookup[d].year+ ' , ' + paper_lookup[d].venue; })
+      .append('div')
+      .attr("class","bibcard-author")
+      .append('p')
+      .text(function(d) { return paper_lookup[d].authors_name; })
+      
+    // Select the table element
+      // update_info(info_ids)
+      // update_selection(card_ids)
+      // create_corpus_table()
+    
+
   }
+
+
+  // function create_radar(selection){
+  //   dataAcolor = prep_influ(selection, pwk_lookup)
+  //   data = dataAcolor[0]
+  //   colors = dataAcolor[1]
+  //   maxistr = dataAcolor[2]
+
+  //   var rect = document.querySelector('.radarChart');
+  //   var width = rect.clientWidth;
+  //   var height = rect.clientHeight;
+
+  //   var margin = {top: 50, right: 50, bottom: 50, left: 50},
+	// 			width = Math.min(width, window.innerWidth - 10) - margin.left - margin.right,
+	// 			height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
+					
+	// 		var color = d3.scaleOrdinal(d3.schemeCategory10)
+	// 			.range(colors);
+				
+	// 		var radarChartOptions = {
+	// 		  w: width,
+	// 		  h: height,
+	// 		  margin: margin,
+	// 		  maxValue: 0.5,
+	// 		  levels: 1,
+	// 		  roundStrokes: false,
+	// 		  color: color
+	// 		};
+	// 		//Call function to draw the Radar chart
+	// 		RadarChart(".radarChart", data, radarChartOptions, maxistr);
+  // }
   //create_radar(seeds)
 
   function create_network(selection){
@@ -1417,10 +1732,12 @@ function create_stacked_bars(){
   }
 
   function table_row_click(d){
-    if(card_ids.length<6){
-    card_ids.push(d.paperId)
-    d3.select('.cards-container').html("");
-    update_selection(card_ids)
+    if(!(card_ids.includes(d.paperId))){
+      if(card_ids.length<6){
+      card_ids.push(d.paperId)
+      d3.select('.cards-container').html("");
+      update_selection(card_ids)
+      }
     }
   }
   function card_click(elem,d){
@@ -1431,15 +1748,47 @@ function create_stacked_bars(){
     }
     d3.select('.cards-container').html("");
     update_selection(card_ids)
+  }  
+  
+  function bibcard_click(elem,d){
+    elem.remove();
+    var index = bib_ids.indexOf(d);
+    if (index !== -1) {
+      card_ids.splice(index, 1);
+    }
+    d3.select('.cards-container').html("");
+      update_info(info_ids)
+  update_selection(card_ids)
+  create_corpus_table()
   }
-  //HERE!
-  // function x_click(d){
-  //   if(card_ids.length<6){
-  //   card_ids.push(d.paperId)
-  //   d3.select('.cards-container').html("");
-  //   update_selection(card_ids)
-  //   }
-  // }
+
+
+
+
+  function infolink_click(d){
+    window.open(pwk_lookup[d].url);
+  }
+
+  function infobookmark_click(d){
+    if(!(bib_ids.includes(d))){
+        bib_ids.push(d)
+      update_bib([d])
+      }
+  }
+  
+function infoselect_click(d){
+  console.log(d)
+  if(!(card_ids.includes(d))){
+  if(card_ids.length<6){
+    card_ids.push(d)
+    d3.select('.cards-container').html("");
+    update_selection(card_ids)
+    }
+  }
+}
+
+
+
 
   function hover_pub(pubId){
     var so = source_lookup[pubId]
@@ -1461,7 +1810,7 @@ function create_stacked_bars(){
     pubIds.forEach(p => {s = source_lookup[p]; if(s != 'undefined' && s != null){so.push(...s)}})
     var ch = []
     pubIds.forEach(p => {c = children_lookup[p]; if(c != 'undefined' && c != null){ch.push(...c)}})
-  
+
     d3.selectAll("line").style('stroke', function (link_d) {return pubIds.includes(link_d.source) || pubIds.includes(link_d.target) ? '#696969' : 'transparent';})
     .style("stroke-dasharray", function (link_d) { return pubIds.includes(link_d.source) ? ("1, 1") : ("10,10")})
     d3.selectAll(".seedpoint").attr('opacity', function (e) { return pubIds.includes(e.paperId) || so.includes(e.paperId) || ch.includes(e.paperId) ? 1 : 0.2;})
@@ -1471,6 +1820,8 @@ function create_stacked_bars(){
     d3.selectAll("rect").attr('opacity', function (e) { return pubIds.includes(e) || so.includes(e) || ch.includes(e) ? 1 : 0.2;}) 
   }
 
+  d3.select("#deselectButton").on("click", function () { console.log("hi");unhover_pub("None");} )
+
   function unhover_pub(pubId){
     d3.selectAll("line").style('stroke', function () { 'transparent';})
     d3.selectAll(".seedpoint").attr('opacity', 1)
@@ -1478,12 +1829,12 @@ function create_stacked_bars(){
     d3.selectAll(".spacepoint").attr('opacity', 1)
     d3.selectAll(".selection").attr('opacity', 1)
     d3.selectAll("rect").attr('opacity', 1)
+    d3.selectAll('tr').style('background-color',"white");
   }
 
   function clicked_pubs(pubIds){
     update_info(pubIds)
   }
-
 
   
 }
