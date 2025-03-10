@@ -289,26 +289,26 @@ function create_keywords(keynum){
   
       
   // Cycle through dedupables and dedupe them
-  textLabels.each(function(d, i) {
+  // textLabels.each(function(d, i) {
     
-    // Get bounding box
-    var thisBBox = this.getBBox()
+  //   // Get bounding box
+  //   var thisBBox = this.getBBox()
     
-    // Iterate through each box to see if it overlaps with any following
-    // If they do, hide them
-    // And only get labels later in the order than this one
-    textLabels.filter((k, j) => j > i).each(function(d){
-        var underBBox = this.getBBox()
-        // If not overlapping with a subsequent item, and isn't meant to be shown always, hide it
-        if(getOverlapFromTwoExtents(thisBBox, underBBox) && d3.select(this).attr('class').match('dedupe-always-show') == null){
-          d3.select(this)
-                // TODO: This animation is just for the Observable demo
-                .style('opacity', 1)
-                .transition().delay(500).duration(1000)
-            .style('opacity', 0)
-        }
-    })
-  })
+  //   // Iterate through each box to see if it overlaps with any following
+  //   // If they do, hide them
+  //   // And only get labels later in the order than this one
+  //   textLabels.filter((k, j) => j > i).each(function(d){
+  //       var underBBox = this.getBBox()
+  //       // If not overlapping with a subsequent item, and isn't meant to be shown always, hide it
+  //       if(getOverlapFromTwoExtents(thisBBox, underBBox) && d3.select(this).attr('class').match('dedupe-always-show') == null){
+  //         d3.select(this)
+  //               // TODO: This animation is just for the Observable demo
+  //               .style('opacity', 1)
+  //               .transition().delay(500).duration(1000)
+  //           .style('opacity', 0)
+  //       }
+  //   })
+  // })
 }
 
 
@@ -944,24 +944,26 @@ function create_stacked_bars(){
   d3.select('#tlayer').style("background", "darkgrey").style("opacity",0.6);
   const myDivt = document.getElementById('tlayer');
   myDivt.addEventListener('click', () => {
-    console.log(tlayer)
     if(!(tlayer)){
       tlayer=true
-      d3.select('#tlayer').style("background", "white").style("opacity",1);}
+      d3.select('#tlayer').style("background", "white").style("opacity",1);
+      set_trackings()}
     else{
       tlayer=false
-      d3.select('#tlayer').style("background", "darkgrey").style("opacity",0.6);}
-
-    update_by_trackingbox()
+      d3.select('#tlayer').style("background", "darkgrey").style("opacity",0.6);
+      unset_trackings()}
   });
 
-  function update_by_trackingbox(){
-    // const element = field.selectAll(".hexagon_path")
-    // element.style('display', 'none');
-    // if(trackingbox.checked){
-    //   element.style('display', 'block');}
-    // else{element.style('display', 'none'); }
+  function set_trackings(){
+    console.log(field.selectAll(".thex"))
+    const element = field.selectAll(".thex")
+    element.style('display', 'block');
   }
+  function unset_trackings(){
+    const element = field.selectAll(".thex")
+    element.style('display', 'none');
+  }
+
 
   d3.select('#hlayer').style("background", "darkgrey").style("opacity",0.6);
   const myDivh = document.getElementById('hlayer');
@@ -1835,6 +1837,98 @@ function infoselect_click(d){
   function clicked_pubs(pubIds){
     update_info(pubIds)
   }
+// TRACKING LAYER
+
+
+
+// Create a hexbin layout
+var thexbin = d3.hexbin()
+.size([width, height])
+.radius(10);
+
+// Generate random data for the hexbins
+// var points = d3.range(2000).map(function() {
+// return [
+//   Math.random() * width,
+//   Math.random() * height
+// ];
+// });
+
+// Now, hexPoint contains the hexbin coordinates of the point under the cursor
+// We can select the corresponding hexagon and perform some operation on it
+field.selectAll(".thexagon")
+    .filter(d => d.x === hexPoint.x && d.y === hexPoint.y)
+    .style("fill", "red");  // for example, change its fill color to red
+
+
+
+// Now, hexPoint contains the hexbin coordinates of the point under the cursor
+// We can select the corresponding hexagon and perform some operation on it
+
+// Generate evenly distributed data for the hexbins
+var tpoints = thexbin.centers();
+// Compute the hexbin data
+var thexData = thexbin(tpoints);
+// Create an empty dictionary to store hexagons
+var thexagonDict = {};
+
+// Iterate over the hexagons and create dictionary entries
+thexData.forEach(function(thexagon) {
+// Generate a unique identifier for the hexagon
+var thexId = thexagon.x + "-" + thexagon.y;
+// Add the hexagon to the dictionary
+thexagonDict[thexId] = 0;
+});
+
+
+
+// Function to call when you mouseover a node
+function mover(d) {
+  var thid = d.x + "-" + d.y;
+  thexagonDict[thid] = thexagonDict[thid] + 1;
+
+  // Get the maximum value from the hexagonDict dictionary
+  var tmaxHexagonValue = d3.max(Object.values(thexagonDict));
+
+  //Create a color scale from transparent to yellow
+  // var colorScale = d3.scaleSequential()
+  //   .interpolator(  d3.interpolateRgb("transparent","yellow"))
+  //   .domain([0, maxHexagonValue]);
+
+// Create the color scale
+var tcolorScale = d3.scaleLinear()
+  .domain([0, tmaxHexagonValue/2, tmaxHexagonValue])
+  .range([d3.rgb('rgba(0,0,0,0)'), d3.rgb('rgba(255,255,0,0.9)'), d3.rgb('rgba(255,165,0,0.9)')]) 
+  .interpolate(d3.interpolateLab); // Use Lab color interpolation for smooth transitions
+
+
+  // Update the fill color of the hovered hexagon
+  d3.select(this)
+    .attr("fill", tcolorScale(thexagonDict[thid]));
+
+  // Update the fill color of other hexagons
+  tracking_hexagons.attr("fill", function(d) {
+    return tcolorScale(thexagonDict[d.x + "-" + d.y]);
+  });
+}
+
+
+
+// Create hexagon elements and apply color scale
+var tracking_hexagons = field.selectAll(".thex_path")
+.data(thexData)
+.enter()
+.append("path")
+.attr("d", function(d) {
+  return "M" + d.x + "," + d.y + thexbin.hexagon();
+})
+.attr("class", "thex")
+.attr("fill", "transparent")
+// .attr("fill", function(d) {
+//   return "red"
+// })
+.on("mouseenter", mover);
+
 
   
 }

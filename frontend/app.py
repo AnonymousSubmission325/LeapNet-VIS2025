@@ -1,36 +1,33 @@
-# import main Flask class and request object
 import os
 import json
+from flask import Flask, render_template
 
-from flask import Flask, render_template, request, jsonify
-# create the Flask app
 app = Flask(__name__)
-# This route serves the dictionary d at the route /date
 
+# Load static data
+def load_json(filename):
+    with open(os.path.join("frontend/static", filename)) as f:
+        return json.load(f)
 
-@app.route('/', methods=["POST", "GET"])
-def returnOne():
-    # define some data
-    with open('frontend/static/network.json') as f:
-        network = json.load(f)
-    with open('frontend/static/papers.json') as f:
-        papers = json.load(f)
-    with open('frontend/static/seeds.json') as f:
-        seeds = json.load(f)
-    with open('frontend/static/projections.json') as f:
-        keys = json.load(f)
-    with open('frontend/static/key_projections.json') as f:
-        key_projections = json.load(f)
-    #with open('frontend/static/papers_with_keys_and_centrals.json') as f:
-    with open('frontend/static/papers_with_keys.json') as f:
-        pwk = json.load(f)
-    with open('frontend/static/paths.json') as f:
-        paths = json.load(f)
-    with open('frontend/static/authors.json') as f:
-        authors = json.load(f)
-    return render_template("templ.html", network = network, papers = papers, seeds = seeds, keys = keys, key_projections = key_projections, pwk = pwk, paths = paths, authors = authors)
+data = {
+    "network": load_json("network.json"),
+    "papers": load_json("papers.json"),
+    "seeds": load_json("seeds.json"),
+    "keys": load_json("projections.json"),
+    "key_projections": load_json("key_projections.json"),
+    "pwk": load_json("papers_with_keys.json"),
+    "paths": load_json("paths.json"),
+    "authors": load_json("authors.json")
+}
 
+# Generate static HTML
+def generate_static_html():
+    with app.app_context():  # Ensures the Flask context is active
+        html = render_template("templ.html", **data)
+        output_path = "frontend/index.html"
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(html)
+        print(f"✅ Generated {output_path}")
 
-if __name__ == '__main__':
-    # run app in debug mode on port 5000
-    app.run(debug=True, port=5000)
+if __name__ == "__main__":
+    generate_static_html()
