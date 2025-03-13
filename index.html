@@ -1,0 +1,171 @@
+<html>
+<head>
+<style>
+</style>
+
+<title>ResearchSpace Vis</title>
+
+<!-- Load icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="static/css/dashboard.css">
+
+</head>
+
+<body>
+
+  <div class="row">
+    <div class="column leftside">
+      <div id="ccontainer" class="cards-container"> 
+        <tt1>Selection <i class="fa fa-mouse-pointer" aria-hidden="true"></i></tt1>
+      </div>
+      <div class="search-container">
+        <tt1>Search <i class="fa fa-search" aria-hidden="true"></i></tt1>
+        <div class="search-form">
+          <form class="example">
+            <input type="text" id="myInput" onkeyup="filter_on_search()" placeholder="Search...">
+          </form>
+        </div>
+
+        <table id="myTable" class="corpustb">
+            <tr class="header">
+              <th width="10%"></th>
+              <th width="10%">Title</th>
+              <th width="60%">Authors</th>
+              <th width="10%">Year</th>
+              <th width="10%">Venue</th>
+            </tr>
+        </table>
+
+        <table id="myTableB" class="authortb">
+          <tr class="header">
+            <th width="90%">Author</th>
+            <th width="10%">Publications</th>
+          </tr>
+        </table> 
+      </div>
+    </div>
+
+    <div class="column middle">
+      <div class="hex-container">
+        <tt1>Layered Projection </tt1><i class="fa-solid fa-layer-group"></i>
+        <div id="hex" class="center"></div>
+
+        <div class="topRightHex overlay">
+          <div class="toogle-container">
+            <div class="layer-toggle">
+              <div class="btn-toggler" id="tlayer">
+                <img src="static/images/layersymbols/t.png" alt="Tracking">
+              </div>
+              <span class="toggle-label">Tracking</span>
+            </div>
+            <div class="layer-toggle">
+              <div class="btn-toggle" id="hlayer">
+                <img src="static/images/layersymbols/h.png" alt="Selection">
+              </div>
+              <span class="toggle-label">Selection</span>
+            </div>
+            <div class="layer-toggle-big">
+              <div class="btn-toggle" id="clayer">
+                <img src="static/images/layersymbols/c.png" alt="Concept">
+              </div>
+              <div class="inner">
+                <span class="toggle-label">Concept</span>
+                <div class="slidecontainer">
+                  <input type="range" id="keywordnumslider" min="1" max="500" value="20" step="20">
+                  <label class="mini-label">#Keys</label>
+                </div>
+              </div>
+            </div>
+            <div class="layer-toggle">
+              <div class="btn-toggle" id="nlayer">
+                <img src="static/images/layersymbols/n.png" alt="Network">
+              </div>
+              <span class="toggle-label">Network</span>
+            </div>
+            <div class="layer-toggle">
+              <div class="btn-toggle" id="rlayer">
+                <img src="static/images/layersymbols/r.png" alt="Related">
+              </div>
+              <span class="toggle-label">Related</span>
+            </div>
+          </div>
+          <button class="button" id="deselectButton">
+            <i class="fa fa-times-circle-o" aria-hidden="true"></i> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="column rightside">
+      <div class="info-container">
+        <div class="infoinner-container">
+          <tt1>Information <i class="fa fa-info-circle" aria-hidden="true"></i></tt1>
+        </div>
+      </div>
+
+      <div class="bibcard-container">
+        <div class="bibcardinner-container">
+          <tt1>Collection <i class="fa fa-bookmark" aria-hidden="true"></i></tt1>
+        </div>
+      </div>
+
+      <button class="btn" style="width:100%">
+        <a href="static/images/layersymbols/collection.bib" download>
+          <i class="fa fa-download"></i> Download
+        </a>
+      </button>
+    </div>
+  </div>
+
+  <!-- Load external libraries -->
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
+  <script src="//d3js.org/topojson.v1.min.js"></script>
+
+  <!-- Load scripts -->
+  <script src="static/js/external/figue.js"></script>
+  <script src="static/js/external/color2D.js"></script>
+  <script src="static/js/RadarChart.js"></script>
+  <script src="static/js/data_prep.js"></script>
+  <script src="static/js/dashboard-network.js"></script>
+  <script src="static/js/dashboard.js"></script>
+
+  <!-- Load JSON data into JavaScript -->
+  <script type="text/javascript">
+    fetch("static/network.json")
+      .then(response => response.json())
+      .then(network => {
+        fetch("static/papers.json")
+          .then(response => response.json())
+          .then(papers => {
+            fetch("static/seeds.json")
+              .then(response => response.json())
+              .then(seeds => {
+                fetch("static/projections.json")
+                  .then(response => response.json())
+                  .then(keys => {
+                    fetch("static/key_projections.json")
+                      .then(response => response.json())
+                      .then(key_projections => {
+                        fetch("static/papers_with_keys.json")
+                          .then(response => response.json())
+                          .then(pwk => {
+                            fetch("static/paths.json")
+                              .then(response => response.json())
+                              .then(paths => {
+                                fetch("static/authors.json")
+                                  .then(response => response.json())
+                                  .then(authors => {
+                                    myVar = my_Func(network, papers, seeds, keys, key_projections, pwk, paths, authors);
+                                  });
+                              });
+                          });
+                      });
+                  });
+              });
+          });
+      });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+# syntax=docker/dockerfile:1
+FROM node:18-alpine
+FROM python:3.8-slim-buster
+
+LABEL MAINTAINER="Raphael Buchmüller <rbuchmueller@dbvis.inf.uni-konstanz.de>"
+
+WORKDIR /.
+
+#ENV PATH /app/node_modules/.bin:$PATH
+
+#RUN yarn add global @angular/cli && yarn cache clean
+
+# install and cache app dependencies
+#COPY package.json ./
+#RUN --mount=type=cache,target=/app/.yarn-cache,id=pegasus-yarn-cache yarn install --verbose --cache-folder /app/.yarn-cache --prefer-offline
+
+# copy local content to docker for building
+#WORKDIR /app
+
+# Do _not_ copy in src content, we map it in anyways...
+# COPY . .
+
+# Instead of --poll=5000, we place all repo files on linux (e.g. inside wsl)
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
