@@ -76,6 +76,35 @@
                 </div>
               </div>
             </div>
+            <div class="layer-toggle-big" >
+              <div class="btn-toggle" id="blayer">
+                <img src="static/images/layersymbols/b.png" alt="My Button">
+              </div>
+              <div class="inner">
+                <span class="toggle-label">Binning</span>
+                <div class="slidecontainer">
+                  <input type="range" id="binsizeslider" name="volume" min="0" max="40" step="1">
+                  <label class= "mini-label" for="volume">Binsize&Group</label>
+                  <!-- <label class= "mini-label" for="volume">Radius</label> -->
+                  <label class="switch">
+                    <input type="checkbox" id="andorbox">
+                    <div class="slider round">
+                     <!--ADDED HTML -->
+                     <span class="on">AND</span>
+                     <span class="off">OR</span>
+                     <!--END-->
+                     <!--END-->
+                    </div>
+                   </label>
+                </div>
+              </div>
+            </div>
+            <div class="layer-toggle" >
+              <div class="btn-toggle" id="alayer">
+                <img src="static/images/layersymbols/a.png" alt="My Button">
+              </div>
+              <span class="toggle-label">Area</span>
+            </div>
             <div class="layer-toggle">
               <div class="btn-toggle" id="nlayer">
                 <img src="static/images/layersymbols/n.png" alt="Network">
@@ -89,11 +118,21 @@
               <span class="toggle-label">Related</span>
             </div>
           </div>
+          <div class="layer-toggle" >
+            <div class="btn-toggle" id="slayer"> 
+              <img src="static/images/layersymbols/s.png" alt="Seed">
+            </div>
+            <span class="toggle-label">Seed</span>
+          </div>
           <button class="button" id="deselectButton">
             <i class="fa fa-times-circle-o" aria-hidden="true"></i> Clear
           </button>
         </div>
       </div>
+      <div class="hex-container">
+        <tt1>Timeline View</tt1>
+        <div id="timeline-down" style="width: 100%; height: 300px;"></div>
+      </div>      
     </div>
 
     <div class="column rightside">
@@ -128,44 +167,60 @@
   <script src="static/js/RadarChart.js"></script>
   <script src="static/js/data_prep.js"></script>
   <script src="static/js/dashboard-network.js"></script>
-  <script src="static/js/dashboard.js"></script>
+  <script src="static/js/dashboard.js" defer></script>
+
 
   <!-- Load JSON data into JavaScript -->
   <script type="text/javascript">
-    fetch("static/network.json")
-      .then(response => response.json())
-      .then(network => {
-        fetch("static/papers.json")
-          .then(response => response.json())
-          .then(papers => {
-            fetch("static/seeds.json")
-              .then(response => response.json())
-              .then(seeds => {
-                fetch("static/projections.json")
-                  .then(response => response.json())
-                  .then(keys => {
-                    fetch("static/key_projections.json")
-                      .then(response => response.json())
-                      .then(key_projections => {
-                        fetch("static/papers_with_keys.json")
-                          .then(response => response.json())
-                          .then(pwk => {
-                            fetch("static/paths.json")
-                              .then(response => response.json())
-                              .then(paths => {
-                                fetch("static/authors.json")
-                                  .then(response => response.json())
-                                  .then(authors => {
-                                    myVar = my_Func(network, papers, seeds, keys, key_projections, pwk, paths, authors);
-                                  });
-                              });
-                          });
-                      });
-                  });
-              });
-          });
-      });
+    const dataset = {};
+  
+    // Load all data files in parallel
+    Promise.all([
+      fetch("static/network.json").then(r => r.json()).then(d => { console.log("✅ network loaded"); dataset.network = d; }),
+      fetch("static/papers.json").then(r => r.json()).then(d => { console.log("✅ papers loaded"); dataset.papers = d; }),
+      fetch("static/seeds.json").then(r => r.json()).then(d => { console.log("✅ seeds loaded"); dataset.seeds = d; }),
+      fetch("static/projections.json").then(r => r.json()).then(d => { console.log("✅ keys loaded"); dataset.keys = d; }),
+      fetch("static/key_projections.json").then(r => r.json()).then(d => { console.log("✅ key_projections loaded"); dataset.key_projections = d; }),
+      fetch("static/papers_with_keys.json").then(r => r.json()).then(d => { console.log("✅ papers_with_keys loaded"); dataset.pwk = d; }),
+      fetch("static/paths.json").then(r => r.json()).then(d => { console.log("✅ paths loaded"); dataset.paths = d; }),
+      fetch("static/authors.json").then(r => r.json()).then(d => { console.log("✅ authors loaded"); dataset.authors = d; })
+    ])
+    .then(() => {
+      console.log("✅ All data loaded");
+      startAppWhenDOMReady();
+    })
+    .catch(err => {
+      console.error("❌ Error loading data:", err);
+    });
+  
+    function startAppWhenDOMReady() {
+      // Wait until DOM is fully parsed and ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", runApp);
+      } else {
+        runApp();
+      }
+    }
+  
+    function runApp() {
+      console.log("🚀 DOM is ready, initializing app...");
+      try {
+        myVar = my_Func(
+          dataset.network,
+          dataset.papers,
+          dataset.seeds,
+          dataset.keys,
+          dataset.key_projections,
+          dataset.pwk,
+          dataset.paths,
+          dataset.authors
+        );
+      } catch (err) {
+        console.error("❌ Error in my_Func:", err);
+      }
+    }
   </script>
+  
 
 </body>
 </html>

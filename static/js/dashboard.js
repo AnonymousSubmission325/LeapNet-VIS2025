@@ -285,7 +285,7 @@ function create_keywords(keynum){
     .style('font-size', function(d) {return fontsize_scale(d.index) + 'em'})
     .style('opacity', function(d) { return textopacity_scale(d.index)})
     .style('fill', function(d) { return d.color['bremm']})
-    .on("click", function(d) {this.remove()})
+    // .on("click", function(d) {this.remove()})
   
       
   // Cycle through dedupables and dedupe them
@@ -312,19 +312,43 @@ function create_keywords(keynum){
 }
 
 
-var keywordnum_slider = document.getElementById("keywordnumslider");
-// Update the current slider value (each time you drag the slider handle)
-keywordnum_slider.oninput = function() {
-  d3.selectAll(".keytext").remove()
-  create_keywords(keywordnum_slider.value)
-}
+// var keywordnum_slider = document.querySelector("#keywordnumslider");
+// if (keywordnum_slider) {
+//   keywordnum_slider.oninput = function () {
+//     d3.selectAll(".keytext").remove();
+//     create_keywords(keywordnum_slider.value);
+//   };
+// } else {
+//   console.warn("keywordnumslider not found.");
+// }
 
 
 
 create_keywords(80)
 createHexBins(hexradius)
 
-  
+function bindSlider(attempts = 5) {
+  const keywordnum_slider = document.getElementById("keywordnumslider");
+  if (keywordnum_slider) {
+    keywordnum_slider.oninput = function () {
+      d3.selectAll(".keytext").remove();
+      create_keywords(this.value);
+    };
+    console.log("✅ Slider bound successfully.");
+  } else if (attempts > 0) {
+    console.warn("⚠️ keywordnumslider not found, retrying...");
+    setTimeout(() => bindSlider(attempts - 1), 100); // Retry after 100ms
+  } else {
+    console.error("❌ keywordnumslider not found after multiple attempts.");
+  }
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => bindSlider());
+} else {
+  bindSlider();
+}
+
+
 function create_stacked_bars(){
 
 
@@ -927,9 +951,22 @@ function create_stacked_bars(){
   
   //update_selection(card_ids)
 
+  let hexbin_slider;
 
-
-  var hexbin_slider = document.getElementById("binsizeslider");
+  function bindBinSlider(attempts = 5) {
+    hexbin_slider = document.getElementById("binsizeslider");
+    if (hexbin_slider) {
+      hexbin_slider.oninput = update_by_binsizeslider;
+      console.log("✅ Bin slider bound.");
+    } else if (attempts > 0) {
+      console.warn("⚠️ binsizeslider not found, retrying...");
+      setTimeout(() => bindBinSlider(attempts - 1), 100);
+    } else {
+      console.error("❌ binsizeslider not found after multiple attempts.");
+    }
+  }
+  
+  bindBinSlider();
 
   function update_by_binsizeslider(){
     field.selectAll(".hexagon_path").remove()
@@ -939,7 +976,7 @@ function create_stacked_bars(){
     update_selection(card_ids)
   }
   // Update the current slider value (each time you drag the slider handle)
-  hexbin_slider.oninput = update_by_binsizeslider
+  // hexbin_slider.oninput = update_by_binsizeslider
 
   d3.select('#tlayer').style("background", "darkgrey").style("opacity",0.6);
   const myDivt = document.getElementById('tlayer');
@@ -1128,27 +1165,27 @@ function create_stacked_bars(){
     element.style('display', 'none'); 
   }
 
-  d3.select('#ilayer').style("background", "darkgrey").style("opacity",0.6);
-  const myDivi = document.getElementById('ilayer');
-  myDivi.addEventListener('click', () => {
-    if(!(ilayer)){
-      ilayer=true
-      d3.select('#ilayer').style("background", "white").style("opacity",1);
-      set_i()}
-    else{
-      ilayer=false
-      d3.select('#ilayer').style("background", "darkgrey").style("opacity",0.6);
-      unset_i()}
-  });
+  // d3.select('#ilayer').style("background", "darkgrey").style("opacity",0.6);
+  // const myDivi = document.getElementById('ilayer');
+  // myDivi.addEventListener('click', () => {
+  //   if(!(ilayer)){
+  //     ilayer=true
+  //     d3.select('#ilayer').style("background", "white").style("opacity",1);
+  //     set_i()}
+  //   else{
+  //     ilayer=false
+  //     d3.select('#ilayer').style("background", "darkgrey").style("opacity",0.6);
+  //     unset_i()}
+  // });
   
-  function set_i(){
-    // const element = d3.selectAll(".seedpoint")
-    // element.style('display', 'block');
-  }
-  function unset_i(){
-    // const element = d3.selectAll(".seedpoint")
-    // element.style('display', 'none'); 
-  }
+  // function set_i(){
+  //   // const element = d3.selectAll(".seedpoint")
+  //   // element.style('display', 'block');
+  // }
+  // function unset_i(){
+  //   // const element = d3.selectAll(".seedpoint")
+  //   // element.style('display', 'none'); 
+  // }
 
 
   var andorbox = document.getElementById("andorbox");
